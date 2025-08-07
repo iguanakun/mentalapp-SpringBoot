@@ -1,4 +1,4 @@
-package com.demosecurity.entity;
+package com.mentalapp.common.entity;
 
 import jakarta.persistence.*;
 import java.util.Collection;

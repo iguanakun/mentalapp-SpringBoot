@@ -1,4 +1,4 @@
-package com.demosecurity.entity;
+package com.mentalapp.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

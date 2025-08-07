@@ -1,4 +1,4 @@
-package com.demosecurity.user;
+package com.mentalapp.common.user;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

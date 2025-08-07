@@ -1,10 +1,10 @@
-package com.demosecurity.service;
+package com.mentalapp.common.service;
 
-//import com.demosecurity.dao.RoleDao;
-import com.demosecurity.entity.Role;
-import com.demosecurity.entity.User;
-import com.demosecurity.mapper.UserMapper;
-import com.demosecurity.user.WebUser;
+//import com.demosecurity.common.dao.RoleDao;
+import com.mentalapp.common.entity.Role;
+import com.mentalapp.common.entity.User;
+import com.mentalapp.common.mapper.UserMapper;
+import com.mentalapp.common.user.WebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

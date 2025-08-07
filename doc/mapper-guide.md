@@ -16,12 +16,12 @@ MentalAppでは、`src/main/resources/mapper`ディレクトリにマッパーXM
 
 ## UserMapper.xml
 
-`UserMapper.xml`は、`com.demosecurity.mapper.UserMapper`インターフェースのSQLマッピングを定義しています。
+`UserMapper.xml`は、`com.mentalapp.common.mapper.UserMapper`インターフェースのSQLマッピングを定義しています。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demosecurity.mapper.UserMapper">
+<mapper namespace="com.mentalapp.common.mapper.UserMapper">
 
     <!-- １件取得 -->
     <select id="selectByPrimaryKey" resultType="User">
@@ -53,7 +53,7 @@ MentalAppでは、`src/main/resources/mapper`ディレクトリにマッパーXM
 
 ### 重要な点
 
-- `namespace`属性は、対応するJavaインターフェース（`com.demosecurity.mapper.UserMapper`）を指定しています。
+- `namespace`属性は、対応するJavaインターフェース（`com.mentalapp.common.mapper.UserMapper`）を指定しています。
 - 各SQLステートメントは、インターフェースのメソッド名と一致するID属性を持っています。
 - パラメータは`#{パラメータ名}`の形式で参照されます。
 
@@ -128,7 +128,7 @@ MyBatisの設定は`application.properties`ファイルで行われています�
 ```properties
 # MyBatis Properties
 mybatis.mapper-locations=classpath*:/mapper/*.xml
-mybatis.type-aliases-package=com.demosecurity.entity
+mybatis.type-aliases-package=com.mentalapp.common.entity
 mybatis.configuration.map-underscore-to-camel-case=true
 ```
 

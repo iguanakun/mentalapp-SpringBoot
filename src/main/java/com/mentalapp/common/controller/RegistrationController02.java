@@ -1,8 +1,8 @@
-package com.demosecurity.controller;
+package com.mentalapp.common.controller;
 
-import com.demosecurity.entity.User;
-import com.demosecurity.service.UserService02Impl;
-import com.demosecurity.user.WebUser;
+import com.mentalapp.common.entity.User;
+import com.mentalapp.common.service.UserService02Impl;
+import com.mentalapp.common.user.WebUser;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

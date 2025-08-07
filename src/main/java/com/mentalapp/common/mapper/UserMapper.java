@@ -1,6 +1,6 @@
-package com.demosecurity.mapper;
+package com.mentalapp.common.mapper;
 
-import com.demosecurity.entity.User;
+import com.mentalapp.common.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

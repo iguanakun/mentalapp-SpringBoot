@@ -1,7 +1,7 @@
-package com.demosecurity.security;
+package com.mentalapp.common.security;
 
 
-import com.demosecurity.service.UserService02;
+import com.mentalapp.common.service.UserService02;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

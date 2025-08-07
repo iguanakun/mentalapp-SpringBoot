@@ -1,8 +1,8 @@
-package com.demosecurity.security;
+package com.mentalapp.common.security;
 
 import java.io.IOException;
 
-import com.demosecurity.service.UserService02;
+import com.mentalapp.common.service.UserService02;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.demosecurity.entity.User;
+import com.mentalapp.common.entity.User;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

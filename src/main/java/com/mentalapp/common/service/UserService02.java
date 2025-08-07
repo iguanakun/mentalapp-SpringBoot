@@ -1,7 +1,7 @@
-package com.demosecurity.service;
+package com.mentalapp.common.service;
 
-import com.demosecurity.entity.User;
-import com.demosecurity.user.WebUser;
+import com.mentalapp.common.entity.User;
+import com.mentalapp.common.user.WebUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService02 extends UserDetailsService {

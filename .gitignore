@@ -1,6 +1,6 @@
 # プロジェクトの除外パス
 /target/
-/Junie/
+.junie/
 
 .env
 .idea
