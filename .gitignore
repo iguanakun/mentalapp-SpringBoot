@@ -1,0 +1,6 @@
+# プロジェクトの除外パス
+/target/
+/Junie/
+
+.env
+.idea

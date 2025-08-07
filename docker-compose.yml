@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  web:
+    container_name: mentalapp
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+    depends_on:
+      db:
+        condition: service_started
+    networks:
+      - app-net
+  db:
+    image: mysql:8.4.5
+    container_name: mentaldb
+#    command: mysqld --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      TZ: ${TZ}
+    ports:
+      - ${DB_PORT}:3306
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./mysql/mysql.cnf:/etc/mysql/conf.d/my.cnf
+      - ./sql-scripts/03-create-mentalapp-tables.sql:/docker-entrypoint-initdb.d/03-create-mentalapp-tables.sql
+    networks:
+      - app-net
+volumes:
+  db-store:
+
+networks: #ネットワークを設定し、コンテナ間の通信を行う
+  app-net: #ネットワーク名
+    driver: bridge
