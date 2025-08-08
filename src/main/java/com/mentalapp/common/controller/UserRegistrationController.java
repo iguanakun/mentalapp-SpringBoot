@@ -1,7 +1,7 @@
 package com.mentalapp.common.controller;
 
 import com.mentalapp.common.entity.User;
-import com.mentalapp.common.service.UserService02Impl;
+import com.mentalapp.common.service.UserServiceImpl;
 import com.mentalapp.common.user.WebUser;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/register")
-public class RegistrationController02 {
+public class UserRegistrationController {
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
-    private UserService02Impl userService;
+    private UserServiceImpl userService;
 
 	@Autowired
-	public RegistrationController02(UserService02Impl userService) {
+	public UserRegistrationController(UserServiceImpl userService) {
 		this.userService = userService;
 	}
 

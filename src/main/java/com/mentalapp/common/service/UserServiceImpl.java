@@ -18,7 +18,7 @@ import java.util.Collection;
 
 @Service
 @Transactional
-public class UserService02Impl implements UserService02 {
+public class UserServiceImpl implements UserService {
 
 	private final UserMapper userMapper;
 
@@ -27,7 +27,7 @@ public class UserService02Impl implements UserService02 {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserService02Impl(UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
 		this.userMapper = userMapper;
 //		this.roleDao = roleDao;
 		this.passwordEncoder = passwordEncoder;

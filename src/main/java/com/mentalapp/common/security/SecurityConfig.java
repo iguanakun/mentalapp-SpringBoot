@@ -1,7 +1,7 @@
 package com.mentalapp.common.security;
 
 
-import com.mentalapp.common.service.UserService02;
+import com.mentalapp.common.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
-public class DemoSecurityConfig {
+public class SecurityConfig {
 
     //bcrypt bean definition
     @Bean
@@ -21,7 +21,7 @@ public class DemoSecurityConfig {
 
     //authenticationProvider bean definition
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(UserService02 userService) {
+    public DaoAuthenticationProvider authenticationProvider(UserService userService) {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
         auth.setUserDetailsService(userService); //set the custom user details service
         auth.setPasswordEncoder(passwordEncoder()); //set the password encoder - bcrypt
@@ -38,6 +38,8 @@ public class DemoSecurityConfig {
 //                                .requestMatchers("/leaders/**").hasRole("MANAGER")
 //                                .requestMatchers("/systems/**").hasRole("ADMIN")
                                 .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/").permitAll() // トップページは全許可
+                                .requestMatchers("/images/**", "/css/**", "/js/**").permitAll() // 静的リソースへのアクセスを許可
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->

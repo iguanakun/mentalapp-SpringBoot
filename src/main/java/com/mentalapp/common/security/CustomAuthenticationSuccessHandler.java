@@ -2,7 +2,7 @@ package com.mentalapp.common.security;
 
 import java.io.IOException;
 
-import com.mentalapp.common.service.UserService02;
+import com.mentalapp.common.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,9 +17,9 @@ import com.mentalapp.common.entity.User;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private UserService02 userService;
+    private UserService userService;
 
-    public CustomAuthenticationSuccessHandler(UserService02 theUserService) {
+    public CustomAuthenticationSuccessHandler(UserService theUserService) {
         userService = theUserService;
     }
 
