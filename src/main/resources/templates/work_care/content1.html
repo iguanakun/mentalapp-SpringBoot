@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>自分でできる心理療法</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="main">
+        <div class="main-menu">
+            <div class="main-menu__square"></div>
+            <div class="main-menu__title">概要</div>
+        </div>
+        <div class="main-contents">
+            <div class="main-contents-info">
+                <div class="main-contents__text">
+                    仕事で失敗や叱責をされると、
+                    何がいけなかったのか、また失敗したらどうする、と過去の後悔や未来への不安が頭を埋めることがあるかもしれません。<br>
+                    肉体的な反応として、胃の痛みや頭痛、睡眠不足が現れることもあります。<br>
+                    ネガティブな感情として、不安、情けなさ、劣等感、焦燥感、羞恥心などが出るかもしれません。<br>
+                    認知行動療法によるガイドを通じて、ストレスを分析し、影響をやわらげる方法を紹介します。<br><br>
+                    <ul>
+                        <li class="main-course-link"><%= link_to "認知行動療法とは", content1_page1_work_care_index_path %></li>
+                        <li class="main-course-link"><%= link_to "階層的認知モデルとは", content1_page2_work_care_index_path %></li>
+                        <li class="main-course-link"><%= link_to "認知のゆがみとは", content1_page3_work_care_index_path %></li>
+                        <li class="main-course-link"><%= link_to "認知再構成法とは", content1_page4_work_care_index_path %></li>
+                        <li>ストレスの理解と観察を深める</li>
+                        <li>マインドフルネス</li>
+                        <li>自律訓練法</li>
+                        <li>同じ失敗を繰り返さないために、対処法を考える</li>
+                        <li>コーピングリストを増やす</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
