@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Header</title>
@@ -39,17 +40,15 @@
         
       </div>
       <div class="header-user">
-        <div th:if="${#authentication.isAuthenticated()}" class="user-logout">
+        <div sec:authorize="isAuthenticated()" class="user-logout">
           <a th:href="@{/logout}">ログアウト</a>
         </div>
-        <div th:unless="${#authentication.isAuthenticated()}">
-          <div class="user-login">
+          <div sec:authorize="isAnonymous()" class="user-login">
             <a th:href="@{/login}">ログイン</a>
           </div>
-          <div class="user-reg">
+          <div sec:authorize="isAnonymous()" class="user-reg">
             <a th:href="@{/register}">新規登録</a>
           </div>
-        </div>
       </div>
     </div>
 </body>

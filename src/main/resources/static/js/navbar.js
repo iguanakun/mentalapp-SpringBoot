@@ -39,7 +39,5 @@ function navbar (){
   // dropdown ('navbar-items03', 'navbar-pulldown03','#navbar03','#e5e5e5');
 };
 
-// window.addEventListener('turbo:load', navbar);
 window.addEventListener('load', navbar);
 window.addEventListener('turbo:render', navbar);
-console.log("test");
