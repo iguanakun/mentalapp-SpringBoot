@@ -1,0 +1,3 @@
+<th:block layout:fragment="email-text-content">
+<!-- Email text content will be replaced here -->
+</th:block>

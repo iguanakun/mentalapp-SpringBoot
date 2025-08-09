@@ -379,7 +379,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 # MyBatis Properties
 #
 mybatis.mapper-locations=classpath*:/mapper/*.xml
-mybatis.type-aliases-package=com.demosecurity.entity
+mybatis.type-aliases-package=com.mentalapp.common.entity
 mybatis.configuration.map-underscore-to-camel-case=true
 
 #

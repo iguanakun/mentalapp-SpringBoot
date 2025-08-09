@@ -1,0 +1,11 @@
+.error-alert {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4vh;
+}
+
+.error-message {
+  font-size: 0.8vw;
+  list-style: circle;
+  color: rgb(182, 48, 0); 
+}

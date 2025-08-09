@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head>
+    <meta charset="UTF-8">
+    <title>MentalApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Spring Security handles CSRF protection -->
+    
+    <!-- Reset CSS first -->
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    
+    <!-- Main CSS files -->
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/lists.css}">
+    <link rel="stylesheet" th:href="@{/css/new.css}">
+    <link rel="stylesheet" th:href="@{/css/show.css}">
+    
+    <!-- Shared components CSS -->
+    <link rel="stylesheet" th:href="@{/css/shared/header.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/error_messages.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/header-margin.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_header.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_fotter.css}">
+    
+    <!-- JavaScript and fonts -->
+    <script th:src="@{/js/application.js}"></script>
+    <script src="https://kit.fontawesome.com/744847be01.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700,900&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <header th:insert="~{common/_header :: header}"></header>
+    
+    <main layout:fragment="content">
+      <!-- Content will be replaced by views -->
+    </main>
+    
+    <footer th:insert="~{common/_footer :: footer}"></footer>
+    <script type="text/javascript" th:src="@{/js/navbar.js}"></script>
+
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<div class="header" th:fragment="header">
+  <div class="header-main">
+    <a th:href="@{/}" class="header-title">自分でできる心理療法</a>
+    <div id="navbar01">
+      <div class="navbar" id="navbar-items">
+        <div class="navbar__lists">エクササイズ▼</div>
+      </div>
+      <ul class="navbar-memo hidden" id="navbar-pulldown">
+        <a th:href="@{/cbt_basics/new}"><li class="pulldown-list">モニタリング</li></a>
+        <a th:href="@{/monitorings/new}"><li class="pulldown-list">認知再構成法</li></a>
+      </ul>
+    </div>
+    <div id="navbar02">
+      <div class="navbar" id="navbar-items02">
+        <div class="navbar__lists">コース▼</div>
+      </div>
+      <ul class="navbar-memo hidden" id="navbar-pulldown02">
+        <a th:href="@{/work_care/content1}"><li class="pulldown-list">仕事上の悩み</li></a>
+      </ul>
+    </div>
+    <!-- <div id="navbar03"> -->
+      <!-- <div class="navbar" id="navbar-items03"> -->
+      <div class="navbar" id="navbar-items03">
+          <a th:href="@{/memos}" class="navbar__lists">メモ一覧</a>
+        <!-- <div class="navbar__lists">メモ一覧▼</div> -->
+      </div>
+      <!-- <ul class="navbar-memo hidden" id="navbar-pulldown03">
+        <a th:href="@{/cbt_basics/lists}"><li class="pulldown-list">モニタリング</li></a>
+        <a th:href="@{/monitorings/lists}"><li class="pulldown-list">認知再構成法</li></a>
+      </ul> -->
+    <!-- </div> -->
+    
+  </div>
+  <div class="header-user">
+    <div th:if="${#authentication.isAuthenticated()}" class="user-logout">
+      <a th:href="@{/logout}">ログアウト</a>
+    </div>
+    <div th:unless="${#authentication.isAuthenticated()}">
+      <div class="user-login">
+        <a th:href="@{/login}">ログイン</a>
+      </div>
+      <div class="user-reg">
+        <a th:href="@{/register}">新規登録</a>
+      </div>
+    </div>
+  </div>
+</div>

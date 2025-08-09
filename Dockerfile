@@ -7,7 +7,7 @@ WORKDIR /build
 # 依存関係のキャッシュを最適化するため、pom.xmlを先にコピー
 COPY pom.xml .
 
-# 依存関係のダウンロードのみを実行（ソースなしでも可能）
+# Maven依存関係のキャッシュのため、ダウンロードのみを実行
 RUN mvn dependency:go-offline
 
 # ソースコードのコピー
