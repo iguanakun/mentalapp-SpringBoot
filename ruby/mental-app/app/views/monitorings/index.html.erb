@@ -1,0 +1,68 @@
+<%= render "shared/header" %>
+
+
+<div class="hero">
+  <%= image_tag "hero.jpg", class:"hero-image" %>
+  <div class="hero-info">
+    <div class="hero-info__title">自分でできる心理療法</div>
+    <div class="hero-info__message">
+      認知行動療法による<br>
+      ストレスとの上手なつきあい方
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="main-menu">
+    <div class="main-menu__square"></div>
+    <div class="main-menu__title">コース</div>
+  </div>
+  <div class="main-contents">
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">仕事上の悩み</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        <ul>
+          <li class="main-course-link"><%= link_to "仕事上の失敗や怒られた経験に対処する", content1_work_care_index_path %></li>
+          <li>仕事に楽しさを見いだせない</li>
+          <li>人間関係の問題</li>
+          <li>部下の育成</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-menu">
+    <div class="main-menu__square"></div>
+    <div class="main-menu__title">エクササイズ</div>
+  </div>
+  <div class="main-contents">
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">モニタリング</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+      認知行動療法の基本モデルに沿って、ストレスを理解・観察するためのワーク
+      </div>
+      <%= link_to "エクササイズをする", new_cbt_basic_path, class:"main-contents__btn" %>
+    </div>
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">認知再構成法</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        自分を苦しめる思考を分析し、自分をつらくさせない考え方を作り出すためのワーク
+      </div>
+      <%= link_to "エクササイズをする", new_monitoring_path, class:"main-contents__btn" %>
+
+      <!-- <%= link_to "検索test", lists_monitorings_path, class:"main-contents__btn" %> -->
+
+    </div>
+  </div>
+</div>
+
+<%= render "shared/footer" %>

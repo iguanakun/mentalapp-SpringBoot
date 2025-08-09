@@ -1,0 +1,102 @@
+<%= render "shared/header" %>
+<%= render "shared/header-margin" %>
+
+<div class="main">
+  <div class="main-menu">
+    <div class="main-menu__square"></div>
+    <div class="main-menu__title">概要</div>
+  </div>
+  <div class="main-contents">
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">認知行動療法とは</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        ストレスに対処するに当たって、ここでは認知行動療法の基本モデルについて説明します。<br>
+        認知行動療法ではエクササイズを実践する前に、認知行動療法の簡単な理解が必要です。<br>
+        認知行動療法は何を目的としているのか？ を知った上で実践しないと、効果が得にくくなってしまうためです。<br>
+        しかし深く理解する必要はなく、なんとなくの理解で十分なので、最低限必要な知識を提供します。<br>
+      </div>
+    </div>
+
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">認知行動療法の基本モデル</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        ストレスのきっかけとなった出来事を「ストレッサー」と呼びます。<br>
+        ストレッサーにより、個人に起きる反応のことを「ストレス反応」と呼びます。<br>
+        認知行動療法では、個人のストレス反応をさらに認知、感情、身体反応、行動の４つに分けて考えます。<br><br>
+        <ul class="main-contents__lists">
+          <li>認知<br>頭に浮かんだ考えやイメージのことです。<br>
+              <ul class="main-contents__lists-sub">
+                <li>例）「また失敗した」「新人のようなミスだ」「ばかにされるんじゃないか」</li>
+              </ul>
+          </li>
+          <br>
+          <li>感情<br>気分や感情、衝動のことです。<br>
+              <ul class="main-contents__lists-sub">
+                <li>例）怒り、罪悪感、動揺、悲しみ、不安、嫌悪、不快感、心配、苦しい、ゆううつ、みじめ、落ち込む、達成感、自信、喜び、充足感、高揚感、ホッとする</li>
+              </ul>
+          </li>
+          <br>
+          <li>身体反応<br>身体にあらわれる生理的現象のことです。<br>
+              <ul class="main-contents__lists-sub">
+              <li>例）胃が痛い、頭痛、冷や汗をかく、顔が赤くなる、身体がこわばる、どきどきする</li>
+              </ul>
+          </li>
+          <br>
+          <li>行動<br>外から見て分かる動作やふるまいのことです。<br>
+              <ul class="main-contents__lists-sub">
+                <li>例）謝る、早口になる、うつむく、歩く、トイレにこもる</li>
+              </ul>
+          </li>
+        </ul>
+        <br>
+        以上、ストレス反応を4つの領域にわけたものを、図にまとめます。<br>
+        <%= image_tag "CBT-basicmodel.PNG", class:"content-image" %>
+        4つの領域のうち、変えることができやすいのは、認知と行動だけです。<br>
+        このため「認知行動療法」と呼びます。<br>
+        出てくる感情や身体反応は止めることが難しいです。<br>
+        一方、認知や行動は、自動的に行なってしまうものもありますが、自分で工夫して選ぶこともできます。<br>
+        たとえば、仕事で失敗をしたときに「同じ失敗を繰り返さないようにしよう」（認知）と考え、「作業の準備をしっかり行う」（行動）という対策を練ることができます。<br>
+        このようにして、ストレス反応が生じたときに、変えることが難しい感情や身体反応ではなく、変えることができやすい認知や行動にアプローチすることで、
+        ストレスに対して上手に対処する、というのが認知行動療法の考え方です。<br>
+      </div>
+    </div>
+
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">モニタリング</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        前項ではストレス反応を4つの領域に分けて考えました。<br>
+        ここに「環境」を加えて、①環境(出来事)　②認知　③感情　④身体反応　⑤行動 にわけて細かく観察することを「モニタリング」と呼びます。<br>
+        自分の体験を理解し整理して、書き出していくことで、もやもやした気持ちを少し軽くすることができます。<br>
+        自分の内的な体験を外側に出す作業のことを「外在化」と呼びますが、認知行動療法ではこの「外在化」の作業を大切にしています。<br>
+      </div>
+    </div>
+
+    <div class="main-contents-wrapper">
+      <div class="main-item__circle"></div>
+      <div class="main-contents__title">エクササイズ</div>
+    </div>
+    <div class="main-contents-info">
+      <div class="main-contents__text">
+        それでは認知行動療法の基本モデルに沿って、エクササイズをしてみましょう。<br>
+        最近あった仕事の失敗や、怒られたことをひとつ選び、エクササイズをはじめてください。<br>
+        選ぶ出来事は最も落ち込んだものである必要はなく、ささいな失敗や、同僚と少し意見が合わなかった、などの感情的に気分が落ち込みすぎないものでも構いません。<br><br>
+        <%= link_to "エクササイズをする", new_cbt_basic_path, class:"main-contents__btn" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-contents__nav-link-single">
+    <%= link_to "次のページ ＞", content1_page2_work_care_index_path, class:"nav-link_btn" %>
+  </div>
+</div>
+
+<%= render "shared/footer" %>
