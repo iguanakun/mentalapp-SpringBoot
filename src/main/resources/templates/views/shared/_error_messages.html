@@ -1,0 +1,7 @@
+<div th:fragment="error_messages(model)" th:if="${model != null and not #lists.isEmpty(model.errors)}">
+  <div class="error-alert">
+    <ul>
+      <li class='error-message' th:each="message : ${model.errors}" th:text="${message}"></li>
+    </ul>
+  </div>
+</div>

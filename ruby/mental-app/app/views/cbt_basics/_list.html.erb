@@ -1,0 +1,30 @@
+<div class="monitor-list">
+  <div class="monitor-list-upper">
+    <div class="monitor-list__date"><%= list.created_at.strftime("%Y/%m/%d") %></div>
+    <div class="monitor-list-more">
+      <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+      <ul class="monitor-list-more__items">
+        <%= link_to edit_cbt_basic_path(list.id) do %>
+        <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+        <% end %>
+        <%= link_to cbt_basic_path(list.id), data:{ turbo_method: :delete } do %>
+        <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <%= link_to cbt_basic_path(list.id) do %>
+  <div class="monitor-list-content">
+    <div class="monitor-list-item">状況</div>
+    <div class="monitor-list-text"><%= list.fact %></div>
+  </div>
+  <div class="monitor-list-content">
+    <div class="monitor-list-item">ネガティブな感情</div>
+    <div class="monitor-list-text">
+      <% list.negative_feels&.each do |feel| %>
+        <%= feel.negative_feel_name %>　
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+</div>

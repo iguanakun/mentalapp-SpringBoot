@@ -1,0 +1,124 @@
+/***********************************************
+トップページ
+************************************************/
+.hero{
+  width: 1440px;
+  height: 416px;
+  background-color: gray;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.hero-image{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: cover;
+}
+
+.hero-info{
+  width: 100%;
+  height: 104px;
+  margin-left: 280px;
+  position: absolute;
+}
+
+.hero-info__title{
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.hero-info__message{
+  font-size: 18px;
+}
+
+.main{
+  width: 880px;
+  margin-left: 280px;
+}
+
+.main-menu{
+  margin-top: 40px;
+  margin-bottom: 16px;
+  display: flex;
+}
+
+.main-menu__square{
+  width: 12px;
+  height: 40px;
+  background-color: #aef5a3;
+  margin-right: 16px;
+}
+
+.main-menu__title{
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.main-contents{
+  margin-left: 28px;
+}
+
+.main-contents-wrapper{
+  display: flex;
+}
+
+.main-item__circle{
+  background-color: #aef5a3;
+  width: 24px;
+  height: 24px;
+  border-radius: 16px;
+  margin: 6px 16px 16px 0;
+}
+
+.main-contents__title{
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.main-contents-info{
+  margin-left: 40px;
+}
+
+.main-contents__text{
+  font-size: 18px;
+  margin-bottom: 32px;
+}
+
+.main-contents__sub{
+  font-size: 12px;
+  color: #b9b9b9;
+  font-style: italic;
+}
+
+.main-contents__btn{
+  width: 280px;
+  height: 56px;
+  margin-bottom: 64px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #4FE358;
+  border-radius: 16px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-course-link a:link {
+  color: #0000EE;
+  text-decoration: underline;
+ }
+ 
+ .main-course-link a:visited {
+  color: #551A8B;
+  text-decoration: underline;
+ }
+ 
+ .main-course-link a:active {
+  color: #FF0000;
+  text-decoration: underline;
+ }

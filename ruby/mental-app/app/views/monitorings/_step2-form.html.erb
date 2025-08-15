@@ -1,0 +1,63 @@
+<div class="monitor-main">
+  <%= form_with model:@monitoring_form, url: url, method: method, local: true do |f| %>
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">思考のゆがみ</div>
+    </div>
+    <div class="monitor-info">次のような思考のゆがみに、がんじがらめになっていると感じるものはありますか？<br>
+      もう一人の自分が観察するように、自分に語りかけてみてください。</div>
+    <div class="monitor-info__dist">
+      <%= f.collection_check_boxes(:distortion_name, DistortionList.all, :id, :distortion_name, checked: @monitoring_form.distortion_name&.map(&:id), include_hidden: false) do |dist| %>
+        <label>
+          <div class="checkbox" id="distortion">
+            <%= dist.check_box do %>
+              <%= dist.check_box + dist.text %>
+            <% end %>
+            <%= tag.span('◆ ', class: 'green-diamond') + dist.text + tag.br + dist.object.info %>
+          </div>
+        </label>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">思考のきっかけ</div>
+    </div>
+      <div class="monitor-info">考えが正しいと思う事実や根拠はありますか？</div>
+    <%= f.text_area :why_correct, class:"monitor-text", placeholder:"", rows:"5", maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">思考を疑う</div>
+    </div>
+      <div class="monitor-info">
+        考えが間違っていると思う事実や根拠はありますか？</div>
+    <%= f.text_area :why_doubt, class:"monitor-text", placeholder:"", rows:"5", maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">新しい考え方</div>
+    </div>
+      <div class="monitor-info"> ここまでを踏まえて、新しい考え方はできますか？</div>
+    <%= f.text_area :new_thought, class:"monitor-text", placeholder:"", rows:"5", maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="monitor-item"><span style="font-size: 18px;">タグ</span></div>
+    </div>
+    <%= f.text_field :tag_name, class:"tag-field", placeholder: 'タグをつける(スペース区切りで複数追加)', maxlength:"50" %>
+  </div>
+
+  <div class="monitor-btn-contents">
+    <%= f.submit "作成する" ,class:"monitor-btn" %>
+  </div>
+  <% end %>
+</div>

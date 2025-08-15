@@ -1,0 +1,120 @@
+.monitor-main{
+  width: 880px;
+  height: calc(1600px - 56px - 56px); /* 画面全体の高さ-ヘッダー-フッター */
+  margin-left: calc(280px + 36px);
+}
+
+.monitor-contents{
+  width: 880px;
+  margin-bottom: 32px;
+}
+
+.monitor-wrapper{
+  display: flex;
+}
+
+.item-circle{
+  background-color: #aef5a3;
+  width: 24px;
+  height: 24px;
+  border-radius: 16px;
+  margin: 4px 8px 16px 0;
+}
+
+.monitor-item{
+  font-size: 24px;
+}
+
+.monitor-info{
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.monitor-text{
+  width: calc(808px - 16px * 2);
+  border-radius: 8px;
+  border: solid 1px #cccccc;
+  padding: 16px;
+  font-size: 16px;
+}
+
+/* チェックボックスを非表示 */
+input[type=checkbox]{
+  display: none;
+}
+
+.monitor-info__feels{
+  margin-bottom: 16px;
+}
+
+.monitor-info__feels label{
+  cursor: pointer;
+}
+
+.feel-kinds{
+  margin-bottom: 8px;
+}
+
+.checkbox{
+  margin-right: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color:#e3ffba;
+  font-size: 14px;
+  padding: 4px 8px;
+}
+
+.monitor-info__dist{
+  display: flex;
+  flex-wrap: wrap; /* 要素が行を超えて折り返す */
+  justify-content: space-between;
+  align-items: center; /* 要素を垂直方向に中央に配置 */
+  width: calc( 808px + 8px );
+}
+
+.monitor-info__dist label{
+  cursor: pointer;
+}
+
+#distortion.checkbox{
+  margin-bottom: 8px;
+  width: 376px;
+}
+
+.green-diamond{
+  color: #0eb457;
+}
+
+#second-row{
+  margin-bottom: 8px;
+}
+
+#tag-checkboxs{
+  display: flex;
+}
+
+#tag-checkbox{
+  margin-right: 4px;
+}
+
+.tag-field{
+  width: calc((808px - 16px * 2) / 3.2);
+  margin-top: 8px;
+  border-radius: 8px;
+  border: solid 1px #cccccc;
+  padding: 8px;
+  font-size: 12px;
+}
+
+.monitor-btn{
+  width: 808px;
+  height: 56px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  border-radius: 16px;
+  border: none;
+  background-color: #4FE358;
+  margin-top: 32px;
+  cursor: pointer;
+}

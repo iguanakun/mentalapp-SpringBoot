@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>モニタリング一覧</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+
+    <div class="monitor-lists" id="lists">
+      <!-- 統計 -->
+      <div class="monitor-statistics-list">
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">統計</div>
+          <div class="monitor-statistics-wrapper">
+            <div class="monitor-statistics__negative">
+              上位3つのネガティブな感情
+              <ol class="monitor-statistics__lists">
+                <li th:each="list : ${negativeFeels}">
+                  <span th:text="${list.negativeFeelName}"></span>
+                  :
+                  <span th:text="${list.count}"></span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- タグ検索フォーム -->
+      <form th:action="@{/cbt_basics/lists}" method="get" id="detailed-search-form">
+        <div class="tag-search-field">
+          <div class="icon">
+            <i class="fa-solid fa-magnifying-glass" style="color:#b9b9b9;"></i>
+          </div>
+          <input type="text" name="q[tags_tag_name]" th:value="${param.q != null ? param.q[0] : ''}" placeholder="タグで絞り込み" class="search-field" />
+          <div class="btn">
+            <button type="submit">検索</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- 一覧表示 -->
+      <div th:each="cbtBasic : ${cbtBasics}" th:remove="tag">
+        <div th:replace="~{views/cbt_basics/_list :: list(cbtBasic=${cbtBasic})}"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

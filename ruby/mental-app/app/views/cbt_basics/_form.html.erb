@@ -1,0 +1,81 @@
+<div class="monitor-main">
+  <%= form_with model:@cbt_basic_form, url: url, method: method, local: true do |f| %>
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">出来事</div>
+    </div>
+      <div class="monitor-info">最近あった出来事はなんですか？<br>
+        いつ、どこで、誰と、何を、どのように、を具体的に記述してください。</div>
+    <%= f.text_area :fact, class:"monitor-text", placeholder:"", rows:"5", maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">感情</div>
+    </div>
+      <div class="monitor-info__feels">
+        <div class="feel-kinds">ネガティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
+          <%= f.collection_check_boxes(:negative_feel_name, NegativeFeel.all, :id, :negative_feel_name, checked: @cbt_basic_form.negative_feel_name&.map(&:id), include_hidden: false) do |feel| %>
+          <label class="checkbox" id="negative-group">
+            <%= feel.check_box do %>
+              <%= feel.check_box + feel.text %>
+            <% end %>
+              <%= feel.label {feel.text} %>
+          </label>
+          <!-- 10個目で改行を入れる -->
+          <% if feel.object.id == 10 %>
+          <div id="second-row"></div>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="monitor-info__feels">
+          <div class="feel-kinds">ポジティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
+            <%= f.collection_check_boxes(:positive_feel_name, PositiveFeel.all, :id, :positive_feel_name, checked: @cbt_basic_form.positive_feel_name&.map(&:id), include_hidden: false) do |feel| %>
+            <label class="checkbox" id="positive-group">
+              <%= feel.check_box do %>
+                <%= feel.check_box + feel.text %>
+              <% end %>
+                <%= feel.label {feel.text} %>
+            </label>
+            <!-- 10個目で改行を入れる -->
+            <% if feel.object.id == 10 %>
+            <div id="second-row"></div>
+            <% end %>
+          <% end %>
+      </div>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">思考</div>
+    </div>
+      <div class="monitor-info">頭に浮かんだ考えはありますか？</div>
+    <%= f.text_area :mind, class:"monitor-text", placeholder:"" ,rows:"5" ,maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">身体反応</div>
+    </div>
+      <div class="monitor-info">身体にあらわれた反応はありますか？</div>
+    <%= f.text_area :body, class:"monitor-text", placeholder:"" ,rows:"5" ,maxlength:"40000" %>
+  </div>
+
+  <div class="monitor-contents">
+    <div class="monitor-wrapper">
+      <div class="item-circle"></div>
+      <div class="monitor-item">行動</div>
+    </div>
+      <div class="monitor-info">どんな行動をとりましたか？</div>
+    <%= f.text_area :behavior, class:"monitor-text", placeholder:"" ,rows:"5" ,maxlength:"40000" %>
+  </div>
+
+   <div class="monitor-btn-contents">
+    <%= f.submit "作成する" ,class:"monitor-btn" %>
+  </div>
+  <% end %>
+</div>

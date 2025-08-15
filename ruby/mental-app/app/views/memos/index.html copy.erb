@@ -1,0 +1,120 @@
+<%= render "shared/header" %>
+<%= render "shared/header-margin" %>
+
+<div class="monitor-lists" id="lists">
+  <!-- 統計 -->
+  <div class="monitor-statistics-list">
+    <div class="monitor-list-content">
+      <div class="monitor-list-item">統計</div>
+      <div class="monitor-statistics-wrapper">
+        <div class="monitor-statistics__negative">
+          上位3つのネガティブな感情
+          <ol class="monitor-statistics__lists">
+            <% @negative_feels.each do |list| %>
+              <li>
+                <%= list[:negative_feel_name] %>
+                :
+                <%= list[:count] %>
+              </li>
+            <% end %>
+          </ol>
+        </div>
+        <div class="monitor-statistics__distortion">
+          上位3つの思考のゆがみ
+          <ol class="monitor-statistics__lists">
+            <% @distortions.each do |list| %>
+              <li>
+                <%= list[:distortion_name] %>
+                :
+                <%= list[:count] %>
+              </li>
+            <% end %>
+          </ol>
+        </div>
+        <div class="monitor-statistics__distortion-info"></div>
+      </div>
+    </div>
+  </div>
+
+<!-- 一覧表示 -->
+<% @lists.each do |list| %>
+
+  <% if list.data_type == 'cbt_basic' %>
+    <!-- CBT基本モデル -->
+    <div class="monitor-list">
+      <div class="monitor-list-upper">
+        <div class="monitor-list__date"><%= list.created_at.strftime("%Y/%m/%d") %></div>
+        <div class="monitor-list-more">
+          <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+          <ul class="monitor-list-more__items">
+            <%= link_to edit_cbt_basic_path(list.id) do %>
+            <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+            <% end %>
+            <%= link_to cbt_basic_path(list.id), data:{ turbo_method: :delete } do %>
+            <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <%= link_to cbt_basic_path(list.id) do %>
+      <div class="monitor-list-content">
+        <div class="monitor-list-item">状況</div>
+        <div class="monitor-list-text"><%= list.fact %></div>
+      </div>
+      <div class="monitor-list-content">
+        <div class="monitor-list-item">ネガティブな感情</div>
+        <div class="monitor-list-text">
+          <% list.negative_feels&.each do |feel| %>
+            <%= feel.negative_feel_name %>　
+          <% end %>
+        </div>
+      </div>
+      <% end %>
+    </div>
+
+  <% elsif list.data_type == 'monitoring' %>
+
+    <!-- 認知再構成法 -->
+    <div class="monitor-list">
+      <div class="monitor-list-upper">
+        <div class="monitor-list__date"><%= list.created_at.strftime("%Y/%m/%d") %></div>
+        <div class="monitor-list-more">
+          <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+          <ul class="monitor-list-more__items">
+            <%= link_to edit_monitoring_path(list.id) do %>
+            <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+            <% end %>
+            <%= link_to monitoring_path(list.id), data:{ turbo_method: :delete } do %>
+            <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <%= link_to monitoring_path(list.id) do %>
+      <div class="monitor-list-content">
+        <div class="monitor-list-item">状況</div>
+        <div class="monitor-list-text"><%= list.fact %></div>
+      </div>
+      <div class="monitor-list-content">
+        <div class="monitor-list-item">ネガティブな感情</div>
+        <div class="monitor-list-text">
+          <% list.negative_feels&.each do |feel| %>
+            <%= feel.negative_feel_name %>　
+          <% end %>
+        </div>
+      </div>
+      <div class="monitor-list-content">
+        <div class="monitor-list-item">思考のゆがみ</div>
+        <div class="monitor-list-text">
+          <% list.distortion_lists&.each do |item| %>
+            <%= item.distortion_name %>　
+          <% end %>
+        </div>
+      </div>
+      <% end %>
+    </div>
+
+  <% end %>
+<% end %>
+
+</div>

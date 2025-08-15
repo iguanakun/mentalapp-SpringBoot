@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>新規モニタリング</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+    
+    <div th:replace="~{views/cbt_basics/_form :: form(url=@{/cbt_basics}, method='post')}"></div>
+  </div>
+</body>
+</html>
