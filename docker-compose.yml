@@ -32,12 +32,12 @@ services:
     volumes:
       - db-store:/var/lib/mysql
       - ./mysql/mysql.cnf:/etc/mysql/conf.d/my.cnf
-      - ./sql-scripts/03-create-mentalapp-tables.sql:/docker-entrypoint-initdb.d/03-create-mentalapp-tables.sql
-      - ./sql-scripts/04-create-cbt-basics-table.sql:/docker-entrypoint-initdb.d/04-create-cbt-basics-table.sql
-      - ./sql-scripts/05-create-negative-feels-table-ascii.sql:/docker-entrypoint-initdb.d/05-create-negative-feels-table-ascii.sql
-      - ./sql-scripts/06-create-positive-feels-table-ascii.sql:/docker-entrypoint-initdb.d/06-create-positive-feels-table-ascii.sql
-      - ./sql-scripts/07-create-monitorings-table.sql:/docker-entrypoint-initdb.d/07-create-monitorings-table.sql
-      - ./sql-scripts/11-create-distortion-lists-table.sql:/docker-entrypoint-initdb.d/11-create-distortion-lists-table.sql
+      - ./mysql/create-mentalapp-tables.sql:/docker-entrypoint-initdb.d/create-mentalapp-tables.sql
+      - ./mysql/create-cbt-basics-table.sql:/docker-entrypoint-initdb.d/create-cbt-basics-table.sql
+      - ./mysql/create-negative-feels-table-ascii.sql:/docker-entrypoint-initdb.d/create-negative-feels-table-ascii.sql
+      - ./mysql/create-positive-feels-table-ascii.sql:/docker-entrypoint-initdb.d/create-positive-feels-table-ascii.sql
+      - ./mysql/create-monitorings-table.sql:/docker-entrypoint-initdb.d/create-monitorings-table.sql
+      - ./mysql/create-distortion-lists-table.sql:/docker-entrypoint-initdb.d/create-distortion-lists-table.sql
     networks:
       - app-net
 volumes:
