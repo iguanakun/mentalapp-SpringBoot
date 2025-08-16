@@ -19,7 +19,6 @@ services:
   db:
     image: mysql:8.4.5
     container_name: mentaldb
-#    command: mysqld --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
