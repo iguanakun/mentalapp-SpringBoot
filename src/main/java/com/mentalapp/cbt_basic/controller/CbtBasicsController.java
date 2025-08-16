@@ -44,6 +44,7 @@ public class CbtBasicsController {
     public String newCbtBasic(Model model) {
         // ビューデータを作成
         CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
+
         // フォームにセット
         model.addAttribute("viewData", viewData);
         model.addAttribute("cbtBasicsForm", new CbtBasicsForm());

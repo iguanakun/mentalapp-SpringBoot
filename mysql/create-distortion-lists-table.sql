@@ -1,19 +1,19 @@
--- distortion_lists table creation script
--- using mentalapp database
+-- 認知の歪みリストテーブル作成スクリプト
+-- mentalappデータベースを使用
 
--- Select database
+-- データベースの選択
 USE `mentalapp`;
 
--- Temporarily disable foreign key constraints
+-- 一時的に外部キー制約を無効化
 SET foreign_key_checks = 0;
 
--- Drop table if it exists
+-- テーブルが存在する場合は削除
 DROP TABLE IF EXISTS `distortion_lists`;
 
--- Re-enable foreign key constraints
+-- 外部キー制約を再度有効化
 SET foreign_key_checks = 1;
 
--- Create distortion_lists table
+-- 認知の歪みリストテーブルの作成
 CREATE TABLE `distortion_lists` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `distortion_name` VARCHAR(255) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `distortion_lists` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Insert sample data
+-- サンプルデータの挿入
 INSERT INTO `distortion_lists` (`distortion_name`, `info`, `created_at`, `updated_at`)
 VALUES 
 ('All-or-Nothing Thinking', 'Seeing things in black-and-white categories', NOW(), NOW()),

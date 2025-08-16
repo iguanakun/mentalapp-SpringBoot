@@ -25,17 +25,17 @@ CREATE TABLE `negative_feels` (
 -- Insert test data
 INSERT INTO `negative_feels` (`negative_feel_name`, `created_at`, `updated_at`)
 VALUES 
-('Anxiety', NOW(), NOW()),
-('Pain', NOW(), NOW()),
-('Worry', NOW(), NOW()),
-('Depression', NOW(), NOW()),
-('Discomfort', NOW(), NOW()),
-('Disgust', NOW(), NOW()),
-('Embarrassment', NOW(), NOW()),
-('Anger', NOW(), NOW()),
-('Sadness', NOW(), NOW()),
-('Feeling down', NOW(), NOW()),
-('Fear', NOW(), NOW()),
-('Agitation', NOW(), NOW()),
-('Tiredness', NOW(), NOW()),
-('Guilt', NOW(), NOW());
+('不安', NOW(), NOW()),
+('痛み', NOW(), NOW()),
+('心配', NOW(), NOW()),
+('抑うつ', NOW(), NOW()),
+('不快感', NOW(), NOW()),
+('嫌悪感', NOW(), NOW()),
+('恥ずかしさ', NOW(), NOW()),
+('怒り', NOW(), NOW()),
+('悲しみ', NOW(), NOW()),
+('落ち込み', NOW(), NOW()),
+('恐れ', NOW(), NOW()),
+('イライラ', NOW(), NOW()),
+('疲れ', NOW(), NOW()),
+('罪悪感', NOW(), NOW());

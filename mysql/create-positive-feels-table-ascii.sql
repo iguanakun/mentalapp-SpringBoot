@@ -25,17 +25,17 @@ CREATE TABLE `positive_feels` (
 -- Insert test data
 INSERT INTO `positive_feels` (`positive_feel_name`, `created_at`, `updated_at`)
 VALUES 
-('Loved', NOW(), NOW()),
-('Enthusiastic', NOW(), NOW()),
-('Free', NOW(), NOW()),
-('Joy', NOW(), NOW()),
-('Calm', NOW(), NOW()),
-('Fulfilled', NOW(), NOW()),
-('Curious', NOW(), NOW()),
-('Excited', NOW(), NOW()),
-('Confident', NOW(), NOW()),
-('Relieved', NOW(), NOW()),
-('Motivated', NOW(), NOW()),
-('Grateful', NOW(), NOW()),
-('Compassionate', NOW(), NOW()),
-('Impressed', NOW(), NOW());
+('愛情', NOW(), NOW()),
+('熱意', NOW(), NOW()),
+('自由', NOW(), NOW()),
+('喜び', NOW(), NOW()),
+('落ち着いている', NOW(), NOW()),
+('充実感', NOW(), NOW()),
+('好奇心', NOW(), NOW()),
+('ワクワク', NOW(), NOW()),
+('自信がある', NOW(), NOW()),
+('安心', NOW(), NOW()),
+('やる気がある', NOW(), NOW()),
+('感謝', NOW(), NOW()),
+('思いやり', NOW(), NOW()),
+('感動', NOW(), NOW());
