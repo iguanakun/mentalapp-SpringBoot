@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.cbt_basic.mapper.CbtBasicsPositiveFeelMapper">
+
+    <!-- CbtBasicsIDによる取得 -->
+    <select id="selectByCbtBasicId" resultType="CbtBasicsPositiveFeel">
+        select * from cbt_basics_positive_feels
+        where cbt_basic_id = #{cbtBasicId}
+    </select>
+    
+    <!-- 登録 -->
+    <insert id="insert">
+        insert into cbt_basics_positive_feels(cbt_basic_id, positive_feel_id)
+        values(#{cbtBasicId}, #{positiveFeelingId})
+    </insert>
+    
+    <!-- CbtBasicsIDによる削除 -->
+    <delete id="deleteByCbtBasicId">
+        delete from cbt_basics_positive_feels
+        where cbt_basic_id = #{cbtBasicId}
+    </delete>
+    
+</mapper>

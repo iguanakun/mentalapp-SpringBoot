@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.common.mapper.PositiveFeelMapper">
+
+    <!-- 全件取得 -->
+    <select id="selectAll" resultType="PositiveFeel">
+        select * from positive_feels
+    </select>
+
+    <!-- １件取得 -->
+    <select id="selectByPrimaryKey" resultType="PositiveFeel">
+        select * from positive_feels
+        where id = #{id}
+    </select>
+    
+    <!-- 名前による取得 -->
+    <select id="selectByName" resultType="PositiveFeel">
+        select * from positive_feels
+        where positive_feel_name = #{positiveFeelName}
+    </select>
+
+    <!-- 登録 -->
+    <insert id="insert">
+        insert into positive_feels(positive_feel_name, created_at, updated_at)
+        values(#{positiveFeelName}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateByPrimaryKey">
+        update positive_feels
+        set positive_feel_name = #{positiveFeelName},
+            updated_at = #{updatedAt}
+        where id = #{id}
+    </update>
+
+    <!-- 削除 -->
+    <delete id="deleteByPrimaryKey">
+        delete from positive_feels
+        where id = #{id}
+    </delete>
+
+</mapper>
