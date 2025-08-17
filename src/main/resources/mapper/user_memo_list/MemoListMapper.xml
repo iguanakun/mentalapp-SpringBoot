@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.user_memo_list.mapper.MemoListMapper">
+
+    <!-- CbtBasicsObjectのマッピング定義 -->
+    <resultMap type="com.mentalapp.cbt_basic.data.CbtBasicsObject" id="cbtBasicsObject">
+        <id column="id" property="id"/>
+        <result column="fact" property="fact"/>
+        <result column="mind" property="mind"/>
+        <result column="body" property="body"/>
+        <result column="behavior" property="behavior"/>
+        <result column="user_id" property="userId"/>
+        <result column="created_at" property="createdAt"/>
+        <collection property="negativeFeels" ofType="com.mentalapp.common.entity.NegativeFeel">
+            <id column="nf_id" property="id"/>
+            <result column="negative_feel_name" property="negativeFeelName"/>
+            <result column="nf_created_at" property="createdAt"/>
+            <result column="nf_updated_at" property="updatedAt"/>
+        </collection>
+        <collection property="positiveFeels" ofType="com.mentalapp.common.entity.PositiveFeel">
+            <id column="pf_id" property="id"/>
+            <result column="positive_feel_name" property="positiveFeelName"/>
+            <result column="pf_created_at" property="createdAt"/>
+            <result column="pf_updated_at" property="updatedAt"/>
+        </collection>
+    </resultMap>
+
+    <!-- ユーザーIDに基づいてCbtBasicsObjectのリストを取得 -->
+    <select id="createCbtBasicsObjectList" resultMap="cbtBasicsObject">
+        SELECT 
+            cb.id, cb.fact, cb.mind, cb.body, cb.behavior, cb.user_id, cb.created_at,
+            nf.id as nf_id, nf.negative_feel_name, nf.created_at as nf_created_at, nf.updated_at as nf_updated_at,
+            pf.id as pf_id, pf.positive_feel_name, pf.created_at as pf_created_at, pf.updated_at as pf_updated_at
+        FROM 
+            cbt_basics cb
+        LEFT JOIN 
+            cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
+        LEFT JOIN 
+            negative_feels nf ON cbnf.negative_feel_id = nf.id
+        LEFT JOIN 
+            cbt_basics_positive_feels cbpf ON cb.id = cbpf.cbt_basic_id
+        LEFT JOIN 
+            positive_feels pf ON cbpf.positive_feel_id = pf.id
+        WHERE 
+            cb.user_id = #{userId}
+        ORDER BY 
+            cb.id, nf.id, pf.id
+    </select>
+    
+</mapper>

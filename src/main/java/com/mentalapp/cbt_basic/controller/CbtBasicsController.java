@@ -10,6 +10,7 @@ import com.mentalapp.cbt_basic.service.CbtBasicsRegistService;
 import com.mentalapp.cbt_basic.form.CbtBasicsForm;
 import com.mentalapp.common.mapper.UserMapper;
 import com.mentalapp.common.service.UserService;
+import com.mentalapp.common.util.MentalCommonObject;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,8 @@ public class CbtBasicsController {
     private final CbtBasicsIndexService cbtBasicsIndexService;
     private final CbtBasicsRegistService cbtBasicsRegistService;
     private final UserService userService;
-
+    @Autowired
+    private MentalCommonObject mentalCommonObject;
 
     @Autowired
     public CbtBasicsController(CbtBasicsIndexService cbtBasicsIndexService,
@@ -78,7 +80,7 @@ public class CbtBasicsController {
         cbtBasics.setBehavior(form.getBehavior());
         
         // ログインユーザーの取得
-        cbtBasics.setUser(getUser());
+        cbtBasics.setUser(mentalCommonObject.getUser());
         
         // 保存（ネガティブ感情とポジティブ感情の関連付けも行う）
         cbtBasicsRegistService.save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
@@ -87,13 +89,6 @@ public class CbtBasicsController {
         
 //        return "redirect:/cbt_basics/lists";
         return "redirect:/";
-    }
-
-    // ユーザ情報を取得
-    private User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findByUserName(userName);
     }
 
     /**

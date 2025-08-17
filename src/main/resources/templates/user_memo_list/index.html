@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>メモ一覧</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+
+    <div class="monitor-lists" id="lists">
+      <!-- 統計 -->
+      <div class="monitor-statistics-list">
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">統計</div>
+          <div class="monitor-statistics-wrapper">
+            <div class="monitor-statistics__negative">
+              上位3つのネガティブな感情
+              <ol class="monitor-statistics__lists">
+                <li th:each="list : ${negativeFeels}">
+                  <span th:text="${list.negativeFeelName}"></span>
+                  :
+                  <span th:text="${list.count}"></span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- タグ検索フォーム -->
+      <form th:action="@{/memos}" method="get" id="detailed-search-form">
+        <div class="tag-search-field">
+          <div class="icon">
+            <i class="fa-solid fa-magnifying-glass" style="color:#b9b9b9;"></i>
+          </div>
+          <input type="text" name="q[tags_tag_name]" th:value="${param.q != null ? param.q[0] : ''}" placeholder="タグで絞り込み" class="search-field" />
+          <div class="btn">
+            <button type="submit">検索</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- 一覧表示 -->
+      <div th:each="cbtBasic : ${cbtBasics}" th:remove="tag">
+        <div class="monitor-list">
+          <div class="monitor-list-upper">
+            <div class="monitor-list__date" th:text="${#temporals.format(cbtBasic.createdAt, 'yyyy/MM/dd')}"></div>
+            <div class="monitor-list-more">
+              <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+              <ul class="monitor-list-more__items">
+                <a th:href="@{/cbt_basics/{id}/edit(id=${cbtBasic.id})}">
+                  <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+                </a>
+                <a th:href="@{/cbt_basics/{id}(id=${cbtBasic.id})}" data-turbo-method="delete">
+                  <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+                </a>
+              </ul>
+            </div>
+          </div>
+          <a th:href="@{/cbt_basics/{id}(id=${cbtBasic.id})}">
+            <div class="monitor-list-content">
+              <div class="monitor-list-item">状況</div>
+              <div class="monitor-list-text" th:text="${cbtBasic.fact}"></div>
+            </div>
+            <div class="monitor-list-content">
+              <div class="monitor-list-item">ネガティブな感情</div>
+              <div class="monitor-list-text">
+                <span th:each="feel : ${cbtBasic.negativeFeels}" th:text="${feel.negativeFeelName + '　'}"></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 
+      以下はmonitoringの表示部分（要件に従いコメントアウト）
+      <div th:each="monitoring : ${monitorings}" th:remove="tag">
+        <div class="monitor-list">
+          <div class="monitor-list-upper">
+            <div class="monitor-list__date" th:text="${#temporals.format(monitoring.createdAt, 'yyyy/MM/dd')}"></div>
+            <div class="monitor-list-more">
+              <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+              <ul class="monitor-list-more__items">
+                <a th:href="@{/monitorings/{id}/edit(id=${monitoring.id})}">
+                  <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+                </a>
+                <a th:href="@{/monitorings/{id}(id=${monitoring.id})}" data-turbo-method="delete">
+                  <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+                </a>
+              </ul>
+            </div>
+          </div>
+          <a th:href="@{/monitorings/{id}(id=${monitoring.id})}">
+            <div class="monitor-list-content">
+              <div class="monitor-list-item">状況</div>
+              <div class="monitor-list-text" th:text="${monitoring.fact}"></div>
+            </div>
+            <div class="monitor-list-content">
+              <div class="monitor-list-item">ネガティブな感情</div>
+              <div class="monitor-list-text">
+                <span th:each="feel : ${monitoring.negativeFeels}" th:text="${feel.negativeFeelName + '　'}"></span>
+              </div>
+            </div>
+            <div class="monitor-list-content">
+              <div class="monitor-list-item">思考のゆがみ</div>
+              <div class="monitor-list-text">
+                <span th:each="distortion : ${monitoring.distortions}" th:text="${distortion.distortionName + '　'}"></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      -->
+    </div>
+  </div>
+</body>
+</html>
