@@ -1,6 +1,6 @@
 package com.mentalapp.user_memo_list.controller;
 
-import com.mentalapp.cbt_basic.data.CbtBasicsObject;
+import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.common.entity.User;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.common.util.MentalCommonObject;
@@ -40,9 +40,9 @@ public class MemoListController {
         // ログインユーザーの取得
         User currentUser = mentalCommonObject.getUser();
         
-        // ユーザーのCBT Basicsを取得（CbtBasicsObjectとして）
-        List<CbtBasicsObject> cbtBasicsObjectList = memoListIndexService.createCbtBasicsObjectList(currentUser.getId());
-        model.addAttribute("cbtBasics", cbtBasicsObjectList);
+        // ユーザーのCBT Basicsを取得
+        List<CbtBasics> cbtBasicsList = memoListIndexService.createCbtBasicsObjectList(currentUser.getId());
+        model.addAttribute("cbtBasics", cbtBasicsList);
         
         // ネガティブ感情の上位3つを取得
         List<Map<String, Object>> topNegativeFeels = cbtBasicsIndexService.findTopNegativeFeelings(currentUser.getId());

@@ -1,6 +1,6 @@
 package com.mentalapp.user_memo_list.mapper;
 
-import com.mentalapp.cbt_basic.data.CbtBasicsObject;
+import com.mentalapp.cbt_basic.entity.CbtBasics;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,9 +13,9 @@ import java.util.List;
 public interface MemoListMapper {
     
     /**
-     * ユーザーIDに基づいてCbtBasicsObjectのリストを取得
+     * ユーザーIDに基づいてCbtBasicsのリスト（感情情報のみ）を取得
      * @param userId ユーザーID
-     * @return CbtBasicsObjectのリスト
+     * @return CbtBasicsのリスト（感情情報のみ）
      */
-    List<CbtBasicsObject> createCbtBasicsObjectList(@Param("userId") Long userId);
+    List<CbtBasics> createCbtBasicsObjectList(@Param("userId") Long userId);
 }
