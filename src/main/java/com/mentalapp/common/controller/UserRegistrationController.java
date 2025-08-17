@@ -14,6 +14,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/register")
@@ -60,7 +61,7 @@ public class UserRegistrationController {
 
 		// check the database if user already exists
         User existing = userService.findByUserName(userName);
-        if (existing != null){
+        if (Objects.nonNull(existing)){
         	theModel.addAttribute("webUser", new WebUser());
 			theModel.addAttribute("registrationError", "User name already exists.");
 

@@ -14,6 +14,7 @@ RUN mvn dependency:go-offline
 COPY src src
 
 # Mavenビルドの実行
+# テストはスキップしてパッケージングのみを実行
 RUN mvn package -DskipTests
 
 # 実行ステージ

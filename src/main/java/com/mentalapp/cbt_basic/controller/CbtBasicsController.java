@@ -8,6 +8,8 @@ import com.mentalapp.common.entity.User;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.cbt_basic.service.CbtBasicsRegistService;
 import com.mentalapp.cbt_basic.form.CbtBasicsForm;
+import com.mentalapp.common.mapper.UserMapper;
+import com.mentalapp.common.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * CBT Basicsのコントローラークラス
@@ -29,12 +32,15 @@ public class CbtBasicsController {
 
     private final CbtBasicsIndexService cbtBasicsIndexService;
     private final CbtBasicsRegistService cbtBasicsRegistService;
+    private final UserService userService;
+
 
     @Autowired
-    public CbtBasicsController(CbtBasicsIndexService cbtBasicsIndexService, 
-                              CbtBasicsRegistService cbtBasicsRegistService) {
+    public CbtBasicsController(CbtBasicsIndexService cbtBasicsIndexService,
+                               CbtBasicsRegistService cbtBasicsRegistService, UserService userService) {
         this.cbtBasicsIndexService = cbtBasicsIndexService;
         this.cbtBasicsRegistService = cbtBasicsRegistService;
+        this.userService = userService;
     }
 
     /**
@@ -72,16 +78,22 @@ public class CbtBasicsController {
         cbtBasics.setBehavior(form.getBehavior());
         
         // ログインユーザーの取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        cbtBasics.setUser(currentUser);
+        cbtBasics.setUser(getUser());
         
         // 保存（ネガティブ感情とポジティブ感情の関連付けも行う）
         cbtBasicsRegistService.save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
         
         // TODO: タグの保存処理
         
-        return "redirect:/cbt_basics/lists";
+//        return "redirect:/cbt_basics/lists";
+        return "redirect:/";
+    }
+
+    // ユーザ情報を取得
+    private User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findByUserName(userName);
     }
 
     /**
@@ -123,7 +135,7 @@ public class CbtBasicsController {
         
         // ネガティブ感情とポジティブ感情のIDを設定
         List<NegativeFeel> negativeFeels = cbtBasics.getNegativeFeels();
-        if (negativeFeels != null && !negativeFeels.isEmpty()) {
+        if (Objects.nonNull(negativeFeels) && !negativeFeels.isEmpty()) {
             List<Long> negativeFeelingIds = negativeFeels.stream()
                     .map(NegativeFeel::getId)
                     .toList();
@@ -131,7 +143,7 @@ public class CbtBasicsController {
         }
         
         List<PositiveFeel> positiveFeels = cbtBasics.getPositiveFeels();
-        if (positiveFeels != null && !positiveFeels.isEmpty()) {
+        if (Objects.nonNull(positiveFeels) && !positiveFeels.isEmpty()) {
             List<Long> positiveFeelingIds = positiveFeels.stream()
                     .map(PositiveFeel::getId)
                     .toList();

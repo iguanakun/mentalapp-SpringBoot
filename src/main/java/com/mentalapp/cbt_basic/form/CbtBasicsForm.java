@@ -3,6 +3,7 @@ package com.mentalapp.cbt_basic.form;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * CBT Basicsのフォームデータを扱うクラス
@@ -19,7 +20,6 @@ public class CbtBasicsForm {
     
     private String behavior;
     
-    @NotNull(message = "ユーザーIDは必須です")
     private Long userId;
     
     private List<Long> negativeFeelIds;
@@ -33,12 +33,12 @@ public class CbtBasicsForm {
      * @return いずれかの項目が入力されている場合はtrue
      */
     public boolean hasAnyContent() {
-        return fact != null && !fact.trim().isEmpty() ||
-               mind != null && !mind.trim().isEmpty() ||
-               body != null && !body.trim().isEmpty() ||
-               behavior != null && !behavior.trim().isEmpty() ||
-               negativeFeelIds != null && !negativeFeelIds.isEmpty() ||
-               positiveFeelIds != null && !positiveFeelIds.isEmpty();
+        return Objects.nonNull(fact) && !fact.trim().isEmpty() ||
+               Objects.nonNull(mind) && !mind.trim().isEmpty() ||
+               Objects.nonNull(body) && !body.trim().isEmpty() ||
+               Objects.nonNull(behavior) && !behavior.trim().isEmpty() ||
+               Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty() ||
+               Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty();
     }
 
     // コンストラクタ

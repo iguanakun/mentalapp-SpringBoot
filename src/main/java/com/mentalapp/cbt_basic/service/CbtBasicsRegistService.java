@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * CBT Basicsの登録・更新・削除機能を提供するサービスクラス
@@ -48,14 +49,14 @@ public class CbtBasicsRegistService {
         cbtBasicsMapper.insert(cbtBasics);
         
         // ネガティブ感情の関連付け
-        if (negativeFeelIds != null && !negativeFeelIds.isEmpty()) {
+        if ( Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
             for (Long negativeFeelId : negativeFeelIds) {
                 cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId);
             }
         }
         
         // ポジティブ感情の関連付け
-        if (positiveFeelIds != null && !positiveFeelIds.isEmpty()) {
+        if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
             for (Long positiveFeelId : positiveFeelIds) {
                 cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId);
             }
@@ -84,14 +85,14 @@ public class CbtBasicsRegistService {
         cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasics.getId());
         
         // ネガティブ感情の関連付け
-        if (negativeFeelIds != null && !negativeFeelIds.isEmpty()) {
+        if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
             for (Long negativeFeelId : negativeFeelIds) {
                 cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId);
             }
         }
         
         // ポジティブ感情の関連付け
-        if (positiveFeelIds != null && !positiveFeelIds.isEmpty()) {
+        if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
             for (Long positiveFeelId : positiveFeelIds) {
                 cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId);
             }

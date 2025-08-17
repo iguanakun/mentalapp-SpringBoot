@@ -20,7 +20,7 @@
     </select>
 
     <!-- 登録 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into cbt_basics(fact, mind, body, behavior, user_id, created_at, updated_at)
         values(#{fact}, #{mind}, #{body}, #{behavior}, #{user.id}, #{createdAt}, #{updatedAt})
     </insert>
