@@ -2,8 +2,10 @@ package com.mentalapp.cbt_basic.data;
 
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.cbt_basic.entity.CbtBasics;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,75 +13,28 @@ import java.util.List;
  */
 public class CbtBasicsObject {
     
-    private Long id;
-    private String fact;
-    private String mind;
-    private String body;
-    private String behavior;
-    private Long userId;
-    private LocalDateTime createdAt;
+    private CbtBasics cbtBasics;
     private List<NegativeFeel> negativeFeels;
     private List<PositiveFeel> positiveFeels;
     
     // コンストラクタ
     public CbtBasicsObject() {
+        this.cbtBasics = new CbtBasics();
+        this.negativeFeels = new ArrayList<>();
+        this.positiveFeels = new ArrayList<>();
     }
     
     // ゲッターとセッター
     public Long getId() {
-        return id;
+        return cbtBasics.getId();
     }
     
-    public void setId(Long id) {
-        this.id = id;
+    public CbtBasics getCbtBasics() {
+        return cbtBasics;
     }
     
-    public String getFact() {
-        return fact;
-    }
-    
-    public void setFact(String fact) {
-        this.fact = fact;
-    }
-    
-    public String getMind() {
-        return mind;
-    }
-    
-    public void setMind(String mind) {
-        this.mind = mind;
-    }
-    
-    public String getBody() {
-        return body;
-    }
-    
-    public void setBody(String body) {
-        this.body = body;
-    }
-    
-    public String getBehavior() {
-        return behavior;
-    }
-    
-    public void setBehavior(String behavior) {
-        this.behavior = behavior;
-    }
-    
-    public Long getUserId() {
-        return userId;
-    }
-    
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCbtBasics(CbtBasics cbtBasics) {
+        this.cbtBasics = cbtBasics;
     }
     
     public List<NegativeFeel> getNegativeFeels() {
@@ -96,20 +51,5 @@ public class CbtBasicsObject {
     
     public void setPositiveFeels(List<PositiveFeel> positiveFeels) {
         this.positiveFeels = positiveFeels;
-    }
-    
-    @Override
-    public String toString() {
-        return "CbtBasicsObject{" +
-                "id=" + id +
-                ", fact='" + fact + '\'' +
-                ", mind='" + mind + '\'' +
-                ", body='" + body + '\'' +
-                ", behavior='" + behavior + '\'' +
-                ", userId=" + userId +
-                ", createdAt=" + createdAt +
-                ", negativeFeels=" + negativeFeels +
-                ", positiveFeels=" + positiveFeels +
-                '}';
     }
 }

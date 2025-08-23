@@ -13,9 +13,10 @@ import java.util.List;
 public interface MemoListMapper {
     
     /**
-     * ユーザーIDに基づいてCbtBasicsのリスト（感情情報のみ）を取得
+     * ユーザーIDに基づいてCbtBasicsと関連する感情を取得
      * @param userId ユーザーID
-     * @return CbtBasicsのリスト（感情情報のみ）
+     * @return CbtBasicsのリスト（感情情報を含む）
      */
-    List<CbtBasics> createCbtBasicsObjectList(@Param("userId") Long userId);
+    List<CbtBasics> findCbtBasicsFeelsByUserId(@Param("userId") Long userId);
+
 }

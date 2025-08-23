@@ -7,7 +7,13 @@
         select * from cbt_basics_negative_feels
         where cbt_basic_id = #{cbtBasicId}
     </select>
-    
+
+    <!-- CbtBasicsIDによる取得 -->
+    <select id="selectByUserId" resultType="CbtBasicsNegativeFeel">
+        select * from cbt_basics_negative_feels
+        where cbt_basic_id = #{cbtBasicId}
+    </select>
+
     <!-- 登録 -->
     <insert id="insert">
         insert into cbt_basics_negative_feels(cbt_basic_id, negative_feel_id)
