@@ -1,10 +1,12 @@
 package com.mentalapp.common.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "positive_feels")
+@Data
 public class PositiveFeel {
 
     @Id
@@ -20,49 +22,4 @@ public class PositiveFeel {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    public PositiveFeel() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPositiveFeelName() {
-        return positiveFeelName;
-    }
-
-    public void setPositiveFeelName(String positiveFeelName) {
-        this.positiveFeelName = positiveFeelName;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "PositiveFeel{" +
-                "id=" + id +
-                ", positiveFeelName='" + positiveFeelName + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
 }

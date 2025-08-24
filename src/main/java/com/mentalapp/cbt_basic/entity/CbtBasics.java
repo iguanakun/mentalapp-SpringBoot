@@ -4,11 +4,20 @@ import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "cbt_basics")
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString(exclude = {"cbtBasicsNegativeFeels", "cbtBasicsPositiveFeels", "negativeFeels", "positiveFeels"})
 public class CbtBasics {
 
     @Id
@@ -28,9 +37,8 @@ public class CbtBasics {
     @Column(name = "behavior")
     private String behavior;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long user_id;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -59,117 +67,13 @@ public class CbtBasics {
         inverseJoinColumns = @JoinColumn(name = "positive_feel_id")
     )
     private List<PositiveFeel> positiveFeels;
-
-    public CbtBasics() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFact() {
-        return fact;
-    }
-
-    public void setFact(String fact) {
-        this.fact = fact;
-    }
-
-    public String getMind() {
-        return mind;
-    }
-
-    public void setMind(String mind) {
-        this.mind = mind;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public String getBehavior() {
-        return behavior;
-    }
-
-    public void setBehavior(String behavior) {
-        this.behavior = behavior;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
     
-    public List<CbtBasicsNegativeFeel> getCbtBasicsNegativeFeels() {
-        return cbtBasicsNegativeFeels;
+    // getUserId() method is kept to maintain naming convention compatibility
+    public Long getUserId() {
+        return user_id;
     }
 
-    public void setCbtBasicsNegativeFeels(List<CbtBasicsNegativeFeel> cbtBasicsNegativeFeels) {
-        this.cbtBasicsNegativeFeels = cbtBasicsNegativeFeels;
-    }
-
-    public List<CbtBasicsPositiveFeel> getCbtBasicsPositiveFeels() {
-        return cbtBasicsPositiveFeels;
-    }
-
-    public void setCbtBasicsPositiveFeels(List<CbtBasicsPositiveFeel> cbtBasicsPositiveFeels) {
-        this.cbtBasicsPositiveFeels = cbtBasicsPositiveFeels;
-    }
-
-    public List<NegativeFeel> getNegativeFeels() {
-        return negativeFeels;
-    }
-
-    public void setNegativeFeels(List<NegativeFeel> negativeFeels) {
-        this.negativeFeels = negativeFeels;
-    }
-
-    public List<PositiveFeel> getPositiveFeels() {
-        return positiveFeels;
-    }
-
-    public void setPositiveFeels(List<PositiveFeel> positiveFeels) {
-        this.positiveFeels = positiveFeels;
-    }
-
-    @Override
-    public String toString() {
-        return "CbtBasics{" +
-                "id=" + id +
-                ", fact='" + fact + '\'' +
-                ", mind='" + mind + '\'' +
-                ", body='" + body + '\'' +
-                ", behavior='" + behavior + '\'' +
-                ", user=" + user +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+    public void setUserId(Long userId) {
+        this.user_id = userId;
     }
 }

@@ -9,7 +9,7 @@
   <div layout:fragment="content">
     <div th:replace="~{common/_header-margin :: header-margin}"></div>
     
-    <div th:replace="~{views/cbt_basics/_form :: form(url=@{/cbt_basics/{id}(id=${cbtBasic.id})}, method='patch')}"></div>
+    <div th:replace="~{cbt_basics/_form :: form(url=@{/cbt_basics/{id}(id=${cbtBasicsForm.id})}, method='patch')}"></div>
   </div>
 </body>
 </html>

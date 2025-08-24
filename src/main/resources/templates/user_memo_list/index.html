@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <!-- タグ検索フォーム -->
+      <!-- TODO: タグ機能実装後に有効化
       <form th:action="@{/memos}" method="get" id="detailed-search-form">
         <div class="tag-search-field">
           <div class="icon">
@@ -41,6 +41,7 @@
           </div>
         </div>
       </form>
+      -->
 
       <!-- 一覧表示 -->
       <div th:each="cbtBasic : ${cbtBasics}" th:remove="tag">

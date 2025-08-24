@@ -8,9 +8,8 @@ import com.mentalapp.common.entity.User;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.cbt_basic.service.CbtBasicsRegistService;
 import com.mentalapp.cbt_basic.form.CbtBasicsForm;
-import com.mentalapp.common.mapper.UserMapper;
 import com.mentalapp.common.service.UserService;
-import com.mentalapp.common.util.MentalCommonObject;
+import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,7 +34,7 @@ public class CbtBasicsController {
     private final CbtBasicsRegistService cbtBasicsRegistService;
     private final UserService userService;
     @Autowired
-    private MentalCommonObject mentalCommonObject;
+    private MentalCommonUtils mentalCommonUtils;
 
     @Autowired
     public CbtBasicsController(CbtBasicsIndexService cbtBasicsIndexService,
@@ -80,7 +79,7 @@ public class CbtBasicsController {
         cbtBasics.setBehavior(form.getBehavior());
         
         // ログインユーザーの取得
-        cbtBasics.setUser(mentalCommonObject.getUser());
+        cbtBasics.setUserId(mentalCommonUtils.getUser().getId());
         
         // 保存（ネガティブ感情とポジティブ感情の関連付けも行う）
         cbtBasicsRegistService.save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
@@ -97,9 +96,13 @@ public class CbtBasicsController {
     public String show(@PathVariable Long id, Model model) {
         CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
         
+        if(Objects.isNull(cbtBasics)){
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+
         // アクセス権チェック
-        if (!isAuthorized(cbtBasics)) {
-            return "redirect:/";
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
         
         model.addAttribute("cbtBasic", cbtBasics);
@@ -114,8 +117,8 @@ public class CbtBasicsController {
         CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
         
         // アクセス権チェック
-        if (!isAuthorized(cbtBasics)) {
-            return "redirect:/";
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
         
         // エンティティからフォームへの変換
@@ -125,28 +128,34 @@ public class CbtBasicsController {
         form.setMind(cbtBasics.getMind());
         form.setBody(cbtBasics.getBody());
         form.setBehavior(cbtBasics.getBehavior());
-        form.setUserId(cbtBasics.getUser().getId());
-        
+        form.setUserId(cbtBasics.getUserId());
+
+        // TODO: タグの取得処理
+
         // ネガティブ感情とポジティブ感情のIDを設定
         List<NegativeFeel> negativeFeels = cbtBasics.getNegativeFeels();
-        if (Objects.nonNull(negativeFeels) && !negativeFeels.isEmpty()) {
-            List<Long> negativeFeelingIds = negativeFeels.stream()
+        if (negativeFeels != null && !negativeFeels.isEmpty()) {
+            List<Long> negativeFeelIds = negativeFeels.stream()
                     .map(NegativeFeel::getId)
                     .toList();
-            form.setNegativeFeelIds(negativeFeelingIds);
+            form.setNegativeFeelIds(negativeFeelIds);
         }
-        
+
         List<PositiveFeel> positiveFeels = cbtBasics.getPositiveFeels();
-        if (Objects.nonNull(positiveFeels) && !positiveFeels.isEmpty()) {
-            List<Long> positiveFeelingIds = positiveFeels.stream()
+        if (positiveFeels != null && !positiveFeels.isEmpty()) {
+            List<Long> positiveFeelIds = positiveFeels.stream()
                     .map(PositiveFeel::getId)
                     .toList();
-            form.setPositiveFeelIds(positiveFeelingIds);
+            form.setPositiveFeelIds(positiveFeelIds);
         }
-        
-        // TODO: タグの取得処理
-        
+
+        // ビューデータを作成
+        CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
+
+        // フォームにセット
+        model.addAttribute("viewData", viewData);
         model.addAttribute("cbtBasicsForm", form);
+
         return "cbt_basics/edit";
     }
 
@@ -166,8 +175,8 @@ public class CbtBasicsController {
         CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
         
         // アクセス権チェック
-        if (!isAuthorized(cbtBasics)) {
-            return "redirect:/";
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
         
         // フォームからエンティティへの更新
@@ -192,8 +201,8 @@ public class CbtBasicsController {
         CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
         
         // アクセス権チェック
-        if (!isAuthorized(cbtBasics)) {
-            return "redirect:/";
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
         
         // 削除
@@ -221,19 +230,4 @@ public class CbtBasicsController {
         return "cbt_basics/lists";
     }
 
-    /**
-     * アクセス権チェック
-     * @param cbtBasics チェック対象のCBT Basics
-     * @return アクセス権がある場合はtrue
-     */
-    private boolean isAuthorized(CbtBasics cbtBasics) {
-        if (cbtBasics == null) {
-            return false;
-        }
-        
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        
-        return cbtBasics.getUser().getId().equals(currentUser.getId());
-    }
 }

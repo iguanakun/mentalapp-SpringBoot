@@ -3,7 +3,7 @@ package com.mentalapp.user_memo_list.controller;
 import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.common.entity.User;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
-import com.mentalapp.common.util.MentalCommonObject;
+import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.service.MemoListIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class MemoListController {
 
     @Autowired
-    private MentalCommonObject mentalCommonObject;
+    private MentalCommonUtils mentalCommonUtils;
     private final CbtBasicsIndexService cbtBasicsIndexService;
     private final MemoListIndexService memoListIndexService;
 
@@ -38,7 +38,7 @@ public class MemoListController {
     @GetMapping
     public String index(Model model) {
         // ログインユーザーの取得
-        User currentUser = mentalCommonObject.getUser();
+        User currentUser = mentalCommonUtils.getUser();
         
         // ユーザーのCBT Basicsを取得
         List<CbtBasics> cbtBasicsList = memoListIndexService.createCbtBasicsObjectList(currentUser.getId());

@@ -22,7 +22,7 @@
     <!-- 登録 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into cbt_basics(fact, mind, body, behavior, user_id, created_at, updated_at)
-        values(#{fact}, #{mind}, #{body}, #{behavior}, #{user.id}, #{createdAt}, #{updatedAt})
+        values(#{fact}, #{mind}, #{body}, #{behavior}, #{user_id}, #{createdAt}, #{updatedAt})
     </insert>
 
     <!-- 更新 -->
