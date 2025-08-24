@@ -13,68 +13,56 @@
         <result column="behavior" property="behavior"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
-        <collection property="cbtBasicsNegativeFeels" resultMap="cbtBasicsNegativeFeel"/>
-        <collection property="cbtBasicsPositiveFeels" resultMap="cbtBasicsPositiveFeel"/>
+        <collection property="negativeFeels" resultMap="negativeFeel"/>
+        <collection property="positiveFeels" resultMap="positiveFeel"/>
     </resultMap>
 
-    <!-- マッピング定義(CbtBasicsNegativeFeel) -->
-    <resultMap type="com.mentalapp.cbt_basic.entity.CbtBasicsNegativeFeel" id="cbtBasicsNegativeFeel">
-        <id column="cbt_basic_id" property="cbtBasicId"/>
-        <id column="negative_feel_id" property="negativeFeelingId"/>
-        <association property="negativeFeel" javaType="com.mentalapp.common.entity.NegativeFeel">
-            <id column="nf_id" property="id"/>
-            <result column="negative_feel_name" property="negativeFeelName"/>
-            <result column="nf_created_at" property="createdAt"/>
-            <result column="nf_updated_at" property="updatedAt"/>
-        </association>
+    <!-- マッピング定義(NegativeFeel) -->
+    <resultMap type="com.mentalapp.common.entity.NegativeFeel" id="negativeFeel">
+        <id column="nf_id" property="id"/>
+        <result column="negative_feel_name" property="negativeFeelName"/>
+        <result column="nf_created_at" property="createdAt"/>
+        <result column="nf_updated_at" property="updatedAt"/>
     </resultMap>
-    
-    <!-- マッピング定義(CbtBasicsPositiveFeel) -->
-    <resultMap type="com.mentalapp.cbt_basic.entity.CbtBasicsPositiveFeel" id="cbtBasicsPositiveFeel">
-        <id column="cbt_basic_id" property="cbtBasicId"/>
-        <id column="positive_feel_id" property="positiveFeelingId"/>
-        <association property="positiveFeel" javaType="com.mentalapp.common.entity.PositiveFeel">
-            <id column="pf_id" property="id"/>
-            <result column="positive_feel_name" property="positiveFeelName"/>
-            <result column="pf_created_at" property="createdAt"/>
-            <result column="pf_updated_at" property="updatedAt"/>
-        </association>
+
+    <!-- マッピング定義(PositiveFeel) -->
+    <resultMap type="com.mentalapp.common.entity.PositiveFeel" id="positiveFeel">
+        <id column="pf_id" property="id"/>
+        <result column="positive_feel_name" property="positiveFeelName"/>
+        <result column="pf_created_at" property="createdAt"/>
+        <result column="pf_updated_at" property="updatedAt"/>
     </resultMap>
 
     <!-- ユーザーIDに基づいてCbtBasicsと関連する感情を取得 -->
     <select id="findCbtBasicsFeelsByUserId" resultMap="cbtBasics">
         SELECT
-            cb.id,
-            cb.fact,
-            cb.mind,
-            cb.body,
-            cb.behavior,
-            cb.created_at,
-            cb.updated_at,
-            cbnf.cbt_basic_id,
-            cbnf.negative_feel_id,
-            nf.id as nf_id,
-            nf.negative_feel_name,
-            nf.created_at as nf_created_at,
-            nf.updated_at as nf_updated_at,
-            cbpf.cbt_basic_id,
-            cbpf.positive_feel_id,
-            pf.id as pf_id,
-            pf.positive_feel_name,
-            pf.created_at as pf_created_at,
-            pf.updated_at as pf_updated_at
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.created_at,
+        cb.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at
         FROM
-            cbt_basics cb
+        cbt_basics cb
         LEFT OUTER JOIN
-            cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
+        cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
         LEFT OUTER JOIN
-            negative_feels nf ON cbnf.negative_feel_id = nf.id
+        negative_feels nf ON cbnf.negative_feel_id = nf.id
         LEFT OUTER JOIN
-            cbt_basics_positive_feels cbpf ON cb.id = cbpf.cbt_basic_id
+        cbt_basics_positive_feels cbpf ON cb.id = cbpf.cbt_basic_id
         LEFT OUTER JOIN
-            positive_feels pf ON cbpf.positive_feel_id = pf.id
+        positive_feels pf ON cbpf.positive_feel_id = pf.id
         WHERE
-            cb.user_id = #{userId}
+        cb.user_id = #{userId}
         ORDER BY
         cb.id, nf.id, pf.id
     </select>

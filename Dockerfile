@@ -14,8 +14,7 @@ RUN mvn dependency:go-offline
 COPY src src
 
 # Mavenビルドの実行
-# テストはスキップしてパッケージングのみを実行
-RUN mvn package -DskipTests
+RUN mvn package
 
 # 実行ステージ
 FROM eclipse-temurin:22-jre

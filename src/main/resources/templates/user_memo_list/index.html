@@ -46,8 +46,9 @@
       <div th:each="cbtBasic : ${cbtBasics}" th:remove="tag">
         <div class="monitor-list">
           <div class="monitor-list-upper">
-            <div class="monitor-list__date" th:text="${#temporals.format(cbtBasic.createdAt, 'yyyy/MM/dd')}"></div>
-            <div class="monitor-list-more">
+              <div class="monitor-list__date"
+                   th:text="${#temporals.format(cbtBasic.updatedAt, 'yyyy/MM/dd HH:mm')}"></div>
+              <div class="monitor-list-more">
               <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
               <ul class="monitor-list-more__items">
                 <a th:href="@{/cbt_basics/{id}/edit(id=${cbtBasic.id})}">

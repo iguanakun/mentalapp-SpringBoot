@@ -26,7 +26,11 @@ public class MemoListIndexService {
      * @return CbtBasicsのリスト（感情情報を含む）
      */
     public List<CbtBasics> createCbtBasicsObjectList(Long userId) {
-        // CbtBasicsの基本情報と感情情報を一度に取得
-        return memoListMapper.findCbtBasicsFeelsByUserId(userId);
+        // ユーザIDに紐づくCbtBasicsと感情情報を一度に取得
+        List<CbtBasics> cbtBasicsList = memoListMapper.findCbtBasicsFeelsByUserId(userId);
+        // 更新日時の降順にソート
+        cbtBasicsList.sort((a, b) -> b.getUpdatedAt().compareTo(a.getUpdatedAt()));
+        
+        return cbtBasicsList;
     }
 }

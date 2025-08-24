@@ -86,9 +86,8 @@ public class CbtBasicsController {
         cbtBasicsRegistService.save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
         
         // TODO: タグの保存処理
-        
-//        return "redirect:/cbt_basics/lists";
-        return "redirect:/";
+
+        return "redirect:/memos";
     }
 
     /**
