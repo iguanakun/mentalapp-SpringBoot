@@ -75,7 +75,11 @@ public class CbtBasicsIndexService {
     public List<CbtBasics> findByUserId(Long userId) {
         return cbtBasicsMapper.selectByUserId(userId);
     }
-    
+
+    public CbtBasics selectByPrimaryKeyWithFeels(Long cbtBasicId){
+        return cbtBasicsMapper.selectByPrimaryKeyWithFeels(cbtBasicId);
+    }
+
     /**
      * ユーザーIDに関連するネガティブ感情の上位3つを取得
      * @param userId ユーザーID

@@ -2,6 +2,7 @@ package com.mentalapp.cbt_basic.mapper;
 
 import com.mentalapp.cbt_basic.entity.CbtBasics;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,29 @@ public interface CbtBasicsMapper {
 
     // 削除
     int deleteByPrimaryKey(Long id);
+    
+    /**
+     * ユーザーIDに基づいてCbtBasicsと関連する感情を取得
+     * @param userId ユーザーID
+     * @return CbtBasicsのリスト（感情情報を含む）
+     */
+    List<CbtBasics> findCbtBasicsFeelsListByUserId(@Param("userId") Long userId);
+
+    /**
+     * CbtBasics IDに基づいてCbtBasicsと関連する感情を取得
+     * @param cbtBasicId CbtBasics ID
+     * @return 指定されたIDのCbtBasics（感情情報を含む）
+     */
+    CbtBasics selectByPrimaryKeyWithFeels(Long cbtBasicId);
+    
+    /**
+     * ユーザーIDに基づいてCbtBasicsと関連する感情を取得（互換性のため）
+     * @param userId ユーザーID
+     * @return CbtBasicsのリスト（感情情報を含む）
+     * @deprecated findCbtBasicsFeelsListByUserIdを使用してください
+     */
+    @Deprecated
+    default List<CbtBasics> findCbtBasicsFeelsByUserId(@Param("userId") Long userId) {
+        return findCbtBasicsFeelsListByUserId(userId);
+    }
 }

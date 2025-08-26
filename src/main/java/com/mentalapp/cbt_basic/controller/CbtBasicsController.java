@@ -94,7 +94,7 @@ public class CbtBasicsController {
      */
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
+        CbtBasics cbtBasics = cbtBasicsIndexService.selectByPrimaryKeyWithFeels(id);
         
         if(Objects.isNull(cbtBasics)){
             return MentalCommonUtils.REDIRECT_TOP_PAGE;
@@ -114,7 +114,7 @@ public class CbtBasicsController {
      */
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable Long id, Model model) {
-        CbtBasics cbtBasics = cbtBasicsIndexService.findById(id);
+        CbtBasics cbtBasics = cbtBasicsIndexService.selectByPrimaryKeyWithFeels(id);
         
         // アクセス権チェック
         if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
@@ -149,11 +149,7 @@ public class CbtBasicsController {
             form.setPositiveFeelIds(positiveFeelIds);
         }
 
-        // ビューデータを作成
-        CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
-
         // フォームにセット
-        model.addAttribute("viewData", viewData);
         model.addAttribute("cbtBasicsForm", form);
 
         return "cbt_basics/edit";
