@@ -8,15 +8,17 @@ public class LoginController {
 
     @GetMapping("/showMyLoginPage")
     public String showMyLoginPage() {
-
         return "fancy-login";
+    }
+    
+    @GetMapping("/showRubyStyleLoginPage")
+    public String showRubyStyleLoginPage() {
+        return "ruby-style-login";
     }
 
     // add request mapping for /access-denied
-
     @GetMapping("/access-denied")
     public String showAccessDenied() {
-
         return "access-denied";
     }
 

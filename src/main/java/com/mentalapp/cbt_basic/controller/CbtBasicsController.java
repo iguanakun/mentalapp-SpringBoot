@@ -64,19 +64,19 @@ public class CbtBasicsController {
      */
     @PostMapping("/regist")
     public String create(@Valid @ModelAttribute("cbtBasicsForm") CbtBasicsForm form,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult,
+                         Model model) {
         
         // バリデーションエラーがある場合
         if (bindingResult.hasErrors()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
+            model.addAttribute("viewData", viewData);
             return "cbt_basics/new";
         }
         
         // フォームからエンティティへの変換
-        CbtBasics cbtBasics = new CbtBasics();
-        cbtBasics.setFact(form.getFact());
-        cbtBasics.setMind(form.getMind());
-        cbtBasics.setBody(form.getBody());
-        cbtBasics.setBehavior(form.getBehavior());
+        CbtBasics cbtBasics = cbtBasicsIndexService.convertToEntity(form);
         
         // ログインユーザーの取得
         cbtBasics.setUserId(mentalCommonUtils.getUser().getId());
@@ -121,35 +121,16 @@ public class CbtBasicsController {
             return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
         
+        // ビューデータを作成
+        CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
+        
         // エンティティからフォームへの変換
-        CbtBasicsForm form = new CbtBasicsForm();
-        form.setId(cbtBasics.getId());
-        form.setFact(cbtBasics.getFact());
-        form.setMind(cbtBasics.getMind());
-        form.setBody(cbtBasics.getBody());
-        form.setBehavior(cbtBasics.getBehavior());
-        form.setUserId(cbtBasics.getUserId());
+        CbtBasicsForm form = cbtBasicsIndexService.convertToForm(cbtBasics);
 
         // TODO: タグの取得処理
 
-        // ネガティブ感情とポジティブ感情のIDを設定
-        List<NegativeFeel> negativeFeels = cbtBasics.getNegativeFeels();
-        if (negativeFeels != null && !negativeFeels.isEmpty()) {
-            List<Long> negativeFeelIds = negativeFeels.stream()
-                    .map(NegativeFeel::getId)
-                    .toList();
-            form.setNegativeFeelIds(negativeFeelIds);
-        }
-
-        List<PositiveFeel> positiveFeels = cbtBasics.getPositiveFeels();
-        if (positiveFeels != null && !positiveFeels.isEmpty()) {
-            List<Long> positiveFeelIds = positiveFeels.stream()
-                    .map(PositiveFeel::getId)
-                    .toList();
-            form.setPositiveFeelIds(positiveFeelIds);
-        }
-
         // フォームにセット
+        model.addAttribute("viewData", viewData);
         model.addAttribute("cbtBasicsForm", form);
 
         return "cbt_basics/edit";
@@ -161,10 +142,14 @@ public class CbtBasicsController {
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsForm form,
-                         BindingResult bindingResult) {
+                         BindingResult bindingResult,
+                         Model model) {
         
         // バリデーションエラーがある場合
         if (bindingResult.hasErrors()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = cbtBasicsIndexService.createViewData();
+            model.addAttribute("viewData", viewData);
             return "cbt_basics/edit";
         }
         
@@ -176,10 +161,7 @@ public class CbtBasicsController {
         }
         
         // フォームからエンティティへの更新
-        cbtBasics.setFact(form.getFact());
-        cbtBasics.setMind(form.getMind());
-        cbtBasics.setBody(form.getBody());
-        cbtBasics.setBehavior(form.getBehavior());
+        cbtBasics = cbtBasicsIndexService.convertToEntity(form);
         
         // 更新（ネガティブ感情とポジティブ感情の関連付けも行う）
         cbtBasicsRegistService.update(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
@@ -212,16 +194,13 @@ public class CbtBasicsController {
     @GetMapping("/lists")
     public String lists(Model model) {
         // ログインユーザーの取得
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = mentalCommonUtils.getUser();
         
-        // ユーザーのCBT Basicsを取得
-        List<CbtBasics> cbtBasicsList = cbtBasicsIndexService.findByUserId(currentUser.getId());
-        model.addAttribute("cbtBasics", cbtBasicsList);
+        // ユーザーのCBT Basicsデータを取得
+        Map<String, Object> userData = cbtBasicsIndexService.getUserCbtBasicsData(currentUser.getId());
         
-        // ネガティブ感情の上位3つを取得
-        List<Map<String, Object>> topNegativeFeels = cbtBasicsIndexService.findTopNegativeFeelings(currentUser.getId());
-        model.addAttribute("negativeFeels", topNegativeFeels);
+        // モデルに追加
+        model.addAllAttributes(userData);
         
         return "cbt_basics/lists";
     }

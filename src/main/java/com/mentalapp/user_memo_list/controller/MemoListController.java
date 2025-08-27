@@ -40,13 +40,11 @@ public class MemoListController {
         // ログインユーザーの取得
         User currentUser = mentalCommonUtils.getUser();
         
-        // ユーザーのCBT Basicsを取得
-        List<CbtBasics> cbtBasicsList = memoListIndexService.createCbtBasicsObjectList(currentUser.getId());
-        model.addAttribute("cbtBasics", cbtBasicsList);
+        // ユーザーのメモデータを取得
+        Map<String, Object> userData = memoListIndexService.getUserMemoData(currentUser.getId());
         
-        // ネガティブ感情の上位3つを取得
-        List<Map<String, Object>> topNegativeFeels = cbtBasicsIndexService.findTopNegativeFeelings(currentUser.getId());
-        model.addAttribute("negativeFeels", topNegativeFeels);
+        // モデルに追加
+        model.addAllAttributes(userData);
         
         return "user_memo_list/index";
     }

@@ -1,6 +1,7 @@
 package com.mentalapp.cbt_basic.service;
 
 import com.mentalapp.cbt_basic.entity.CbtBasics;
+import com.mentalapp.cbt_basic.form.CbtBasicsForm;
 import com.mentalapp.cbt_basic.mapper.CbtBasicsMapper;
 import com.mentalapp.cbt_basic.mapper.CbtBasicsNegativeFeelMapper;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
@@ -11,6 +12,7 @@ import com.mentalapp.common.mapper.PositiveFeelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -101,5 +103,74 @@ public class CbtBasicsIndexService {
             Map.of("negativeFeelName", "怒り", "count", 3),
             Map.of("negativeFeelName", "悲しみ", "count", 2)
         );
+    }
+    
+    /**
+     * エンティティからフォームへの変換
+     * @param cbtBasics 変換元のCBT Basicsエンティティ
+     * @return 変換後のフォーム
+     */
+    public CbtBasicsForm convertToForm(CbtBasics cbtBasics) {
+        CbtBasicsForm form = new CbtBasicsForm();
+        form.setId(cbtBasics.getId());
+        form.setFact(cbtBasics.getFact());
+        form.setMind(cbtBasics.getMind());
+        form.setBody(cbtBasics.getBody());
+        form.setBehavior(cbtBasics.getBehavior());
+        form.setUserId(cbtBasics.getUserId());
+        
+        // ネガティブ感情とポジティブ感情のIDを設定
+        List<NegativeFeel> negativeFeels = cbtBasics.getNegativeFeels();
+        if (negativeFeels != null && !negativeFeels.isEmpty()) {
+            List<Long> negativeFeelIds = negativeFeels.stream()
+                    .map(NegativeFeel::getId)
+                    .toList();
+            form.setNegativeFeelIds(negativeFeelIds);
+        }
+
+        List<PositiveFeel> positiveFeels = cbtBasics.getPositiveFeels();
+        if (positiveFeels != null && !positiveFeels.isEmpty()) {
+            List<Long> positiveFeelIds = positiveFeels.stream()
+                    .map(PositiveFeel::getId)
+                    .toList();
+            form.setPositiveFeelIds(positiveFeelIds);
+        }
+        
+        return form;
+    }
+
+    /**
+     * フォームからエンティティへの変換
+     * @param form 変換元のフォーム
+     * @return 変換後のCBT Basicsエンティティ
+     */
+    public CbtBasics convertToEntity(CbtBasicsForm form) {
+        CbtBasics cbtBasics = new CbtBasics();
+        cbtBasics.setId(form.getId());
+        cbtBasics.setFact(form.getFact());
+        cbtBasics.setMind(form.getMind());
+        cbtBasics.setBody(form.getBody());
+        cbtBasics.setBehavior(form.getBehavior());
+        cbtBasics.setUserId(form.getUserId());
+        return cbtBasics;
+    }
+    
+    /**
+     * ユーザーのCBT Basicsデータと関連データを取得
+     * @param userId ユーザーID
+     * @return CbtBasicsデータと関連データを含むマップ
+     */
+    public Map<String, Object> getUserCbtBasicsData(Long userId) {
+        Map<String, Object> result = new HashMap<>();
+        
+        // ユーザーのCBT Basicsを取得
+        List<CbtBasics> cbtBasicsList = findByUserId(userId);
+        result.put("cbtBasics", cbtBasicsList);
+        
+        // ネガティブ感情の上位3つを取得
+        List<Map<String, Object>> topNegativeFeels = findTopNegativeFeelings(userId);
+        result.put("negativeFeels", topNegativeFeels);
+        
+        return result;
     }
 }
