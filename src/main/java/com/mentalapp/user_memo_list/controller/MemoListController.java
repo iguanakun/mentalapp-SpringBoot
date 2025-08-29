@@ -5,6 +5,7 @@ import com.mentalapp.common.entity.User;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.service.MemoListIndexService;
+import com.mentalapp.user_memo_list.data.MemoListConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +47,6 @@ public class MemoListController {
         // モデルに追加
         model.addAllAttributes(userData);
         
-        return "user_memo_list/index";
+        return MemoListConst.INDEX_PATH;
     }
 }

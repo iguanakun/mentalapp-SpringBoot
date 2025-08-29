@@ -7,15 +7,21 @@ import com.mentalapp.cbt_basic.mapper.CbtBasicsNegativeFeelMapper;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.entity.User;
 import com.mentalapp.common.mapper.NegativeFeelMapper;
 import com.mentalapp.common.mapper.PositiveFeelMapper;
+import com.mentalapp.common.util.MentalCommonUtils;
+import com.mentalapp.cbt_basic.data.CbtBasicsConst;
+import com.mentalapp.user_memo_list.data.MemoListConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * CBT Basicsの表示・検索機能を提供するサービスクラス
@@ -28,16 +34,21 @@ public class CbtBasicsIndexService {
     private final NegativeFeelMapper negativeFeelMapper;
     private final PositiveFeelMapper positiveFeelMapper;
     private final CbtBasicsViewData cbtBasicsViewData;
+    private final MentalCommonUtils mentalCommonUtils;
 
     @Autowired
     public CbtBasicsIndexService(CbtBasicsMapper cbtBasicsMapper,
                                  CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper,
-                                 NegativeFeelMapper negativeFeelMapper, PositiveFeelMapper positiveFeelMapper, CbtBasicsViewData cbtBasicsViewData) {
+                                 NegativeFeelMapper negativeFeelMapper, 
+                                 PositiveFeelMapper positiveFeelMapper, 
+                                 CbtBasicsViewData cbtBasicsViewData,
+                                 MentalCommonUtils mentalCommonUtils) {
         this.cbtBasicsMapper = cbtBasicsMapper;
         this.cbtBasicsNegativeFeelMapper = cbtBasicsNegativeFeelMapper;
         this.negativeFeelMapper = negativeFeelMapper;
         this.positiveFeelMapper = positiveFeelMapper;
         this.cbtBasicsViewData = cbtBasicsViewData;
+        this.mentalCommonUtils = mentalCommonUtils;
     }
 
     public CbtBasicsViewData createViewData(){
@@ -82,28 +93,6 @@ public class CbtBasicsIndexService {
         return cbtBasicsMapper.selectByPrimaryKeyWithFeels(cbtBasicId);
     }
 
-    /**
-     * ユーザーIDに関連するネガティブ感情の上位3つを取得
-     * @param userId ユーザーID
-     * @return ネガティブ感情の名前と出現回数のマップ
-     */
-    public List<Map<String, Object>> findTopNegativeFeelings(Long userId) {
-        // ユーザーのCBT Basicsを取得
-        List<CbtBasics> cbtBasicsList = findByUserId(userId);
-        
-        // CBT BasicsのIDリストを取得
-        List<Long> cbtBasicsIds = cbtBasicsList.stream()
-                .map(CbtBasics::getId)
-                .collect(Collectors.toList());
-        
-        // TODO: ネガティブ感情の出現回数をカウントし、上位3つを返す
-        // 実際の実装はデータベースの構造に依存するため、ここではダミーデータを返す
-        return List.of(
-            Map.of("negativeFeelName", "不安", "count", 5),
-            Map.of("negativeFeelName", "怒り", "count", 3),
-            Map.of("negativeFeelName", "悲しみ", "count", 2)
-        );
-    }
     
     /**
      * エンティティからフォームへの変換
@@ -156,9 +145,9 @@ public class CbtBasicsIndexService {
     }
     
     /**
-     * ユーザーのCBT Basicsデータと関連データを取得
+     * ユーザーのCBT Basicsデータを取得
      * @param userId ユーザーID
-     * @return CbtBasicsデータと関連データを含むマップ
+     * @return CbtBasicsデータを含むマップ
      */
     public Map<String, Object> getUserCbtBasicsData(Long userId) {
         Map<String, Object> result = new HashMap<>();
@@ -167,10 +156,173 @@ public class CbtBasicsIndexService {
         List<CbtBasics> cbtBasicsList = findByUserId(userId);
         result.put("cbtBasics", cbtBasicsList);
         
-        // ネガティブ感情の上位3つを取得
-        List<Map<String, Object>> topNegativeFeels = findTopNegativeFeelings(userId);
-        result.put("negativeFeels", topNegativeFeels);
-        
         return result;
+    }
+    
+    /**
+     * 新規作成フォーム表示のためのモデル準備
+     * @param model モデル
+     */
+    public void setViewData(Model model) {
+        // ビューデータを作成
+        CbtBasicsViewData viewData = createViewData();
+
+        // フォームにセット
+        model.addAttribute("viewData", viewData);
+        model.addAttribute("cbtBasicsForm", new CbtBasicsForm());
+    }
+
+    /**
+     * 新規作成処理
+     * @param form フォームデータ
+     * @param bindingResult バリデーション結果
+     * @param model モデル
+     * @param cbtBasicsRegistService 登録サービス
+     * @return 遷移先のパス
+     */
+    public String processCreate(CbtBasicsForm form, BindingResult bindingResult, 
+                               Model model, CbtBasicsRegistService cbtBasicsRegistService) {
+        // バリデーションエラーがある場合
+        if (bindingResult.hasErrors()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = createViewData();
+            model.addAttribute("viewData", viewData);
+            return CbtBasicsConst.NEW_PATH;
+        }
+        
+        // フォームからエンティティへの変換
+        CbtBasics cbtBasics = convertToEntity(form);
+        
+        // ログインユーザーの取得
+        cbtBasics.setUserId(mentalCommonUtils.getUser().getId());
+        
+        // 保存（ネガティブ感情とポジティブ感情の関連付けも行う）
+        cbtBasicsRegistService.save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
+        
+        return MemoListConst.REDIRECT_MEMOS;
+    }
+
+    /**
+     * 詳細表示のためのデータ取得と権限チェック
+     * @param id CBT BasicsのID
+     * @param model モデル
+     * @return 遷移先のパス、またはnull（正常時）
+     */
+    public String prepareShowDetail(Long id, Model model) {
+        CbtBasics cbtBasics = selectByPrimaryKeyWithFeels(id);
+        
+        if(Objects.isNull(cbtBasics)){
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+
+        // アクセス権チェック
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        model.addAttribute("cbtBasic", cbtBasics);
+        return null; // 正常時はnullを返す
+    }
+
+    /**
+     * 編集フォーム表示のためのデータ取得と権限チェック
+     * @param id CBT BasicsのID
+     * @param model モデル
+     * @return 遷移先のパス、またはnull（正常時）
+     */
+    public String prepareEditForm(Long id, Model model) {
+        CbtBasics cbtBasics = selectByPrimaryKeyWithFeels(id);
+        
+        if(Objects.isNull(cbtBasics)){
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        // アクセス権チェック
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        // ビューデータを作成
+        CbtBasicsViewData viewData = createViewData();
+        
+        // エンティティからフォームへの変換
+        CbtBasicsForm form = convertToForm(cbtBasics);
+
+        // フォームにセット
+        model.addAttribute("viewData", viewData);
+        model.addAttribute("cbtBasicsForm", form);
+        
+        return null; // 正常時はnullを返す
+    }
+
+    /**
+     * 更新処理
+     * @param id CBT BasicsのID
+     * @param form フォームデータ
+     * @param bindingResult バリデーション結果
+     * @param model モデル
+     * @param cbtBasicsRegistService 登録サービス
+     * @return 遷移先のパス
+     */
+    public String processUpdate(Long id, CbtBasicsForm form, BindingResult bindingResult, 
+                               Model model, CbtBasicsRegistService cbtBasicsRegistService) {
+        // バリデーションエラーがある場合
+        if (bindingResult.hasErrors()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = createViewData();
+            model.addAttribute("viewData", viewData);
+            return CbtBasicsConst.EDIT_PATH;
+        }
+
+        // アクセス権チェック
+        if (!mentalCommonUtils.isAuthorized(form.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        // フォームからエンティティへの更新
+        CbtBasics cbtBasics = convertToEntity(form);
+        
+        // 更新（ネガティブ感情とポジティブ感情の関連付けも行う）
+        cbtBasicsRegistService.update(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
+        
+        return MemoListConst.REDIRECT_MEMOS;
+    }
+
+    /**
+     * 削除処理と権限チェック
+     * @param id CBT BasicsのID
+     * @param cbtBasicsRegistService 登録サービス
+     * @return 遷移先のパス
+     */
+    public String processDelete(Long id, CbtBasicsRegistService cbtBasicsRegistService) {
+        CbtBasics cbtBasics = findById(id);
+        
+        if(Objects.isNull(cbtBasics)){
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        // アクセス権チェック
+        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        }
+        
+        // 削除
+        cbtBasicsRegistService.deleteById(id);
+        return MemoListConst.REDIRECT_MEMOS;
+    }
+
+    /**
+     * 一覧表示のためのデータ取得
+     * @param model モデル
+     */
+    public void prepareListView(Model model) {
+        // ログインユーザーの取得
+        User currentUser = mentalCommonUtils.getUser();
+        
+        // ユーザーのCBT Basicsデータを取得
+        Map<String, Object> userData = getUserCbtBasicsData(currentUser.getId());
+        
+        // モデルに追加
+        model.addAllAttributes(userData);
     }
 }

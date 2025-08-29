@@ -17,13 +17,14 @@
           <div class="monitor-statistics-wrapper">
             <div class="monitor-statistics__negative">
               上位3つのネガティブな感情
-              <ol class="monitor-statistics__lists">
+              <ol class="monitor-statistics__lists" th:if="${not #lists.isEmpty(negativeFeels)}">
                 <li th:each="list : ${negativeFeels}">
                   <span th:text="${list.negativeFeelName}"></span>
                   :
                   <span th:text="${list.count}"></span>
                 </li>
               </ol>
+              <p th:if="${#lists.isEmpty(negativeFeels)}">なし</p>
             </div>
           </div>
         </div>
@@ -55,9 +56,9 @@
                 <a th:href="@{/cbt_basics/{id}/edit(id=${cbtBasic.id})}">
                   <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
                 </a>
-                <a th:href="@{/cbt_basics/{id}(id=${cbtBasic.id})}" data-turbo-method="delete">
-                  <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
-                </a>
+                <form th:action="@{/cbt_basics/{id}(id=${cbtBasic.id})}" th:method="delete">
+                  <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> <button type="submit" class="delete-button">削除</button></li>
+                </form>
               </ul>
             </div>
           </div>

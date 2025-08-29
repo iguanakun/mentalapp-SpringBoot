@@ -177,4 +177,22 @@
         cb.id, nf.id, pf.id
     </select>
     
+    <!-- ユーザーIDに基づいて、ネガティブ感情の出現回数上位3つを取得 -->
+    <select id="findTopNegativeFeelingsByUserId" resultType="java.util.HashMap">
+        SELECT
+            nf.negative_feel_name as negativeFeelName,
+            COUNT(cbnf.negative_feel_id) as count
+        FROM
+            cbt_basics cb
+            INNER JOIN cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
+            INNER JOIN negative_feels nf ON cbnf.negative_feel_id = nf.id
+        WHERE
+            cb.user_id = #{userId}
+        GROUP BY
+            nf.negative_feel_name
+        ORDER BY
+            COUNT(cbnf.negative_feel_id) DESC
+        LIMIT 3
+    </select>
+    
 </mapper>

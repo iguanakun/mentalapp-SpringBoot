@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CbtBasicsMapper {
@@ -50,4 +51,11 @@ public interface CbtBasicsMapper {
     default List<CbtBasics> findCbtBasicsFeelsByUserId(@Param("userId") Long userId) {
         return findCbtBasicsFeelsListByUserId(userId);
     }
+    
+    /**
+     * ユーザーIDに基づいて、ネガティブ感情の出現回数上位3つを取得
+     * @param userId ユーザーID
+     * @return ネガティブ感情名と出現回数のマップのリスト
+     */
+    List<Map<String, Object>> findTopNegativeFeelingsByUserId(@Param("userId") Long userId);
 }
