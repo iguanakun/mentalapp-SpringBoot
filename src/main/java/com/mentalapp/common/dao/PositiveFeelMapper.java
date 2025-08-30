@@ -1,4 +1,4 @@
-package com.mentalapp.common.mapper;
+package com.mentalapp.common.dao;
 
 import com.mentalapp.common.entity.PositiveFeel;
 import org.apache.ibatis.annotations.Mapper;

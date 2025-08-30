@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mentalapp.cbt_basic.mapper.CbtBasicsMapper">
+<mapper namespace="com.mentalapp.cbt_basic.dao.CbtBasicsMapper">
 
     <!-- マッピング定義(CbtBasics) -->
     <resultMap type="com.mentalapp.cbt_basic.entity.CbtBasics" id="cbtBasicsWithFeels">
@@ -65,7 +65,7 @@
         INSERT INTO
         cbt_basics(fact, mind, body, behavior, user_id, created_at, updated_at)
         VALUES
-        (#{fact}, #{mind}, #{body}, #{behavior}, #{user_id}, #{createdAt}, #{updatedAt})
+        (#{fact}, #{mind}, #{body}, #{behavior}, #{user_id}, current_timestamp, current_timestamp)
     </insert>
 
     <!-- 更新 -->
@@ -77,7 +77,7 @@
         mind = #{mind},
         body = #{body},
         behavior = #{behavior},
-        updated_at = #{updatedAt}
+        updated_at = current_timestamp
         WHERE
         id = #{id}
     </update>

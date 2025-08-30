@@ -1,9 +1,8 @@
 package com.mentalapp.common.util;
 
 import com.mentalapp.common.entity.User;
-import com.mentalapp.common.mapper.UserMapper;
+import com.mentalapp.common.dao.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +14,11 @@ public class MentalCommonUtils {
 
     private final UserMapper userMapper;
 
-    // ログイン中のユーザ情報を取得
+    /**
+     * ログイン中のユーザー情報を取得
+     * @return ログイン中のユーザーエンティティ
+     */
     public User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return userMapper.selectByPrimaryKey(userName);
     }

@@ -1,4 +1,4 @@
-package com.mentalapp.cbt_basic.mapper;
+package com.mentalapp.cbt_basic.dao;
 
 import com.mentalapp.cbt_basic.entity.CbtBasics;
 import org.apache.ibatis.annotations.Mapper;

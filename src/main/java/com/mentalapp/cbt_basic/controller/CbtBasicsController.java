@@ -1,13 +1,13 @@
 package com.mentalapp.cbt_basic.controller;
 
+import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.cbt_basic.service.CbtBasicsRegistService;
-import com.mentalapp.cbt_basic.form.CbtBasicsForm;
-import com.mentalapp.common.service.UserService;
-import com.mentalapp.common.util.MentalCommonUtils;
+import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
+import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.cbt_basic.data.CbtBasicsConst;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,89 +18,95 @@ import org.springframework.web.bind.annotation.*;
  */
 @Controller
 @RequestMapping("/cbt_basics")
+@RequiredArgsConstructor
 public class CbtBasicsController {
 
     private final CbtBasicsIndexService cbtBasicsIndexService;
     private final CbtBasicsRegistService cbtBasicsRegistService;
-    private final UserService userService;
-    private final MentalCommonUtils mentalCommonUtils;
-
-    @Autowired
-    public CbtBasicsController(CbtBasicsIndexService cbtBasicsIndexService,
-                               CbtBasicsRegistService cbtBasicsRegistService, 
-                               UserService userService,
-                               MentalCommonUtils mentalCommonUtils) {
-        this.cbtBasicsIndexService = cbtBasicsIndexService;
-        this.cbtBasicsRegistService = cbtBasicsRegistService;
-        this.userService = userService;
-        this.mentalCommonUtils = mentalCommonUtils;
-    }
 
     /**
      * 新規作成フォーム表示
+     * @param model モデル
+     * @return 新規作成フォームのビュー名
      */
     @GetMapping("/new")
     public String newCbtBasic(Model model) {
-        cbtBasicsIndexService.setViewData(model);
-        model.addAttribute("cbtBasicsForm", new CbtBasicsForm());
+        CbtBasicsViewData viewData = cbtBasicsIndexService.processNew();
+
+        model.addAttribute("viewData", viewData);
+        model.addAttribute("cbtBasicsForm", new CbtBasicsInputForm());
 
         return CbtBasicsConst.NEW_PATH;
     }
 
     /**
      * 新規作成処理
+     * @param form 入力フォーム
+     * @param bindingResult バリデーション結果
+     * @param model モデル
+     * @return 遷移先のビュー名
      */
     @PostMapping("/regist")
-    public String create(@Valid @ModelAttribute("cbtBasicsForm") CbtBasicsForm form,
+    public String create(@Valid @ModelAttribute("cbtBasicsForm") CbtBasicsInputForm form,
                          BindingResult bindingResult,
                          Model model) {
-        return cbtBasicsIndexService.processCreate(form, bindingResult, model, cbtBasicsRegistService);
+        return cbtBasicsRegistService.processRegist(form, bindingResult, model);
     }
 
     /**
      * 詳細表示
+     * @param id CBT BasicsのID
+     * @param model モデル
+     * @return 詳細ページのビュー名
      */
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        String redirectPath = cbtBasicsIndexService.prepareShowDetail(id, model);
-        return redirectPath != null ? redirectPath : CbtBasicsConst.SHOW_PATH;
+        return cbtBasicsIndexService.processShow(id, model);
     }
 
     /**
      * 編集フォーム表示
+     * @param id CBT BasicsのID
+     * @param model モデル
+     * @return 編集フォームのビュー名
      */
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable Long id, Model model) {
-        String redirectPath = cbtBasicsIndexService.prepareEditForm(id, model);
-        return redirectPath != null ? redirectPath : CbtBasicsConst.EDIT_PATH;
+        return cbtBasicsIndexService.processEdit(id, model);
     }
 
     /**
      * 更新処理
+     * @param id CBT BasicsのID
+     * @param form 入力フォーム
+     * @param bindingResult バリデーション結果
+     * @param model モデル
+     * @return 遷移先のビュー名
      */
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
-                         @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsForm form,
+                         @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsInputForm form,
                          BindingResult bindingResult,
                          Model model) {
-        return cbtBasicsIndexService.processUpdate(id, form, bindingResult, model, cbtBasicsRegistService);
+        // バリデーションエラーがある場合
+        if (CbtBasicCommonUtils.checkValidationError(bindingResult)
+        || !form.hasAnyContent()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = CbtBasicCommonUtils.createAllFeelsViewData();
+            model.addAttribute("viewData", viewData);
+            return CbtBasicsConst.EDIT_PATH;
+        }
+
+        return cbtBasicsRegistService.processUpdate(form);
     }
 
     /**
      * 削除処理
+     * @param id 削除するCBT BasicsのID
+     * @return 遷移先のビュー名
      */
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        return cbtBasicsIndexService.processDelete(id, cbtBasicsRegistService);
+        return cbtBasicsRegistService.processDelete(id);
     }
-
-    /**
-     * 一覧表示
-     */
-    @GetMapping("/lists")
-    public String lists(Model model) {
-        cbtBasicsIndexService.prepareListView(model);
-        return CbtBasicsConst.LISTS_PATH;
-    }
-
 }

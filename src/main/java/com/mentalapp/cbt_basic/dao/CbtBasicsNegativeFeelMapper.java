@@ -1,31 +1,31 @@
-package com.mentalapp.cbt_basic.mapper;
+package com.mentalapp.cbt_basic.dao;
 
-import com.mentalapp.cbt_basic.entity.CbtBasicsPositiveFeel;
+import com.mentalapp.cbt_basic.entity.CbtBasicsNegativeFeel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
- * CbtBasicsPositiveFeelのマッパーインターフェース
+ * CbtBasicsNegativeFeelのマッパーインターフェース
  */
 @Mapper
-public interface CbtBasicsPositiveFeelMapper {
+public interface CbtBasicsNegativeFeelMapper {
     
     /**
      * CbtBasicsIDによる取得
      * @param cbtBasicId CbtBasicsのID
-     * @return CbtBasicsPositiveFeelのリスト
+     * @return CbtBasicsNegativeFeelのリスト
      */
-    List<CbtBasicsPositiveFeel> selectByCbtBasicId(Long cbtBasicId);
+    List<CbtBasicsNegativeFeel> selectByCbtBasicId(Long cbtBasicId);
     
     /**
      * 登録
      * @param cbtBasicId CbtBasicsのID
-     * @param positiveFeelingId PositiveFeelのID
+     * @param negativeFeelingId NegativeFeelのID
      * @return 影響を受けた行数
      */
-    int insert(@Param("cbtBasicId") Long cbtBasicId, @Param("positiveFeelingId") Long positiveFeelingId);
+    int insert(@Param("cbtBasicId") Long cbtBasicId, @Param("negativeFeelingId") Long negativeFeelingId);
     
     /**
      * CbtBasicsIDによる削除

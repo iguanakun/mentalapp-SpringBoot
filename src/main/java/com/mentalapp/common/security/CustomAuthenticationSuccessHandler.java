@@ -2,26 +2,22 @@ package com.mentalapp.common.security;
 
 import java.io.IOException;
 
+import com.mentalapp.common.entity.User;
 import com.mentalapp.common.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.mentalapp.common.entity.User;
-
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private UserService userService;
-
-    public CustomAuthenticationSuccessHandler(UserService theUserService) {
-        userService = theUserService;
-    }
+    private final UserService userService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)

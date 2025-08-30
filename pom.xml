@@ -115,7 +115,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 
     <!-- ビルド設定 -->
 	<build>

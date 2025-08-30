@@ -5,7 +5,7 @@ import com.mentalapp.common.service.UserServiceImpl;
 import com.mentalapp.common.user.WebUser;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,19 +16,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.logging.Logger;
 import java.util.Objects;
 
+/**
+ * ユーザー登録処理を行うコントローラークラス
+ */
 @Controller
 @RequestMapping("/register")
+@RequiredArgsConstructor
 public class UserRegistrationController {
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
-    private UserServiceImpl userService;
+    private final UserServiceImpl userService;
 
-	@Autowired
-	public UserRegistrationController(UserServiceImpl userService) {
-		this.userService = userService;
-	}
-
+	/**
+	 * 文字列トリミングエディタを登録
+	 * @param dataBinder WebDataBinder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
 		
@@ -37,6 +40,11 @@ public class UserRegistrationController {
 		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
 	}	
 	
+	/**
+	 * 登録フォームを表示
+	 * @param theModel モデル
+	 * @return 登録フォームのビュー名
+	 */
 	@GetMapping("/showRegistrationForm02")
 	public String showMyLoginPage(Model theModel) {
 		
@@ -45,6 +53,14 @@ public class UserRegistrationController {
 		return "register/registration-form02";
 	}
 
+	/**
+	 * 登録フォームの処理
+	 * @param theWebUser ユーザー情報
+	 * @param theBindingResult バリデーション結果
+	 * @param session HTTPセッション
+	 * @param theModel モデル
+	 * @return 登録確認ページまたは登録フォームのビュー名
+	 */
 	@PostMapping("/processRegistrationForm02")
 	public String processRegistrationForm(
 			@Valid @ModelAttribute("webUser") WebUser theWebUser,
