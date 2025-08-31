@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>認知再構成法 - 詳細</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+    <div class="monitor-lists">
+      <div class="monitor-list">
+        <div class="monitor-list-upper">
+          <div class="monitor-list__date" th:text="${#temporals.format(cbtCr.createdAt, 'yyyy/MM/dd HH:mm')}"></div>
+          <div class="monitor-list-more">
+            <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+            <ul class="monitor-list-more__items">
+              <a th:href="@{/cbt_cr/{id}/edit(id=${cbtCr.id})}">
+                <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+              </a>
+              <a th:href="@{/cbt_cr/{id}(id=${cbtCr.id})}" data-turbo-method="delete">
+                <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+              </a>
+            </ul>
+          </div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">状況</div>
+          <div class="monitor-list-text" th:text="${cbtCr.fact}"></div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">感情</div>
+          <div class="monitor-list-text">
+            <span th:each="feel : ${cbtCr.negativeFeels}" th:text="${feel.negativeFeelName + '　'}"></span>
+            <br>
+            <span th:each="feel : ${cbtCr.positiveFeels}" th:text="${feel.positiveFeelName + '　'}"></span>
+          </div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">思考</div>
+          <div class="monitor-list-text" th:text="${cbtCr.mind}"></div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">思考のゆがみ</div>
+          <div class="monitor-list-text">
+            <span th:each="distortion : ${cbtCr.distortionLists}" th:text="${distortion.distortionName + '　'}"></span>
+          </div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">思考が正しいと思う事実・根拠</div>
+          <div class="monitor-list-text" th:text="${cbtCr.whyCorrect}"></div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">思考が間違っていると思う事実・根拠</div>
+          <div class="monitor-list-text" th:text="${cbtCr.whyDoubt}"></div>
+        </div>
+        <div class="monitor-list-content">
+          <div class="monitor-list-item">新しい考え方</div>
+          <div class="monitor-list-text" th:text="${cbtCr.newThought}"></div>
+        </div>
+      </div>
+
+      <a th:href="@{/memos}" class="monitor-show__btn">一覧にもどる</a>
+    </div>
+  </div>
+</body>
+</html>

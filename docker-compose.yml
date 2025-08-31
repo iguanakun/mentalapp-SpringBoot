@@ -38,6 +38,7 @@ services:
       - ./mysql/create-cbt-basics-feels-junction-tables.sql:/docker-entrypoint-initdb.d/05-create-cbt-basics-feels-junction-tables.sql
       - ./mysql/create-monitorings-table.sql:/docker-entrypoint-initdb.d/06-create-monitorings-table.sql
       - ./mysql/create-distortion-lists-table.sql:/docker-entrypoint-initdb.d/07-create-distortion-lists-table.sql
+      - ./mysql/create-cbt-cr-table.sql:/docker-entrypoint-initdb.d/08-create-cbt-cr-table.sql
     networks:
       - app-net
 volumes:
