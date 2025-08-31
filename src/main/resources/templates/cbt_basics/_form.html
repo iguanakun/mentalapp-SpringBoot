@@ -7,7 +7,7 @@
       </div>
         <div class="monitor-info">最近あった出来事はなんですか？<br>
           いつ、どこで、誰と、何を、どのように、を具体的に記述してください。</div>
-      <textarea th:field="*{fact}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+      <textarea th:field="*{cbtBasics.fact}" class="monitor-text" rows="5" maxlength="40000"></textarea>
     </div>
 
     <div class="monitor-contents">
@@ -45,7 +45,7 @@
         <div class="monitor-item">思考</div>
       </div>
         <div class="monitor-info">頭に浮かんだ考えはありますか？</div>
-      <textarea th:field="*{mind}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+      <textarea th:field="*{cbtBasics.mind}" class="monitor-text" rows="5" maxlength="40000"></textarea>
     </div>
 
     <div class="monitor-contents">
@@ -54,7 +54,7 @@
         <div class="monitor-item">身体反応</div>
       </div>
         <div class="monitor-info">身体にあらわれた反応はありますか？</div>
-      <textarea th:field="*{body}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+      <textarea th:field="*{cbtBasics.body}" class="monitor-text" rows="5" maxlength="40000"></textarea>
     </div>
 
     <div class="monitor-contents">
@@ -63,7 +63,7 @@
         <div class="monitor-item">行動</div>
       </div>
         <div class="monitor-info">どんな行動をとりましたか？</div>
-      <textarea th:field="*{behavior}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+      <textarea th:field="*{cbtBasics.behavior}" class="monitor-text" rows="5" maxlength="40000"></textarea>
     </div>
 
     <div class="monitor-btn-contents">
@@ -71,6 +71,6 @@
     </div>
 
      <!-- ユーザIDを設定-->
-     <input type="hidden" th:field="*{userId}">
+     <input type="hidden" th:field="*{cbtBasics.userId}">
   </form>
 </div>

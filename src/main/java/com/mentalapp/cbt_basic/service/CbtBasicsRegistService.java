@@ -12,6 +12,7 @@ import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.data.MemoListConst;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,36 +26,14 @@ import java.util.Objects;
  * CBT Basicsの登録・更新・削除機能を提供するサービスクラス
  */
 @Service
+@RequiredArgsConstructor
 public class CbtBasicsRegistService {
 
     private final CbtBasicsMapper cbtBasicsMapper;
     private final CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper;
     private final CbtBasicsPositiveFeelMapper cbtBasicsPositiveFeelMapper;
     private final MentalCommonUtils mentalCommonUtils;
-    private final CbtBasicsViewData cbtBasicsViewData;
-
-    @Autowired
-    public CbtBasicsRegistService(CbtBasicsMapper cbtBasicsMapper,
-                                 CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper,
-                                 CbtBasicsPositiveFeelMapper cbtBasicsPositiveFeelMapper,
-                                 NegativeFeelMapper negativeFeelMapper,
-                                 PositiveFeelMapper positiveFeelMapper,
-                                 MentalCommonUtils mentalCommonUtils,
-                                 CbtBasicsViewData cbtBasicsViewData) {
-        this.cbtBasicsMapper = cbtBasicsMapper;
-        this.cbtBasicsNegativeFeelMapper = cbtBasicsNegativeFeelMapper;
-        this.cbtBasicsPositiveFeelMapper = cbtBasicsPositiveFeelMapper;
-        this.mentalCommonUtils = mentalCommonUtils;
-        this.cbtBasicsViewData = cbtBasicsViewData;
-    }
-
-    /**
-     * ビューデータを作成
-     * @return 作成されたビューデータ
-     */
-    public CbtBasicsViewData createViewData() {
-        return CbtBasicCommonUtils.createAllFeelsViewData(cbtBasicsViewData);
-    }
+    private final CbtBasicCommonUtils cbtBasicCommonUtils;
 
     /**
      * 新規作成処理
@@ -66,10 +45,7 @@ public class CbtBasicsRegistService {
     public String processRegist(CbtBasicsInputForm form, BindingResult bindingResult,
                                 Model model) {
         // バリデーションエラーがある場合
-        if (CbtBasicCommonUtils.checkValidationError(bindingResult) && !form.hasAnyContent()) {
-            // ビューデータを作成して追加
-            CbtBasicsViewData viewData = CbtBasicCommonUtils.createAllFeelsViewData();
-            model.addAttribute("viewData", viewData);
+        if (hasValidationError(form, bindingResult, model)) {
             return CbtBasicsConst.NEW_PATH;
         }
 
@@ -135,7 +111,12 @@ public class CbtBasicsRegistService {
      * @param form フォームデータ
      * @return 遷移先のパス
      */
-    public String processUpdate(CbtBasicsInputForm form) {
+    public String processUpdate(CbtBasicsInputForm form, BindingResult bindingResult, Model model, Long id) {
+        // バリデーションエラーがある場合
+        if (hasValidationError(form, bindingResult, model)) {
+            return CbtBasicsConst.EDIT_PATH;
+        }
+
         // アクセス権チェック
         if (!mentalCommonUtils.isAuthorized(form.getUserId())) {
             return MentalCommonUtils.REDIRECT_TOP_PAGE;
@@ -143,11 +124,25 @@ public class CbtBasicsRegistService {
 
         // モニタリング情報の取得
         CbtBasics cbtBasics = form.getCbtBasics();
+        // モニタリングIDの設定
+        cbtBasics.setId(id);
 
         // 更新
         update(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
 
         return MemoListConst.REDIRECT_MEMOS;
+    }
+
+    private Boolean hasValidationError(CbtBasicsInputForm form, BindingResult bindingResult, Model model) {
+        // バリデーションエラーがある場合
+        if (cbtBasicCommonUtils.checkValidationError(bindingResult)
+                || !form.hasAnyContent()) {
+            // ビューデータを作成して追加
+            CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();
+            model.addAttribute("viewData", viewData);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -184,8 +179,8 @@ public class CbtBasicsRegistService {
         // 削除対象の取得
         CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKey(id);
         // アクセス権チェック
-        if (!CbtBasicCommonUtils.checkAccessPermission(cbtBasics))
-            return MentalCommonUtils.REDIRECT_TOP_PAGE;
+        if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics))
+            return mentalCommonUtils.REDIRECT_TOP_PAGE;
 
         // 削除
         deleteCbtBasics(id);

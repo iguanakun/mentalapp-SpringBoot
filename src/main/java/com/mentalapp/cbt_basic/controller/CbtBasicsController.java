@@ -23,6 +23,7 @@ public class CbtBasicsController {
 
     private final CbtBasicsIndexService cbtBasicsIndexService;
     private final CbtBasicsRegistService cbtBasicsRegistService;
+    private final CbtBasicCommonUtils cbtBasicCommonUtils;
 
     /**
      * 新規作成フォーム表示
@@ -88,16 +89,7 @@ public class CbtBasicsController {
                          @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsInputForm form,
                          BindingResult bindingResult,
                          Model model) {
-        // バリデーションエラーがある場合
-        if (CbtBasicCommonUtils.checkValidationError(bindingResult)
-        || !form.hasAnyContent()) {
-            // ビューデータを作成して追加
-            CbtBasicsViewData viewData = CbtBasicCommonUtils.createAllFeelsViewData();
-            model.addAttribute("viewData", viewData);
-            return CbtBasicsConst.EDIT_PATH;
-        }
-
-        return cbtBasicsRegistService.processUpdate(form);
+           return cbtBasicsRegistService.processUpdate(form, bindingResult,model, id);
     }
 
     /**

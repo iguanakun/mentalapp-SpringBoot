@@ -24,13 +24,14 @@ import java.util.List;
 public class CbtBasicsIndexService {
 
     private final CbtBasicsMapper cbtBasicsMapper;
+    private final CbtBasicCommonUtils cbtBasicCommonUtils;
 
     /**
      * 新規作成処理のためのビューデータを準備
      * @return 感情一覧を含むビューデータ
      */
     public CbtBasicsViewData processNew(){
-        return CbtBasicCommonUtils.createAllFeelsViewData();
+        return cbtBasicCommonUtils.createAllFeelsViewData();
     }
 
 
@@ -63,7 +64,7 @@ public class CbtBasicsIndexService {
         CbtBasics cbtBasics = selectByPrimaryKeyWithFeels(id);
 
         // アクセス権をチェック
-        if (!CbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
+        if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
             return MentalCommonUtils.REDIRECT_TOP_PAGE;
         }
 
@@ -83,14 +84,14 @@ public class CbtBasicsIndexService {
         CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKeyWithFeels(id);
 
         //　アクセス権チェック
-        if (!CbtBasicCommonUtils.checkAccessPermission(cbtBasics))
+        if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics))
             return MentalCommonUtils.REDIRECT_TOP_PAGE;
 
         // ビューデータを作成
-        CbtBasicsViewData viewData = CbtBasicCommonUtils.createAllFeelsViewData();
+        CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();
 
         // エンティティからフォームへの変換
-        CbtBasicsInputForm form = CbtBasicCommonUtils.convertToForm(cbtBasics);
+        CbtBasicsInputForm form = cbtBasicCommonUtils.convertToForm(cbtBasics);
 
         // フォームにセット
         model.addAttribute("viewData", viewData);

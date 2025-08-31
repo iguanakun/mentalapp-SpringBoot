@@ -7,79 +7,9 @@
 </head>
 <body>
   <div layout:fragment="content">
-      <div class="monitor-main">
-          <form th:action="@{/cbt_basics/regist}" method="post" th:object="${cbtBasicsForm}">
-              <div class="monitor-contents">
-                  <div class="monitor-wrapper">
-                      <div class="item-circle"></div>
-                      <div class="monitor-item">出来事</div>
-                  </div>
-                  <div class="monitor-info">最近あった出来事はなんですか？<br>
-                      いつ、どこで、誰と、何を、どのように、を具体的に記述してください。</div>
-                  <textarea th:field="*{cbtBasics.fact}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-              </div>
-
-              <div class="monitor-contents">
-                  <div class="monitor-wrapper">
-                      <div class="item-circle"></div>
-                      <div class="monitor-item">感情</div>
-                  </div>
-                  <div class="monitor-info__feels">
-                      <div class="feel-kinds">ネガティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
-                      <span th:each="feel, stat : ${viewData.negativeFeels}">
-                          <label class="checkbox" id="negative-group">
-                              <input type="checkbox" th:field="*{negativeFeelIds}" th:value="${feel.id}" />
-                              <span th:text="${feel.negativeFeelName}"></span>
-                          </label>
-                            <!-- 10個目で改行を入れる-->
-                          <div th:if="${feel.id == 10}" class="second-row"></div>
-                      </span>
-                  </div>
-                  <div class="monitor-info__feels">
-                      <div class="feel-kinds">ポジティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
-                      <span th:each="feel, stat : ${viewData.positiveFeels}">
-                          <label class="checkbox" id="positive-group">
-                              <input type="checkbox" th:field="*{positiveFeelIds}" th:value="${feel.id}" />
-                              <span th:text="${feel.positiveFeelName}"></span>
-                          </label>
-                            <!-- 10個目で改行を入れる-->
-                          <div th:if="${feel.id == 10}" class="second-row"></div>
-                      </span>
-                  </div>
-              </div>
-
-              <div class="monitor-contents">
-                  <div class="monitor-wrapper">
-                      <div class="item-circle"></div>
-                      <div class="monitor-item">思考</div>
-                  </div>
-                  <div class="monitor-info">頭に浮かんだ考えはありますか？</div>
-                  <textarea th:field="*{cbtBasics.mind}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-              </div>
-
-              <div class="monitor-contents">
-                  <div class="monitor-wrapper">
-                      <div class="item-circle"></div>
-                      <div class="monitor-item">身体反応</div>
-                  </div>
-                  <div class="monitor-info">身体にあらわれた反応はありますか？</div>
-                  <textarea th:field="*{cbtBasics.body}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-              </div>
-
-              <div class="monitor-contents">
-                  <div class="monitor-wrapper">
-                      <div class="item-circle"></div>
-                      <div class="monitor-item">行動</div>
-                  </div>
-                  <div class="monitor-info">どんな行動をとりましたか？</div>
-                  <textarea th:field="*{cbtBasics.behavior}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-              </div>
-
-              <div class="monitor-btn-contents">
-                  <button type="submit" class="monitor-btn">作成する</button>
-              </div>
-          </form>
-      </div>
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+    
+    <div th:replace="~{cbt_basics/_form :: form(url=@{/cbt_basics/regist}, method='post')}"></div>
   </div>
 </body>
 </html>

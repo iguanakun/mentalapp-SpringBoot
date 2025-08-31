@@ -10,6 +10,8 @@ import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.util.MentalCommonUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -18,18 +20,20 @@ import java.util.Objects;
 /**
  * CBT Basicsの共通ユーティリティクラス
  */
+@Component
+@RequiredArgsConstructor
 public class CbtBasicCommonUtils {
 
-    private static NegativeFeelMapper negativeFeelMapper;
-    private static PositiveFeelMapper positiveFeelMapper;
-    private static MentalCommonUtils mentalCommonUtils;
+    private final NegativeFeelMapper negativeFeelMapper;
+    private final PositiveFeelMapper positiveFeelMapper;
+    private final MentalCommonUtils mentalCommonUtils;
 
     /**
      * エンティティからフォームへの変換
      * @param cbtBasics 変換元のCBT Basicsエンティティ
      * @return 変換後のフォーム
      */
-    public static CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
+    public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
         // ネガティブ感情IDリストの抽出
         List<Long> negativeFeelIds = extractedNegativeFeelsIdList(cbtBasics);
 
@@ -49,13 +53,13 @@ public class CbtBasicCommonUtils {
      * @param cbtBasics 抽出元のCBT Basicsエンティティ
      * @return ネガティブ感情IDのリスト、関連付けがない場合はnull
      */
-    private static List<Long> extractedNegativeFeelsIdList(CbtBasics cbtBasics) {
-        if (Objects.isNull(cbtBasics.getCbtBasicsNegativeFeels()) && cbtBasics.getCbtBasicsNegativeFeels().isEmpty()) {
+    private List<Long> extractedNegativeFeelsIdList(CbtBasics cbtBasics) {
+        if (Objects.isNull(cbtBasics.getNegativeFeels()) || cbtBasics.getNegativeFeels().isEmpty()) {
             return null;
         }
         
-        return cbtBasics.getCbtBasicsNegativeFeels().stream()
-                .map(CbtBasicsNegativeFeel::getNegativeFeelingId)
+        return cbtBasics.getNegativeFeels().stream()
+                .map(NegativeFeel::getId)
                 .toList();
     }
     
@@ -64,30 +68,27 @@ public class CbtBasicCommonUtils {
      * @param cbtBasics 抽出元のCBT Basicsエンティティ
      * @return ポジティブ感情IDのリスト、関連付けがない場合はnull
      */
-    private static List<Long> extractedPositiveFeelsIdList(CbtBasics cbtBasics) {
-        if (Objects.isNull(cbtBasics.getCbtBasicsPositiveFeels()) && cbtBasics.getCbtBasicsPositiveFeels().isEmpty()) {
+    private List<Long> extractedPositiveFeelsIdList(CbtBasics cbtBasics) {
+        if (Objects.isNull(cbtBasics.getPositiveFeels()) || cbtBasics.getPositiveFeels().isEmpty()) {
             return null;
         }
         
-        return cbtBasics.getCbtBasicsPositiveFeels().stream()
-                .map(CbtBasicsPositiveFeel::getPositiveFeelingId)
+        return cbtBasics.getPositiveFeels().stream()
+                .map(PositiveFeel::getId)
                 .toList();
     }
 
     /**
      * 感情一覧表示ビューデータを作成
-     * @param viewData ビューデータオブジェクト（既存のものがある場合）
      * @return 作成されたビューデータ
      */
-    public static CbtBasicsViewData createAllFeelsViewData(CbtBasicsViewData viewData) {
+    public CbtBasicsViewData createAllFeelsViewData() {
         // 感情データを取得
         List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
         List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
 
         // ビューデータにセット
-        if (viewData == null) {
-            viewData = new CbtBasicsViewData();
-        }
+        CbtBasicsViewData viewData = new CbtBasicsViewData();
         viewData.setNegativeFeels(negativeFeels);
         viewData.setPositiveFeels(positiveFeels);
         
@@ -95,19 +96,11 @@ public class CbtBasicCommonUtils {
     }
 
     /**
-     * 感情一覧表示ビューデータを作成（オーバーロード）
-     * @return 作成されたビューデータ
-     */
-    public static CbtBasicsViewData createAllFeelsViewData() {
-        return createAllFeelsViewData(null);
-    }
-
-    /**
      * CBT Basicsのアクセス権チェック
      * @param cbtBasics チェック対象のCBT Basics
      * @return アクセス可能な場合はtrue、それ以外はfalse
      */
-    public static Boolean checkAccessPermission(CbtBasics cbtBasics) {
+    public Boolean checkAccessPermission(CbtBasics cbtBasics) {
         // NULLチェック
         if(Objects.isNull(cbtBasics)){
             return false;
@@ -126,7 +119,7 @@ public class CbtBasicCommonUtils {
      * @param bindingResult バリデーション結果
      * @return エラーがある場合はtrue、それ以外はfalse
      */
-    public static Boolean checkValidationError(BindingResult bindingResult) {
+    public Boolean checkValidationError(BindingResult bindingResult) {
         // バリデーションエラーがある場合
         return bindingResult.hasErrors();
     }
