@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.luv2code.springboot</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>mentalapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demosecurity</name>
 	<description>Demo project for Spring Boot</description>

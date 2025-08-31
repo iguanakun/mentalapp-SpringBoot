@@ -1,126 +1,123 @@
 package com.mentalapp.cbt_basic.util;
 
 import com.mentalapp.cbt_basic.entity.CbtBasics;
-import com.mentalapp.cbt_basic.entity.CbtBasicsNegativeFeel;
-import com.mentalapp.cbt_basic.entity.CbtBasicsPositiveFeel;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
-import com.mentalapp.common.entity.NegativeFeel;
-import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
+import com.mentalapp.common.entity.NegativeFeel;
+import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.util.MentalCommonUtils;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
-import java.util.List;
-import java.util.Objects;
-
-/**
- * CBT Basicsの共通ユーティリティクラス
- */
+/** CBT Basicsの共通ユーティリティクラス */
 @Component
 @RequiredArgsConstructor
 public class CbtBasicCommonUtils {
 
-    private final NegativeFeelMapper negativeFeelMapper;
-    private final PositiveFeelMapper positiveFeelMapper;
-    private final MentalCommonUtils mentalCommonUtils;
+  private final NegativeFeelMapper negativeFeelMapper;
+  private final PositiveFeelMapper positiveFeelMapper;
+  private final MentalCommonUtils mentalCommonUtils;
 
-    /**
-     * エンティティからフォームへの変換
-     * @param cbtBasics 変換元のCBT Basicsエンティティ
-     * @return 変換後のフォーム
-     */
-    public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
-        // ネガティブ感情IDリストの抽出
-        List<Long> negativeFeelIds = extractedNegativeFeelsIdList(cbtBasics);
+  /**
+   * エンティティからフォームへの変換
+   *
+   * @param cbtBasics 変換元のCBT Basicsエンティティ
+   * @return 変換後のフォーム
+   */
+  public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
+    // ネガティブ感情IDリストの抽出
+    List<Long> negativeFeelIds = extractedNegativeFeelsIdList(cbtBasics);
 
-        // ポジティブ感情IDリストの抽出
-        List<Long> positiveFeelIds = extractedPositiveFeelsIdList(cbtBasics);
+    // ポジティブ感情IDリストの抽出
+    List<Long> positiveFeelIds = extractedPositiveFeelsIdList(cbtBasics);
 
-        CbtBasicsInputForm form = new CbtBasicsInputForm();
-        form.setCbtBasics(cbtBasics);
-        form.setNegativeFeelIds(negativeFeelIds);
-        form.setPositiveFeelIds(positiveFeelIds);
+    CbtBasicsInputForm form = new CbtBasicsInputForm();
+    form.setCbtBasics(cbtBasics);
+    form.setNegativeFeelIds(negativeFeelIds);
+    form.setPositiveFeelIds(positiveFeelIds);
 
-        return form;
+    return form;
+  }
+
+  /**
+   * CBT Basicsからネガティブ感情IDリストを抽出
+   *
+   * @param cbtBasics 抽出元のCBT Basicsエンティティ
+   * @return ネガティブ感情IDのリスト、関連付けがない場合はnull
+   */
+  private List<Long> extractedNegativeFeelsIdList(CbtBasics cbtBasics) {
+    if (Objects.isNull(cbtBasics.getNegativeFeels()) || cbtBasics.getNegativeFeels().isEmpty()) {
+      return null;
     }
 
-    /**
-     * CBT Basicsからネガティブ感情IDリストを抽出
-     * @param cbtBasics 抽出元のCBT Basicsエンティティ
-     * @return ネガティブ感情IDのリスト、関連付けがない場合はnull
-     */
-    private List<Long> extractedNegativeFeelsIdList(CbtBasics cbtBasics) {
-        if (Objects.isNull(cbtBasics.getNegativeFeels()) || cbtBasics.getNegativeFeels().isEmpty()) {
-            return null;
-        }
-        
-        return cbtBasics.getNegativeFeels().stream()
-                .map(NegativeFeel::getId)
-                .toList();
-    }
-    
-    /**
-     * CBT Basicsからポジティブ感情IDリストを抽出
-     * @param cbtBasics 抽出元のCBT Basicsエンティティ
-     * @return ポジティブ感情IDのリスト、関連付けがない場合はnull
-     */
-    private List<Long> extractedPositiveFeelsIdList(CbtBasics cbtBasics) {
-        if (Objects.isNull(cbtBasics.getPositiveFeels()) || cbtBasics.getPositiveFeels().isEmpty()) {
-            return null;
-        }
-        
-        return cbtBasics.getPositiveFeels().stream()
-                .map(PositiveFeel::getId)
-                .toList();
+    return cbtBasics.getNegativeFeels().stream().map(NegativeFeel::getId).toList();
+  }
+
+  /**
+   * CBT Basicsからポジティブ感情IDリストを抽出
+   *
+   * @param cbtBasics 抽出元のCBT Basicsエンティティ
+   * @return ポジティブ感情IDのリスト、関連付けがない場合はnull
+   */
+  private List<Long> extractedPositiveFeelsIdList(CbtBasics cbtBasics) {
+    if (Objects.isNull(cbtBasics.getPositiveFeels()) || cbtBasics.getPositiveFeels().isEmpty()) {
+      return null;
     }
 
-    /**
-     * 感情一覧表示ビューデータを作成
-     * @return 作成されたビューデータ
-     */
-    public CbtBasicsViewData createAllFeelsViewData() {
-        // 感情データを取得
-        List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
-        List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
+    return cbtBasics.getPositiveFeels().stream().map(PositiveFeel::getId).toList();
+  }
 
-        // ビューデータにセット
-        CbtBasicsViewData viewData = new CbtBasicsViewData();
-        viewData.setNegativeFeels(negativeFeels);
-        viewData.setPositiveFeels(positiveFeels);
-        
-        return viewData;
+  /**
+   * 感情一覧表示ビューデータを作成
+   *
+   * @return 作成されたビューデータ
+   */
+  public CbtBasicsViewData createAllFeelsViewData() {
+    // 感情データを取得
+    List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
+    List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
+
+    // ビューデータにセット
+    CbtBasicsViewData viewData = new CbtBasicsViewData();
+    viewData.setNegativeFeels(negativeFeels);
+    viewData.setPositiveFeels(positiveFeels);
+
+    return viewData;
+  }
+
+  /**
+   * CBT Basicsのアクセス権チェック
+   *
+   * @param cbtBasics チェック対象のCBT Basics
+   * @return アクセス可能な場合はtrue、それ以外はfalse
+   */
+  public Boolean checkAccessPermission(CbtBasics cbtBasics) {
+    // NULLチェック
+    if (Objects.isNull(cbtBasics)) {
+      return false;
     }
 
-    /**
-     * CBT Basicsのアクセス権チェック
-     * @param cbtBasics チェック対象のCBT Basics
-     * @return アクセス可能な場合はtrue、それ以外はfalse
-     */
-    public Boolean checkAccessPermission(CbtBasics cbtBasics) {
-        // NULLチェック
-        if(Objects.isNull(cbtBasics)){
-            return false;
-        }
-
-        // モニタリング情報へのユーザへのアクセス権チェック
-        if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
-            return false;
-        }
-
-        return true;
+    // モニタリング情報へのユーザへのアクセス権チェック
+    if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
+      return false;
     }
 
-    /**
-     * バリデーションエラーチェック
-     * @param bindingResult バリデーション結果
-     * @return エラーがある場合はtrue、それ以外はfalse
-     */
-    public Boolean checkValidationError(BindingResult bindingResult) {
-        // バリデーションエラーがある場合
-        return bindingResult.hasErrors();
-    }
+    return true;
+  }
+
+  /**
+   * バリデーションエラーチェック
+   *
+   * @param bindingResult バリデーション結果
+   * @return エラーがある場合はtrue、それ以外はfalse
+   */
+  public Boolean checkValidationError(BindingResult bindingResult) {
+    // バリデーションエラーがある場合
+    return bindingResult.hasErrors();
+  }
 }
