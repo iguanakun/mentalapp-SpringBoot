@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.cbt_cr.dao.CbtCrDistortionRelationMapper">
+
+    <!-- 認知再構成法IDによる取得 -->
+    <select id="selectByCbtCrId" resultType="com.mentalapp.cbt_cr.entity.CbtCrDistortionRelation">
+        SELECT * FROM cbt_cr_distortion_relations
+        WHERE cbt_cr_id = #{cbtCrId}
+    </select>
+
+    <!-- 登録 -->
+    <insert id="insert" parameterType="com.mentalapp.cbt_cr.entity.CbtCrDistortionRelation">
+        INSERT INTO cbt_cr_distortion_relations(cbt_cr_id, distortion_list_id)
+        VALUES(#{cbtCrId}, #{distortionListId})
+    </insert>
+
+    <!-- 認知再構成法IDによる削除 -->
+    <delete id="deleteByCbtCrId">
+        DELETE FROM cbt_cr_distortion_relations
+        WHERE cbt_cr_id = #{cbtCrId}
+    </delete>
+
+</mapper>

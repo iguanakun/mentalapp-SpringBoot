@@ -15,15 +15,14 @@ import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 認知再構成法の登録・更新・削除処理を行うサービスクラス
@@ -48,13 +47,13 @@ public class CbtCrRegistService {
      * @return 遷移先のパス
      */
     public String processRegist(CbtCrInputForm form, BindingResult bindingResult, Model model) {
+    // セッションから一時保存データを取得
+    setSessionDataToForm(form);
+
         // バリデーションエラーチェック
         if (hasValidationError(form, bindingResult, model)) {
             return CbtCrConst.STEP2_PATH;
         }
-
-        // セッションから一時保存データを取得
-        setSessionDataToForm(form);
 
         // ユーザーIDの設定
         form.setUserId(mentalCommonUtils.getUser().getId());
@@ -74,13 +73,13 @@ public class CbtCrRegistService {
      * @return 遷移先のパス
      */
     public String processUpdate(CbtCrInputForm form, BindingResult bindingResult, Model model, Long id) {
+    // セッションから一時保存データを取得
+    setSessionDataToForm(form);
+
         // バリデーションエラーチェック
         if (hasValidationError(form, bindingResult, model)) {
             return CbtCrConst.EDIT_STEP2_PATH;
         }
-
-        // セッションから一時保存データを取得
-        setSessionDataToForm(form);
 
         // 更新対象の取得
         CbtCr cbtCr = cbtCrMapper.selectByPrimaryKey(id);
@@ -205,7 +204,7 @@ public class CbtCrRegistService {
             for (Long negativeFeelId : negativeFeelIds) {
                 CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
                 cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
-                cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId);
+        cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
                 cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
             }
         }
@@ -221,7 +220,7 @@ public class CbtCrRegistService {
             for (Long positiveFeelId : positiveFeelIds) {
                 CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
                 cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
-                cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId);
+        cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
                 cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
             }
         }

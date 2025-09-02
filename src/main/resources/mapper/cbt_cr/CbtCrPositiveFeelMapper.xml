@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.cbt_cr.dao.CbtCrPositiveFeelMapper">
+
+    <!-- 認知再構成法IDによる取得 -->
+    <select id="selectByCbtCrId" resultType="com.mentalapp.cbt_cr.entity.CbtCrPositiveFeel">
+        SELECT * FROM cbt_cr_positive_feels
+        WHERE cbt_cr_id = #{cbtCrId}
+    </select>
+
+    <!-- 登録 -->
+    <insert id="insert" parameterType="com.mentalapp.cbt_cr.entity.CbtCrPositiveFeel">
+        INSERT INTO cbt_cr_positive_feels(cbt_cr_id, positive_feel_id)
+        VALUES(#{cbtCrId}, #{positiveFeelId})
+    </insert>
+
+    <!-- 認知再構成法IDによる削除 -->
+    <delete id="deleteByCbtCrId">
+        DELETE FROM cbt_cr_positive_feels
+        WHERE cbt_cr_id = #{cbtCrId}
+    </delete>
+
+</mapper>

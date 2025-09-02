@@ -26,13 +26,15 @@ CREATE TABLE `distortion_lists` (
 -- サンプルデータの挿入
 INSERT INTO `distortion_lists` (`distortion_name`, `info`, `created_at`, `updated_at`)
 VALUES 
-('All-or-Nothing Thinking', 'Seeing things in black-and-white categories', NOW(), NOW()),
-('Overgeneralization', 'Viewing a negative event as a never-ending pattern of defeat', NOW(), NOW()),
-('Mental Filter', 'Picking out a single negative detail and dwelling on it', NOW(), NOW()),
-('Disqualifying the Positive', 'Rejecting positive experiences by insisting they "don\'t count"', NOW(), NOW()),
-('Jumping to Conclusions', 'Making negative interpretations without definite facts', NOW(), NOW()),
-('Magnification or Minimization', 'Exaggerating the importance of problems or minimizing positive qualities', NOW(), NOW()),
-('Emotional Reasoning', 'Assuming that negative emotions reflect the way things really are', NOW(), NOW()),
-('Should Statements', 'Using "should," "must," or "ought to" statements to motivate yourself', NOW(), NOW()),
-('Labeling', 'Attaching a negative label to yourself or others instead of describing behavior', NOW(), NOW()),
-('Personalization', 'Seeing yourself as the cause of some negative external event', NOW(), NOW());
+('白黒思考', '「完璧にやろうとしていない？」', NOW(), NOW()),
+('過度な一般化', '「一度の失敗で、また同じ事が起こると思っていない？」', NOW(), NOW()),
+('心のフィルター', '「悪い点だけ目についていない？」', NOW(), NOW()),
+('マイナス化思考', '「自分を素直に褒めることができない？」', NOW(), NOW()),
+('読心術', '「相手のことを思い込んでいない？」', NOW(), NOW()),
+('運命の先読み', '「私は一生不幸だ、と思いすぎていない？」', NOW(), NOW()),
+('破滅化', '「すこしの失敗を大げさにとらえすぎていない？」', NOW(), NOW()),
+('感情的決めつけ', '「感情に巻き込まれていない？」', NOW(), NOW()),
+('べき思考', '「自分や相手に厳しすぎない？」', NOW(), NOW()),
+('レッテル貼り', '「私はこういう人間だ、と思いすぎていない？」', NOW(), NOW()),
+('内なる批評家', '「自分を責めすぎていない？」', NOW(), NOW()),
+('他人批判', '「あいつのせい、って思いすぎていない？」', NOW(), NOW());

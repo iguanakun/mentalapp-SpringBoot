@@ -1,70 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-  <title>認知再構成法 - 編集ステップ2</title>
+    <title>認知再構成法 - 編集ステップ2</title>
 </head>
 <body>
-  <div layout:fragment="content">
+<div layout:fragment="content">
     <div th:replace="~{common/_header-margin :: header-margin}"></div>
-    <h2 class="monitor-title">認知再構成法</h2>
-    <div class="monitor-main">
-      <form th:action="@{/cbt_cr/{id}(id=${cbtCrForm.id})}" method="post" th:object="${cbtCrForm}">
-        <div class="monitor-contents">
-          <div class="monitor-wrapper">
-            <div class="item-circle"></div>
-            <div class="monitor-item">思考のゆがみ</div>
-          </div>
-          <div class="monitor-info">次のような思考のゆがみに、がんじがらめになっていると感じるものはありますか？<br>
-            もう一人の自分が観察するように、自分に語りかけてみてください。</div>
-          <div class="monitor-info__dist">
-            <div th:each="dist : ${viewData.distortionLists}">
-              <label>
-                <div class="checkbox" id="distortion">
-                  <input type="checkbox" th:field="*{distortionIds}" th:value="${dist.id}" />
-                  <span class="green-diamond">◆ </span>
-                  <span th:text="${dist.distortionName}"></span><br>
-                  <span th:text="${dist.info}"></span>
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
-        
-        <div class="monitor-contents">
-          <div class="monitor-wrapper">
-            <div class="item-circle"></div>
-            <div class="monitor-item">思考のきっかけ</div>
-          </div>
-            <div class="monitor-info">考えが正しいと思う事実や根拠はありますか？</div>
-          <textarea th:field="*{whyCorrect}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-        </div>
 
-        <div class="monitor-contents">
-          <div class="monitor-wrapper">
-            <div class="item-circle"></div>
-            <div class="monitor-item">思考を疑う</div>
-          </div>
-            <div class="monitor-info">
-              考えが間違っていると思う事実や根拠はありますか？</div>
-          <textarea th:field="*{whyDoubt}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-        </div>
+    <div th:replace="~{cbt_cr/step2-form :: step2-form(url=@{/cbt_cr/{id}(id=${cbtCrForm.id})}, method='post', buttonText='更新する')}"></div>
 
-        <div class="monitor-contents">
-          <div class="monitor-wrapper">
-            <div class="item-circle"></div>
-            <div class="monitor-item">新しい考え方</div>
-          </div>
-            <div class="monitor-info"> ここまでを踏まえて、新しい考え方はできますか？</div>
-          <textarea th:field="*{newThought}" class="monitor-text" rows="5" maxlength="40000"></textarea>
-        </div>
-
-        <div class="monitor-btn-contents">
-          <button type="submit" class="monitor-btn">更新する</button>
-        </div>
-      </form>
+    <div class="monitor-lists">
+        <a th:href="@{/cbt_cr/{id}/edit(id=${cbtCrForm.id})}" class="monitor-show__btn">もどる</a>
     </div>
-  </div>
+</div>
 </body>
 </html>

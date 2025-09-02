@@ -14,6 +14,6 @@ public class topIndexController {
    */
   @GetMapping("/")
   public String showIndex() {
-    return "monitorings/index";
+    return "index";
   }
 }
