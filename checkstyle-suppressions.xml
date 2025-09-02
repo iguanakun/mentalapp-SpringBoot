@@ -6,4 +6,6 @@
 <suppressions>
     <!-- プロジェクト全体でSummaryJavadocチェックを無効化 -->
     <suppress checks="SummaryJavadoc" files=".*\.java$"/>
+    <!-- user_memo_list パッケージの命名規則警告を無効化 -->
+    <suppress checks="PackageName" files=".*[/\\]com[/\\]mentalapp[/\\]user_memo_list[/\\].*\.java$"/>
 </suppressions>
