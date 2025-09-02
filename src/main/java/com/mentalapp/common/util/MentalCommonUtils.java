@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class MentalCommonUtils {
 
   public static final String REDIRECT_TOP_PAGE = "redirect:/";
+  public static final String REDIRECT_MEMOS_PAGE = "redirect:/memos";
 
   private final UserMapper userMapper;
 

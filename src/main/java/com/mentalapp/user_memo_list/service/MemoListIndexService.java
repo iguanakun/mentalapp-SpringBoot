@@ -80,13 +80,12 @@ public class MemoListIndexService {
     return combinedFeelingsMap.entrySet().stream()
         .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
         .limit(3)
-        .map(
-            entry -> {
-              Map<String, Object> resultMap = new HashMap<>();
-              resultMap.put("negativeFeelName", entry.getKey());
-              resultMap.put("count", entry.getValue());
-              return resultMap;
-            })
+        .map(entry -> {
+            var resultMap = new HashMap<String, Object>();
+            resultMap.put("negativeFeelName", entry.getKey());
+            resultMap.put("count", entry.getValue());
+            return resultMap;
+        })
         .collect(Collectors.toList());
   }
 

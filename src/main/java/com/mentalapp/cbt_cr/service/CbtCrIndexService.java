@@ -40,6 +40,17 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processNew(Model model) {
+    // ビューデータを作成
+    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+
+    // モデルに追加
+    model.addAttribute("viewData", viewData);
+    model.addAttribute("cbtCrForm", new CbtCrInputForm());
+
+    return CbtCrConst.NEW_PATH;
+  }
+
+  private CbtCrViewData createCbtCrViewDataWithFeel() {
     // 全ての感情を取得
     List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
     List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
@@ -49,11 +60,7 @@ public class CbtCrIndexService {
     viewData.setNegativeFeels(negativeFeels);
     viewData.setPositiveFeels(positiveFeels);
 
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", new CbtCrInputForm());
-
-    return CbtCrConst.NEW_PATH;
+    return viewData;
   }
 
   /**
@@ -65,10 +72,37 @@ public class CbtCrIndexService {
    */
   public String processStep2(CbtCrInputForm form, Model model) {
     // セッションに一時保存
+    saveFormToSession(form);
+
+    // リダイレクト
+    return "redirect:/cbt_cr/step2_view";
+  }
+
+  /**
+   * フォームデータをセッションに保存
+   *
+   * @param form 入力フォーム
+   */
+  private void saveFormToSession(CbtCrInputForm form) {
     session.setAttribute("negativeFeelIds", form.getNegativeFeelIds());
     session.setAttribute("positiveFeelIds", form.getPositiveFeelIds());
     session.setAttribute("fact", form.getFact());
     session.setAttribute("mind", form.getMind());
+  }
+
+  /**
+   * セッションからデータを取得してステップ2画面を表示
+   *
+   * @param model モデル
+   * @return ビュー名
+   */
+  public String processStep2FromSession(Model model) {
+    // セッションからデータを取得して新しいフォームを作成
+    CbtCrInputForm form = new CbtCrInputForm();
+    form.setNegativeFeelIds((List<Long>) session.getAttribute("negativeFeelIds"));
+    form.setPositiveFeelIds((List<Long>) session.getAttribute("positiveFeelIds"));
+    form.setFact((String) session.getAttribute("fact"));
+    form.setMind((String) session.getAttribute("mind"));
 
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
@@ -92,12 +126,12 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processShow(Long id, Model model) {
-    // 認知再構成法を取得（関連データを含む）
+    // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
 
     // 存在チェック
     if (Objects.isNull(cbtCr)) {
-      return "redirect:/memos";
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
     // アクセス権限チェック
@@ -119,27 +153,18 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processEdit(Long id, Model model) {
-    // 認知再構成法を取得（関連データを含む）
+    // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
 
     // 存在チェック
     if (Objects.isNull(cbtCr)) {
-      return "redirect:/memos";
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
     // アクセス権限チェック
     if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
-
-    // 全ての感情を取得
-    List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
-    List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
-
-    // ビューデータを作成
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setNegativeFeels(negativeFeels);
-    viewData.setPositiveFeels(positiveFeels);
 
     // フォームに値をセット
     CbtCrInputForm form = new CbtCrInputForm();
@@ -155,6 +180,9 @@ public class CbtCrIndexService {
     if (Objects.nonNull(cbtCr.getPositiveFeels())) {
       form.setPositiveFeelIds(cbtCr.getPositiveFeels().stream().map(PositiveFeel::getId).toList());
     }
+
+    // ビューデータを作成
+    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
 
     // モデルに追加
     model.addAttribute("viewData", viewData);
@@ -177,7 +205,7 @@ public class CbtCrIndexService {
 
     // 存在チェック
     if (Objects.isNull(cbtCr)) {
-      return "redirect:/memos";
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
     // アクセス権限チェック
@@ -186,10 +214,41 @@ public class CbtCrIndexService {
     }
 
     // セッションに一時保存
-    session.setAttribute("negativeFeelIds", form.getNegativeFeelIds());
-    session.setAttribute("positiveFeelIds", form.getPositiveFeelIds());
-    session.setAttribute("fact", form.getFact());
-    session.setAttribute("mind", form.getMind());
+    saveFormToSession(form);
+    // IDをセッションに保存
+    session.setAttribute("cbtCrId", id);
+
+    // リダイレクト
+    return "redirect:/cbt_cr/" + id + "/edit_step2_view";
+  }
+
+  /**
+   * セッションからデータを取得して編集ステップ2画面を表示
+   *
+   * @param id 認知再構成法のID
+   * @param model モデル
+   * @return ビュー名
+   */
+  public String processEditStep2FromSession(Long id, Model model) {
+    // 認知再構成法を取得（関連データを含む）
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+
+    // 存在チェック
+    if (Objects.isNull(cbtCr)) {
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+    }
+
+    // アクセス権限チェック
+    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
+      return MentalCommonUtils.REDIRECT_TOP_PAGE;
+    }
+
+    // セッションからデータを取得して新しいフォームを作成
+    CbtCrInputForm form = new CbtCrInputForm();
+    form.setNegativeFeelIds((List<Long>) session.getAttribute("negativeFeelIds"));
+    form.setPositiveFeelIds((List<Long>) session.getAttribute("positiveFeelIds"));
+    form.setFact((String) session.getAttribute("fact"));
+    form.setMind((String) session.getAttribute("mind"));
 
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();

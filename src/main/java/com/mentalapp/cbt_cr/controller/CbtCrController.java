@@ -38,15 +38,26 @@ public class CbtCrController {
   }
 
   /**
-   * ステップ2フォーム表示
+   * ステップ2フォーム表示（リダイレクト用）
    *
    * @param form 入力フォーム（ステップ1の入力内容）
    * @param model モデル
-   * @return ステップ2フォームのビュー名
+   * @return リダイレクト先のパス
    */
   @GetMapping("/step2")
   public String step2(@ModelAttribute("cbtCrForm") CbtCrInputForm form, Model model) {
     return cbtCrIndexService.processStep2(form, model);
+  }
+
+  /**
+   * ステップ2フォーム表示（セッションからデータを取得）
+   *
+   * @param model モデル
+   * @return ステップ2フォームのビュー名
+   */
+  @GetMapping("/step2_view")
+  public String step2View(Model model) {
+    return cbtCrIndexService.processStep2FromSession(model);
   }
 
   /**
@@ -90,17 +101,29 @@ public class CbtCrController {
   }
 
   /**
-   * 編集フォーム表示（ステップ2）
+   * 編集フォーム表示（ステップ2）（リダイレクト用）
    *
    * @param id 認知再構成法のID
    * @param form 入力フォーム（ステップ1の入力内容）
    * @param model モデル
-   * @return ステップ2編集フォームのビュー名
+   * @return リダイレクト先のパス
    */
   @GetMapping("/{id}/edit_step2")
   public String editStep2(
       @PathVariable Long id, @ModelAttribute("cbtCrForm") CbtCrInputForm form, Model model) {
     return cbtCrIndexService.processEditStep2(id, form, model);
+  }
+
+  /**
+   * 編集フォーム表示（ステップ2）（セッションからデータを取得）
+   *
+   * @param id 認知再構成法のID
+   * @param model モデル
+   * @return ステップ2編集フォームのビュー名
+   */
+  @GetMapping("/{id}/edit_step2_view")
+  public String editStep2View(@PathVariable Long id, Model model) {
+    return cbtCrIndexService.processEditStep2FromSession(id, model);
   }
 
   /**
