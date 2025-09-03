@@ -36,6 +36,29 @@ public class CbtCrRegistService {
   private final CbtCrCommonUtils cbtCrCommonUtils;
   private final MentalCommonUtils mentalCommonUtils;
   private final HttpSession session;
+  
+  /**
+   * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う
+   *
+   * @param id 認知再構成法のID
+   * @return 権限チェック結果（成功時はCbtCrオブジェクト、失敗時はnull）
+   */
+  private CbtCr validateAccessPermission(Long id) {
+    // 認知再構成法を取得
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKey(id);
+    
+    // 存在チェック
+    if (Objects.isNull(cbtCr)) {
+      return null;
+    }
+    
+    // アクセス権限チェック
+    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
+      return null;
+    }
+    
+    return cbtCr;
+  }
 
   /**
    * 新規登録処理
@@ -88,17 +111,10 @@ public class CbtCrRegistService {
       return CbtCrConst.EDIT_STEP2_PATH;
     }
 
-    // 更新対象の取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKey(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-    }
-
-    // アクセス権チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
 
     try {
@@ -185,33 +201,6 @@ public class CbtCrRegistService {
     session.removeAttribute("fact");
     session.removeAttribute("mind");
     session.removeAttribute("cbtCrId");
-  }
-
-  /**
-   * セッションから一時保存データを取得してフォームに設定
-   *
-   * @deprecated 引数を更新するため非推奨。代わりに {@link #createMergedForm(CbtCrInputForm)} を使用してください。
-   * @param form 入力フォーム
-   */
-  @Deprecated
-  private void setSessionDataToForm(CbtCrInputForm form) {
-    // セッションから一時保存データを取得
-    List<Long> negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
-    List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
-    String fact = (String) session.getAttribute("fact");
-    String mind = (String) session.getAttribute("mind");
-
-    // セッションデータをフォームに設定
-    form.setNegativeFeelIds(negativeFeelIds);
-    form.setPositiveFeelIds(positiveFeelIds);
-    form.setFact(fact);
-    form.setMind(mind);
-
-    // セッションから削除
-    session.removeAttribute("negativeFeelIds");
-    session.removeAttribute("positiveFeelIds");
-    session.removeAttribute("fact");
-    session.removeAttribute("mind");
   }
 
   /**
@@ -356,17 +345,10 @@ public class CbtCrRegistService {
    * @return 遷移先のパス
    */
   public String processDelete(Long id) {
-    // 削除対象の取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKey(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-    }
-
-    // アクセス権チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
 
     // 削除

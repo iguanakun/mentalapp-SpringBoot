@@ -32,6 +32,29 @@ public class CbtCrIndexService {
   private final CbtCrCommonUtils cbtCrCommonUtils;
   private final MentalCommonUtils mentalCommonUtils;
   private final HttpSession session;
+  
+  /**
+   * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う
+   *
+   * @param id 認知再構成法のID
+   * @return 権限チェック結果（成功時はCbtCrオブジェクト、失敗時はnull）
+   */
+  private CbtCr validateAccessPermission(Long id) {
+    // 認知再構成法を取得
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+    
+    // 存在チェック
+    if (Objects.isNull(cbtCr)) {
+      return null;
+    }
+    
+    // アクセス権限チェック
+    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
+      return null;
+    }
+    
+    return cbtCr;
+  }
 
   /**
    * 新規作成画面の処理
@@ -72,7 +95,7 @@ public class CbtCrIndexService {
    */
   public String processStep2(CbtCrInputForm form, Model model) {
     // セッションに一時保存
-    saveFormToSession(form);
+    saveStep1FormToSession(form);
 
     // リダイレクト
     return "redirect:/cbt_cr/step2_view";
@@ -83,7 +106,8 @@ public class CbtCrIndexService {
    *
    * @param form 入力フォーム
    */
-  private void saveFormToSession(CbtCrInputForm form) {
+  private void saveStep1FormToSession(CbtCrInputForm form) {
+    // step1の入力値を保存
     session.setAttribute("negativeFeelIds", form.getNegativeFeelIds());
     session.setAttribute("positiveFeelIds", form.getPositiveFeelIds());
     session.setAttribute("fact", form.getFact());
@@ -97,13 +121,6 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processStep2FromSession(Model model) {
-    // セッションからデータを取得して新しいフォームを作成
-    CbtCrInputForm form = new CbtCrInputForm();
-    form.setNegativeFeelIds((List<Long>) session.getAttribute("negativeFeelIds"));
-    form.setPositiveFeelIds((List<Long>) session.getAttribute("positiveFeelIds"));
-    form.setFact((String) session.getAttribute("fact"));
-    form.setMind((String) session.getAttribute("mind"));
-
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
 
@@ -113,7 +130,7 @@ public class CbtCrIndexService {
 
     // モデルに追加
     model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", form);
+    model.addAttribute("cbtCrForm", new CbtCrInputForm());
 
     return CbtCrConst.STEP2_PATH;
   }
@@ -126,17 +143,10 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processShow(Long id, Model model) {
-    // 認知再構成法を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-    }
-
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
 
     // モデルに追加
@@ -153,20 +163,26 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processEdit(Long id, Model model) {
-    // 認知再構成法を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
-    }
-
     // フォームに値をセット
+    CbtCrInputForm form = createCbtCrInputForm(cbtCr);
+
+    // ビューデータを作成
+    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+
+    // モデルに追加
+    model.addAttribute("viewData", viewData);
+    model.addAttribute("cbtCrForm", form);
+
+    return CbtCrConst.EDIT_PATH;
+  }
+
+  private static CbtCrInputForm createCbtCrInputForm(CbtCr cbtCr) {
     CbtCrInputForm form = new CbtCrInputForm();
     form.setId(cbtCr.getId());
     form.setFact(cbtCr.getFact());
@@ -181,14 +197,17 @@ public class CbtCrIndexService {
       form.setPositiveFeelIds(cbtCr.getPositiveFeels().stream().map(PositiveFeel::getId).toList());
     }
 
-    // ビューデータを作成
-    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+    form.setWhyCorrect(cbtCr.getWhyCorrect());
+    form.setWhyDoubt(cbtCr.getWhyDoubt());
+    form.setNewThought(cbtCr.getNewThought());
 
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", form);
+    // 思考の歪みのIDをセット
+    if (Objects.nonNull(cbtCr.getDistortionLists())) {
+      form.setDistortionIds(
+          cbtCr.getDistortionLists().stream().map(DistortionList::getId).toList());
+    }
 
-    return CbtCrConst.EDIT_PATH;
+    return form;
   }
 
   /**
@@ -200,25 +219,17 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processEditStep2(Long id, CbtCrInputForm form, Model model) {
-    // 認知再構成法を取得（関連データを含む）
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
-    }
-
     // セッションに一時保存
-    saveFormToSession(form);
-    // IDをセッションに保存
-    session.setAttribute("cbtCrId", id);
+    saveStep1FormToSession(form);
 
     // リダイレクト
+    // セッションに値を格納するため、step2へ遷移する前にセッション保存し、step2へリダイレクトする
     return "redirect:/cbt_cr/" + id + "/edit_step2_view";
   }
 
@@ -230,25 +241,11 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processEditStep2FromSession(Long id, Model model) {
-    // 認知再構成法を取得（関連データを含む）
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
-
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = validateAccessPermission(id);
+    if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
-
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_TOP_PAGE;
-    }
-
-    // セッションからデータを取得して新しいフォームを作成
-    CbtCrInputForm form = new CbtCrInputForm();
-    form.setNegativeFeelIds((List<Long>) session.getAttribute("negativeFeelIds"));
-    form.setPositiveFeelIds((List<Long>) session.getAttribute("positiveFeelIds"));
-    form.setFact((String) session.getAttribute("fact"));
-    form.setMind((String) session.getAttribute("mind"));
 
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
@@ -258,7 +255,8 @@ public class CbtCrIndexService {
     viewData.setDistortionLists(distortionLists);
 
     // フォームに既存の値をセット
-    form.setId(cbtCr.getId());
+    CbtCrInputForm form = new CbtCrInputForm();
+    form.setId(id);
     form.setWhyCorrect(cbtCr.getWhyCorrect());
     form.setWhyDoubt(cbtCr.getWhyDoubt());
     form.setNewThought(cbtCr.getNewThought());
