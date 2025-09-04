@@ -30,31 +30,7 @@ public class CbtCrIndexService {
   private final PositiveFeelMapper positiveFeelMapper;
   private final DistortionListMapper distortionListMapper;
   private final CbtCrCommonUtils cbtCrCommonUtils;
-  private final MentalCommonUtils mentalCommonUtils;
   private final HttpSession session;
-  
-  /**
-   * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う
-   *
-   * @param id 認知再構成法のID
-   * @return 権限チェック結果（成功時はCbtCrオブジェクト、失敗時はnull）
-   */
-  private CbtCr validateAccessPermission(Long id) {
-    // 認知再構成法を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
-    
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
-      return null;
-    }
-    
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return null;
-    }
-    
-    return cbtCr;
-  }
 
   /**
    * 新規作成画面の処理
@@ -73,6 +49,11 @@ public class CbtCrIndexService {
     return CbtCrConst.NEW_PATH;
   }
 
+  /**
+   * ネガティブ感情とポジティブ感情を含むビューデータを作成する
+   *
+   * @return 感情データを含むビューデータ
+   */
   private CbtCrViewData createCbtCrViewDataWithFeel() {
     // 全ての感情を取得
     List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
@@ -93,8 +74,9 @@ public class CbtCrIndexService {
    * @param model モデル
    * @return ビュー名
    */
-  public String processStep2(CbtCrInputForm form, Model model) {
+  public String nextStep2(CbtCrInputForm form, Model model) {
     // セッションに一時保存
+    // URLに入力値が出るのを防ぐため、step2へ遷移する前にセッション保存し、リダイレクトする
     saveStep1FormToSession(form);
 
     // リダイレクト
@@ -120,7 +102,7 @@ public class CbtCrIndexService {
    * @param model モデル
    * @return ビュー名
    */
-  public String processStep2FromSession(Model model) {
+  public String processStep2(Model model) {
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
 
@@ -144,7 +126,7 @@ public class CbtCrIndexService {
    */
   public String processShow(Long id, Model model) {
     // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
@@ -164,7 +146,7 @@ public class CbtCrIndexService {
    */
   public String processEdit(Long id, Model model) {
     // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
@@ -220,7 +202,7 @@ public class CbtCrIndexService {
    */
   public String processEditStep2(Long id, CbtCrInputForm form, Model model) {
     // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
@@ -229,7 +211,6 @@ public class CbtCrIndexService {
     saveStep1FormToSession(form);
 
     // リダイレクト
-    // セッションに値を格納するため、step2へ遷移する前にセッション保存し、step2へリダイレクトする
     return "redirect:/cbt_cr/" + id + "/edit_step2_view";
   }
 
@@ -242,7 +223,7 @@ public class CbtCrIndexService {
    */
   public String processEditStep2FromSession(Long id, Model model) {
     // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (cbtCr == null) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }

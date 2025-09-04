@@ -1,5 +1,6 @@
 package com.mentalapp.cbt_cr.util;
 
+import com.mentalapp.cbt_cr.dao.CbtCrMapper;
 import com.mentalapp.cbt_cr.entity.CbtCr;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 @RequiredArgsConstructor
 public class CbtCrCommonUtils {
 
+  private final CbtCrMapper cbtCrMapper;
   private final NegativeFeelMapper negativeFeelMapper;
   private final PositiveFeelMapper positiveFeelMapper;
   private final DistortionListMapper distortionListMapper;
@@ -38,9 +40,6 @@ public class CbtCrCommonUtils {
    * @return アクセス権限がある場合はtrue
    */
   public Boolean checkAccessPermission(CbtCr cbtCr) {
-    if (Objects.isNull(cbtCr)) {
-      return false;
-    }
     return mentalCommonUtils.isAuthorized(cbtCr.getUserId());
   }
 
@@ -78,5 +77,28 @@ public class CbtCrCommonUtils {
     CbtCrViewData viewData = new CbtCrViewData();
     viewData.setDistortionLists(distortionListMapper.findAll());
     return viewData;
+  }
+
+  /**
+   * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う（関連する感情情報を含む）
+   *
+   * @param id 認知再構成法のID
+   * @return 権限チェック結果（成功時はCbtCrオブジェクト、失敗時はnull）
+   */
+  public CbtCr validateAccessPermission(Long id) {
+    // モニタリング情報を取得
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+
+    // 存在チェック
+    if (Objects.isNull(cbtCr)) {
+      return null;
+    }
+
+    // アクセス権限チェック
+    if (!checkAccessPermission(cbtCr)) {
+      return null;
+    }
+
+    return cbtCr;
   }
 }

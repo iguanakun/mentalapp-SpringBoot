@@ -15,7 +15,6 @@ import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -36,29 +35,6 @@ public class CbtCrRegistService {
   private final CbtCrCommonUtils cbtCrCommonUtils;
   private final MentalCommonUtils mentalCommonUtils;
   private final HttpSession session;
-  
-  /**
-   * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う
-   *
-   * @param id 認知再構成法のID
-   * @return 権限チェック結果（成功時はCbtCrオブジェクト、失敗時はnull）
-   */
-  private CbtCr validateAccessPermission(Long id) {
-    // 認知再構成法を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKey(id);
-    
-    // 存在チェック
-    if (Objects.isNull(cbtCr)) {
-      return null;
-    }
-    
-    // アクセス権限チェック
-    if (!cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
-      return null;
-    }
-    
-    return cbtCr;
-  }
 
   /**
    * 新規登録処理
@@ -69,17 +45,24 @@ public class CbtCrRegistService {
    * @return 遷移先のパス
    */
   public String processRegist(CbtCrInputForm form, BindingResult bindingResult, Model model) {
-    // セッションからデータを取得して新しいフォームを作成
-    CbtCrInputForm mergedForm = createMergedForm(form);
-
     // バリデーションエラーチェック
-    if (hasValidationError(mergedForm, bindingResult, model)) {
+    if (hasValidationError(form, bindingResult, model)) {
       return CbtCrConst.STEP2_PATH;
     }
 
+    // セッションからデータを取得
+    List<Long> negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
+    List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
+
+    // フォームからデータを取得
+    List<Long> distortionIds = form.getDistortionIds();
+
+    // モニタリング情報を作成
+    CbtCr cbtCr = createCbtCr(form);
+
     try {
       // 登録
-      CbtCr cbtCr = createCbtCr(mergedForm);
+      insert(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds);
 
       // 登録成功後にセッションデータを削除
       clearSessionData();
@@ -87,6 +70,17 @@ public class CbtCrRegistService {
       return MemoListConst.REDIRECT_MEMOS;
     } catch (Exception e) {
       // エラー処理
+      // ログ出力
+      System.err.println("認知再構成法の登録中にエラーが発生しました: " + e.getMessage());
+      e.printStackTrace();
+
+      // ユーザーへのフィードバック
+      model.addAttribute("errorMessage", "登録処理中にエラーが発生しました。もう一度お試しください。");
+
+      // ビューデータを再作成して追加
+      CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
+      model.addAttribute("viewData", viewData);
+
       // セッションデータは削除せず、エラー画面を表示
       return CbtCrConst.STEP2_PATH;
     }
@@ -103,30 +97,24 @@ public class CbtCrRegistService {
    */
   public String processUpdate(
       CbtCrInputForm form, BindingResult bindingResult, Model model, Long id) {
-    // セッションからデータを取得して新しいフォームを作成
-    CbtCrInputForm mergedForm = createMergedForm(form);
-
     // バリデーションエラーチェック
-    if (hasValidationError(mergedForm, bindingResult, model)) {
+    if (hasValidationError(form, bindingResult, model)) {
       return CbtCrConst.EDIT_STEP2_PATH;
     }
 
-    // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
-    if (cbtCr == null) {
-      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-    }
+    // セッションからデータを取得
+    List<Long> negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
+    List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
+
+    // フォームからデータを取得
+    List<Long> distortionIds = form.getDistortionIds();
+
+    // モニタリング情報を作成
+    CbtCr cbtCr = createCbtCr(form);
 
     try {
-      // フォームからエンティティへの変換
-      updateCbtCrFromForm(cbtCr, mergedForm);
-
       // 更新
-      update(
-          cbtCr,
-          mergedForm.getNegativeFeelIds(),
-          mergedForm.getPositiveFeelIds(),
-          mergedForm.getDistortionIds());
+      update(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds);
 
       // 更新成功後にセッションデータを削除
       clearSessionData();
@@ -134,6 +122,17 @@ public class CbtCrRegistService {
       return MemoListConst.REDIRECT_MEMOS;
     } catch (Exception e) {
       // エラー処理
+      // ログ出力
+      System.err.println("認知再構成法の更新中にエラーが発生しました: " + e.getMessage());
+      e.printStackTrace();
+
+      // ユーザーへのフィードバック
+      model.addAttribute("errorMessage", "更新処理中にエラーが発生しました。もう一度お試しください。");
+
+      // ビューデータを再作成して追加
+      CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
+      model.addAttribute("viewData", viewData);
+
       // セッションデータは削除せず、エラー画面を表示
       return CbtCrConst.EDIT_STEP2_PATH;
     }
@@ -150,7 +149,7 @@ public class CbtCrRegistService {
   private Boolean hasValidationError(
       CbtCrInputForm form, BindingResult bindingResult, Model model) {
     // バリデーションエラーがある場合
-    if (cbtCrCommonUtils.checkValidationError(bindingResult) || !form.hasAnyContent()) {
+    if (cbtCrCommonUtils.checkValidationError(bindingResult) || !hasAnyContent(form)) {
       // ビューデータを作成して追加
       CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
       model.addAttribute("viewData", viewData);
@@ -160,38 +159,62 @@ public class CbtCrRegistService {
   }
 
   /**
-   * セッションデータとフォームデータをマージした新しいフォームを作成
+   * バリデーション用のメソッド - 入力フォームに有効なデータが含まれているかチェックする
    *
-   * @param form 元のフォーム
-   * @return マージされた新しいフォーム
+   * @param form 入力フォーム
+   * @return いずれかの項目が有効な値で入力されている場合はtrue、すべての項目が空または無効な場合はfalse
    */
-  private CbtCrInputForm createMergedForm(CbtCrInputForm form) {
-    // 新しいフォームを作成
-    CbtCrInputForm mergedForm = new CbtCrInputForm();
-
-    // 元のフォームの値をコピー
-    mergedForm.setId(form.getId());
-    mergedForm.setWhyCorrect(form.getWhyCorrect());
-    mergedForm.setWhyDoubt(form.getWhyDoubt());
-    mergedForm.setNewThought(form.getNewThought());
-    mergedForm.setDistortionIds(form.getDistortionIds());
-
+  public boolean hasAnyContent(CbtCrInputForm form) {
     // セッションからデータを取得
     List<Long> negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
     List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
     String fact = (String) session.getAttribute("fact");
     String mind = (String) session.getAttribute("mind");
 
-    // セッションデータを新しいフォームに設定
-    mergedForm.setNegativeFeelIds(negativeFeelIds);
-    mergedForm.setPositiveFeelIds(positiveFeelIds);
-    mergedForm.setFact(fact);
-    mergedForm.setMind(mind);
+    // フォームからデータを取得
+    List<Long> distortionIds = form.getDistortionIds();
+    String whyCorrect = form.getWhyCorrect();
+    String whyDoubt = form.getWhyDoubt();
+    String newThought = form.getNewThought();
 
-    // ユーザーIDを設定
-    mergedForm.setUserId(mentalCommonUtils.getUser().getId());
+    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
+      return true;
+    }
+    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
+      return true;
+    }
+    if (Objects.nonNull(distortionIds) && !distortionIds.isEmpty()) {
+      return true;
+    }
 
-    return mergedForm;
+    return (Objects.nonNull(fact) && !fact.trim().isEmpty())
+        || (Objects.nonNull(mind) && !mind.trim().isEmpty())
+        || (Objects.nonNull(whyCorrect) && !whyCorrect.trim().isEmpty())
+        || (Objects.nonNull(whyDoubt) && !whyDoubt.trim().isEmpty())
+        || (Objects.nonNull(newThought) && !newThought.trim().isEmpty());
+  }
+
+  /**
+   * セッションデータとフォームデータをマージした新しいフォームを作成
+   *
+   * @param form 元のフォーム
+   * @return マージされた新しいフォーム
+   */
+  private CbtCr createCbtCr(CbtCrInputForm form) {
+    // セッションからデータを取得
+    String fact = (String) session.getAttribute("fact");
+    String mind = (String) session.getAttribute("mind");
+
+    // エンティティの作成
+    CbtCr cbtCr = new CbtCr();
+    cbtCr.setFact(fact);
+    cbtCr.setMind(mind);
+    cbtCr.setWhyCorrect(form.getWhyCorrect());
+    cbtCr.setWhyDoubt(form.getWhyDoubt());
+    cbtCr.setNewThought(form.getNewThought());
+    cbtCr.setUserId(mentalCommonUtils.getUser().getId());
+
+    return cbtCr;
   }
 
   /** セッションデータを削除 */
@@ -204,52 +227,30 @@ public class CbtCrRegistService {
   }
 
   /**
-   * フォームからエンティティへの変換
-   *
-   * @param cbtCr 更新対象のエンティティ
-   * @param form 入力フォーム
-   */
-  private void updateCbtCrFromForm(CbtCr cbtCr, CbtCrInputForm form) {
-    cbtCr.setFact(form.getFact());
-    cbtCr.setMind(form.getMind());
-    cbtCr.setWhyCorrect(form.getWhyCorrect());
-    cbtCr.setWhyDoubt(form.getWhyDoubt());
-    cbtCr.setNewThought(form.getNewThought());
-    cbtCr.setUpdatedAt(LocalDateTime.now());
-  }
-
-  /**
    * 新規登録
    *
-   * @param form 入力フォーム
-   * @return 登録されたCbtCr
+   * @param cbtCr 認知再構成法エンティティ
+   * @param negativeFeelIds ネガティブ感情のIDリスト
+   * @param positiveFeelIds ポジティブ感情のIDリスト
+   * @param distortionIds 思考の歪みのIDリスト
    */
   @Transactional
-  public CbtCr createCbtCr(CbtCrInputForm form) {
-    // エンティティの作成
-    CbtCr cbtCr = new CbtCr();
-    cbtCr.setFact(form.getFact());
-    cbtCr.setMind(form.getMind());
-    cbtCr.setWhyCorrect(form.getWhyCorrect());
-    cbtCr.setWhyDoubt(form.getWhyDoubt());
-    cbtCr.setNewThought(form.getNewThought());
-    cbtCr.setUserId(form.getUserId());
-    cbtCr.setCreatedAt(LocalDateTime.now());
-    cbtCr.setUpdatedAt(LocalDateTime.now());
-
+  public void insert(
+      CbtCr cbtCr,
+      List<Long> negativeFeelIds,
+      List<Long> positiveFeelIds,
+      List<Long> distortionIds) {
     // 登録
     cbtCrMapper.insert(cbtCr);
 
     // ネガティブ感情の関連付け
-    insertNegativeFeelJoinTable(cbtCr, form.getNegativeFeelIds());
+    insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
 
     // ポジティブ感情の関連付け
-    insertPositiveFeelsJoinTable(cbtCr, form.getPositiveFeelIds());
+    insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
 
     // 思考の歪みの関連付け
-    insertDistortionRelationsJoinTable(cbtCr, form.getDistortionIds());
-
-    return cbtCr;
+    insertDistortionRelationsJoinTable(cbtCr, distortionIds);
   }
 
   /**
@@ -259,13 +260,15 @@ public class CbtCrRegistService {
    * @param negativeFeelIds ネガティブ感情のIDリスト
    */
   private void insertNegativeFeelJoinTable(CbtCr cbtCr, List<Long> negativeFeelIds) {
-    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
-      for (Long negativeFeelId : negativeFeelIds) {
-        CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
-        cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
-        cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
-        cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
-      }
+    if (Objects.isNull(negativeFeelIds) || negativeFeelIds.isEmpty()) {
+      return;
+    }
+
+    for (Long negativeFeelId : negativeFeelIds) {
+      CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
+      cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
+      cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
+      cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
     }
   }
 
@@ -276,13 +279,15 @@ public class CbtCrRegistService {
    * @param positiveFeelIds ポジティブ感情のIDリスト
    */
   private void insertPositiveFeelsJoinTable(CbtCr cbtCr, List<Long> positiveFeelIds) {
-    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
-      for (Long positiveFeelId : positiveFeelIds) {
-        CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
-        cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
-        cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
-        cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
-      }
+    if (Objects.isNull(positiveFeelIds) || positiveFeelIds.isEmpty()) {
+      return;
+    }
+
+    for (Long positiveFeelId : positiveFeelIds) {
+      CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
+      cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
+      cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
+      cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
     }
   }
 
@@ -293,13 +298,15 @@ public class CbtCrRegistService {
    * @param distortionIds 思考の歪みのIDリスト
    */
   private void insertDistortionRelationsJoinTable(CbtCr cbtCr, List<Long> distortionIds) {
-    if (Objects.nonNull(distortionIds) && !distortionIds.isEmpty()) {
-      for (Long distortionId : distortionIds) {
-        CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
-        cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
-        cbtCrDistortionRelation.setDistortionListId(distortionId);
-        cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
-      }
+    if (Objects.isNull(distortionIds) || distortionIds.isEmpty()) {
+      return;
+    }
+
+    for (Long distortionId : distortionIds) {
+      CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
+      cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
+      cbtCrDistortionRelation.setDistortionListId(distortionId);
+      cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
     }
   }
 
@@ -313,7 +320,7 @@ public class CbtCrRegistService {
    * @return 更新されたCbtCr
    */
   @Transactional
-  public CbtCr update(
+  public void update(
       CbtCr cbtCr,
       List<Long> negativeFeelIds,
       List<Long> positiveFeelIds,
@@ -334,8 +341,6 @@ public class CbtCrRegistService {
 
     // 思考の歪みの関連付け
     insertDistortionRelationsJoinTable(cbtCr, distortionIds);
-
-    return cbtCr;
   }
 
   /**
@@ -346,13 +351,13 @@ public class CbtCrRegistService {
    */
   public String processDelete(Long id) {
     // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = validateAccessPermission(id);
-    if (cbtCr == null) {
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+    if (Objects.isNull(cbtCr)) {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
     // 削除
-    deleteCbtCr(id);
+    delete(id);
     return MemoListConst.REDIRECT_MEMOS;
   }
 
@@ -362,7 +367,7 @@ public class CbtCrRegistService {
    * @param id 削除する認知再構成法のID
    */
   @Transactional
-  public void deleteCbtCr(Long id) {
+  public void delete(Long id) {
     // 関連するネガティブ感情、ポジティブ感情、思考の歪みの関連を削除
     cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
     cbtCrPositiveFeelMapper.deleteByCbtCrId(id);

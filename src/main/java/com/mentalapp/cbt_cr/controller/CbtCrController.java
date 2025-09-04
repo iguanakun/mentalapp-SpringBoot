@@ -46,7 +46,7 @@ public class CbtCrController {
    */
   @GetMapping("/step2")
   public String step2(@ModelAttribute("cbtCrForm") CbtCrInputForm form, Model model) {
-    return cbtCrIndexService.processStep2(form, model);
+    return cbtCrIndexService.nextStep2(form, model);
   }
 
   /**
@@ -57,7 +57,7 @@ public class CbtCrController {
    */
   @GetMapping("/step2_view")
   public String step2View(Model model) {
-    return cbtCrIndexService.processStep2FromSession(model);
+    return cbtCrIndexService.processStep2(model);
   }
 
   /**
