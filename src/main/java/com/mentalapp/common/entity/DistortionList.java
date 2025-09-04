@@ -1,49 +1,26 @@
 package com.mentalapp.common.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
-/**
- * 思考の歪みリストのエンティティクラス
- */
-@Entity
-@Table(name = "distortion_lists")
+/** 思考の歪みリストのエンティティクラス */
 @Data
 public class DistortionList {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
-    @Column(name = "distortion_name", nullable = false)
-    private String distortionName;
-    
-    @Column(name = "info")
-    private String info;
-    
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+  private Long id;
+  private String distortionName;
+  private String info;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-    
-    /**
-     * エンティティ作成時に自動的に呼び出される
-     */
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
+  /** エンティティ作成時に呼び出される */
+  public void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+  }
 
-    /**
-     * エンティティ更新時に自動的に呼び出される
-     */
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+  /** エンティティ更新時に呼び出される */
+  public void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 }
