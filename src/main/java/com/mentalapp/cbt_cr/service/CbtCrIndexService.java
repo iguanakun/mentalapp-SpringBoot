@@ -1,6 +1,5 @@
 package com.mentalapp.cbt_cr.service;
 
-import com.mentalapp.cbt_cr.dao.CbtCrMapper;
 import com.mentalapp.cbt_cr.data.CbtCrConst;
 import com.mentalapp.cbt_cr.entity.CbtCr;
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
@@ -25,7 +24,6 @@ import org.springframework.ui.Model;
 @RequiredArgsConstructor
 public class CbtCrIndexService {
 
-  private final CbtCrMapper cbtCrMapper;
   private final NegativeFeelMapper negativeFeelMapper;
   private final PositiveFeelMapper positiveFeelMapper;
   private final DistortionListMapper distortionListMapper;

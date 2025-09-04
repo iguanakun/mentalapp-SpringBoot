@@ -3,7 +3,6 @@ package com.mentalapp.cbt_cr.controller;
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.service.CbtCrIndexService;
 import com.mentalapp.cbt_cr.service.CbtCrRegistService;
-import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,6 @@ public class CbtCrController {
 
   private final CbtCrIndexService cbtCrIndexService;
   private final CbtCrRegistService cbtCrRegistService;
-  private final CbtCrCommonUtils cbtCrCommonUtils;
 
   /**
    * 新規作成フォーム表示（ステップ1）

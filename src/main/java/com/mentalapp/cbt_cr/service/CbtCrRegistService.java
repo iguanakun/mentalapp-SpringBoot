@@ -317,7 +317,6 @@ public class CbtCrRegistService {
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    * @param distortionIds 関連付ける思考の歪みのIDリスト
-   * @return 更新されたCbtCr
    */
   @Transactional
   public void update(
