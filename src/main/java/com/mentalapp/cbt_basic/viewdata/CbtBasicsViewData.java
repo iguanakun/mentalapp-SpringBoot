@@ -2,6 +2,7 @@ package com.mentalapp.cbt_basic.viewdata;
 
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.entity.Tag;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,4 +16,5 @@ import org.springframework.stereotype.Component;
 public class CbtBasicsViewData {
   private List<NegativeFeel> negativeFeels;
   private List<PositiveFeel> positiveFeels;
+  private List<Tag> userTags;
 }

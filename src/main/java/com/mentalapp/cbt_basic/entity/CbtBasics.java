@@ -2,6 +2,7 @@ package com.mentalapp.cbt_basic.entity;
 
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.entity.Tag;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -17,8 +18,10 @@ import lombok.ToString;
     exclude = {
       "cbtBasicsNegativeFeels",
       "cbtBasicsPositiveFeels",
+      "cbtBasicsTagRelations",
       "negativeFeels",
-      "positiveFeels"
+      "positiveFeels",
+      "tags"
     })
 public class CbtBasics {
 
@@ -33,8 +36,10 @@ public class CbtBasics {
   private LocalDateTime updatedAt;
   private List<CbtBasicsNegativeFeel> cbtBasicsNegativeFeels;
   private List<CbtBasicsPositiveFeel> cbtBasicsPositiveFeels;
+  private List<CbtBasicsTagRelation> cbtBasicsTagRelations;
   private List<NegativeFeel> negativeFeels;
   private List<PositiveFeel> positiveFeels;
+  private List<Tag> tags;
 
   // getUserId() method is kept to maintain naming convention compatibility
   public Long getUserId() {

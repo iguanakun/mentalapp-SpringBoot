@@ -39,6 +39,7 @@ services:
       - ./mysql/create-monitorings-table.sql:/docker-entrypoint-initdb.d/06-create-monitorings-table.sql
       - ./mysql/create-distortion-lists-table.sql:/docker-entrypoint-initdb.d/07-create-distortion-lists-table.sql
       - ./mysql/create-cbt-cr-table.sql:/docker-entrypoint-initdb.d/08-create-cbt-cr-table.sql
+      - ./mysql/create-cbt-basics-tag-relations-table.sql:/docker-entrypoint-initdb.d/09-create-cbt-basics-tag-relations-table.sql
     networks:
       - app-net
 volumes:

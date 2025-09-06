@@ -5,9 +5,12 @@ import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
+import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.entity.Tag;
 import com.mentalapp.common.util.MentalCommonUtils;
+import com.mentalapp.common.util.TagUtils;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,9 @@ public class CbtBasicCommonUtils {
 
   private final NegativeFeelMapper negativeFeelMapper;
   private final PositiveFeelMapper positiveFeelMapper;
+  private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
+  private final TagUtils tagUtils;
 
   /**
    * エンティティからフォームへの変換
@@ -40,6 +45,11 @@ public class CbtBasicCommonUtils {
     form.setCbtBasics(cbtBasics);
     form.setNegativeFeelIds(negativeFeelIds);
     form.setPositiveFeelIds(positiveFeelIds);
+
+    // タグ情報を設定
+    if (Objects.nonNull(cbtBasics.getTags()) && !cbtBasics.getTags().isEmpty()) {
+      form.setTagNames(tagUtils.convertTagsToString(cbtBasics.getTags()));
+    }
 
     return form;
   }
@@ -86,6 +96,23 @@ public class CbtBasicCommonUtils {
     CbtBasicsViewData viewData = new CbtBasicsViewData();
     viewData.setNegativeFeels(negativeFeels);
     viewData.setPositiveFeels(positiveFeels);
+
+    return viewData;
+  }
+
+  /**
+   * 全ての感情とユーザータグを含むビューデータを作成
+   *
+   * @return 感情とタグを含むビューデータ
+   */
+  public CbtBasicsViewData createAllFeelsAndTagsViewData() {
+    // 基本の感情データを取得
+    CbtBasicsViewData viewData = createAllFeelsViewData();
+
+    // ログインユーザーのタグを取得
+    Long userId = mentalCommonUtils.getUser().getId();
+    List<Tag> userTags = tagMapper.findByUserId(userId);
+    viewData.setUserTags(userTags);
 
     return viewData;
   }

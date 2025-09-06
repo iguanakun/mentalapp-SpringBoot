@@ -28,6 +28,11 @@ public class CbtBasicsInputForm {
       return true;
     }
 
+    // Check for tagNames
+    if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
+      return true;
+    }
+
     // Then check cbtBasics fields if cbtBasics is not null
     return Objects.nonNull(cbtBasics)
         && (Objects.nonNull(cbtBasics.getFact()) && !cbtBasics.getFact().trim().isEmpty()
@@ -43,6 +48,6 @@ public class CbtBasicsInputForm {
    * @return ユーザーID
    */
   public Long getUserId() {
-    return cbtBasics != null ? cbtBasics.getUserId() : null;
+    return Objects.nonNull(cbtBasics) ? cbtBasics.getUserId() : null;
   }
 }

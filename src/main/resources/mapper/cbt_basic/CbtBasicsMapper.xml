@@ -16,6 +16,21 @@
         <collection property="positiveFeels" resultMap="positiveFeel"/>
     </resultMap>
 
+    <!-- マッピング定義(CbtBasicsWithFeelsAndTags) -->
+    <resultMap type="com.mentalapp.cbt_basic.entity.CbtBasics" id="cbtBasicsWithFeelsAndTags"
+               extends="cbtBasicsWithFeels">
+        <collection property="tags" resultMap="tag"/>
+    </resultMap>
+
+    <!-- マッピング定義(Tag) -->
+    <resultMap type="com.mentalapp.common.entity.Tag" id="tag">
+        <id column="tag_id" property="id"/>
+        <result column="tag_name" property="tagName"/>
+        <result column="tag_user_id" property="userId"/>
+        <result column="tag_created_at" property="createdAt"/>
+        <result column="tag_updated_at" property="updatedAt"/>
+    </resultMap>
+
     <!-- マッピング定義(NegativeFeel) -->
     <resultMap type="com.mentalapp.common.entity.NegativeFeel" id="negativeFeel">
         <id column="nf_id" property="id"/>
@@ -94,105 +109,200 @@
     <!-- ユーザーIDに基づいてCbtBasicsリストと関連する感情リストを取得 -->
     <select id="findCbtBasicsFeelsListByUserId" resultMap="cbtBasicsWithFeels">
         SELECT
-            cb.id,
-            cb.fact,
-            cb.mind,
-            cb.body,
-            cb.behavior,
-            cb.user_id,
-            cb.created_at,
-            cb.updated_at,
-            nf.id as nf_id,
-            nf.negative_feel_name,
-            nf.created_at as nf_created_at,
-            nf.updated_at as nf_updated_at,
-            pf.id as pf_id,
-            pf.positive_feel_name,
-            pf.created_at as pf_created_at,
-            pf.updated_at as pf_updated_at
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.user_id,
+        cb.created_at,
+        cb.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at
         FROM
-            cbt_basics cb
-            LEFT OUTER JOIN
-                cbt_basics_negative_feels cbnf
-                ON
-                cb.id = cbnf.cbt_basic_id
-            LEFT OUTER JOIN
-                negative_feels nf
-                ON
-                cbnf.negative_feel_id = nf.id
-            LEFT OUTER JOIN
-                cbt_basics_positive_feels cbpf
-                ON
-                cb.id = cbpf.cbt_basic_id
-            LEFT OUTER JOIN
-                positive_feels pf
-                ON
-                cbpf.positive_feel_id = pf.id
+        cbt_basics cb
+        LEFT OUTER JOIN
+        cbt_basics_negative_feels cbnf
+        ON
+        cb.id = cbnf.cbt_basic_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        cbnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_basics_positive_feels cbpf
+        ON
+        cb.id = cbpf.cbt_basic_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        cbpf.positive_feel_id = pf.id
         WHERE
-            cb.user_id = #{userId}
-        ORDER BY
-         cb.id, nf.id, pf.id
-    </select>
-    
-        <!-- CbtBasics IDに基づいてCbtBasicsと関連する感情リストを取得 -->
-    <select id="selectByPrimaryKeyWithFeels" resultMap="cbtBasicsWithFeels">
-        SELECT
-            cb.id,
-            cb.fact,
-            cb.mind,
-            cb.body,
-            cb.behavior,
-            cb.user_id,
-            cb.created_at,
-            cb.updated_at,
-            nf.id as nf_id,
-            nf.negative_feel_name,
-            nf.created_at as nf_created_at,
-            nf.updated_at as nf_updated_at,
-            pf.id as pf_id,
-            pf.positive_feel_name,
-            pf.created_at as pf_created_at,
-            pf.updated_at as pf_updated_at
-        FROM
-            cbt_basics cb
-            LEFT OUTER JOIN
-            cbt_basics_negative_feels cbnf
-            ON
-            cb.id = cbnf.cbt_basic_id
-            LEFT OUTER JOIN
-            negative_feels nf
-            ON
-            cbnf.negative_feel_id = nf.id
-            LEFT OUTER JOIN
-            cbt_basics_positive_feels cbpf
-            ON
-            cb.id = cbpf.cbt_basic_id
-            LEFT OUTER JOIN
-            positive_feels pf
-            ON
-            cbpf.positive_feel_id = pf.id
-        WHERE
-            cb.id = #{cbtBasicId}
+        cb.user_id = #{userId}
         ORDER BY
         cb.id, nf.id, pf.id
     </select>
-    
+
+    <!-- CbtBasics IDに基づいてCbtBasicsと関連する感情リストを取得 -->
+    <select id="selectByPrimaryKeyWithFeels" resultMap="cbtBasicsWithFeels">
+        SELECT
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.user_id,
+        cb.created_at,
+        cb.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at
+        FROM
+        cbt_basics cb
+        LEFT OUTER JOIN
+        cbt_basics_negative_feels cbnf
+        ON
+        cb.id = cbnf.cbt_basic_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        cbnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_basics_positive_feels cbpf
+        ON
+        cb.id = cbpf.cbt_basic_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        cbpf.positive_feel_id = pf.id
+        WHERE
+        cb.id = #{cbtBasicId}
+        ORDER BY
+        cb.id, nf.id, pf.id
+    </select>
+
     <!-- ユーザーIDに基づいて、ネガティブ感情の出現回数上位3つを取得 -->
     <select id="findTopNegativeFeelingsByUserId" resultType="java.util.HashMap">
         SELECT
-            nf.negative_feel_name as negativeFeelName,
-            COUNT(cbnf.negative_feel_id) as count
+        nf.negative_feel_name as negativeFeelName,
+        COUNT(cbnf.negative_feel_id) as count
         FROM
-            cbt_basics cb
-            INNER JOIN cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
-            INNER JOIN negative_feels nf ON cbnf.negative_feel_id = nf.id
+        cbt_basics cb
+        INNER JOIN cbt_basics_negative_feels cbnf ON cb.id = cbnf.cbt_basic_id
+        INNER JOIN negative_feels nf ON cbnf.negative_feel_id = nf.id
         WHERE
-            cb.user_id = #{userId}
+        cb.user_id = #{userId}
         GROUP BY
-            nf.negative_feel_name
+        nf.negative_feel_name
         ORDER BY
-            COUNT(cbnf.negative_feel_id) DESC
+        COUNT(cbnf.negative_feel_id) DESC
         LIMIT 3
     </select>
-    
+
+    <!-- CBT BasicsのIDに紐づくタグを取得する -->
+    <select id="selectTagsByCbtBasicId" resultMap="tag">
+        SELECT
+        t.id as tag_id,
+        t.tag_name,
+        t.user_id as tag_user_id,
+        t.created_at as tag_created_at,
+        t.updated_at as tag_updated_at
+        FROM
+        tags t
+        JOIN cbt_basics_tag_relations cbtr ON t.id = cbtr.tag_id
+        WHERE
+        cbtr.cbt_basic_id = #{id}
+    </select>
+
+    <!-- 主キーによるCBT Basicsの取得（感情情報とタグ情報を含む） -->
+    <select id="selectByPrimaryKeyWithFeelsAndTags" resultMap="cbtBasicsWithFeelsAndTags">
+        SELECT
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.user_id,
+        cb.created_at,
+        cb.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at,
+        t.id as tag_id,
+        t.tag_name,
+        t.user_id as tag_user_id,
+        t.created_at as tag_created_at,
+        t.updated_at as tag_updated_at
+        FROM
+        cbt_basics cb
+        LEFT OUTER JOIN
+        cbt_basics_negative_feels cbnf
+        ON
+        cb.id = cbnf.cbt_basic_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        cbnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_basics_positive_feels cbpf
+        ON
+        cb.id = cbpf.cbt_basic_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        cbpf.positive_feel_id = pf.id
+        LEFT OUTER JOIN
+        cbt_basics_tag_relations cbtr
+        ON
+        cb.id = cbtr.cbt_basic_id
+        LEFT OUTER JOIN
+        tags t
+        ON
+        cbtr.tag_id = t.id
+        WHERE
+        cb.id = #{cbtBasicId}
+        ORDER BY
+        cb.id, nf.id, pf.id, t.id
+    </select>
+
+    <!-- タグ名でCBT Basicsを検索する -->
+    <select id="searchByTagName" resultMap="cbtBasicsWithFeelsAndTags">
+        SELECT
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.user_id,
+        cb.created_at,
+        cb.updated_at,
+        t.id as tag_id,
+        t.tag_name,
+        t.user_id as tag_user_id,
+        t.created_at as tag_created_at,
+        t.updated_at as tag_updated_at
+        FROM
+        cbt_basics cb
+        JOIN cbt_basics_tag_relations cbtr ON cb.id = cbtr.cbt_basic_id
+        JOIN tags t ON cbtr.tag_id = t.id
+        WHERE
+        cb.user_id = #{userId} AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+    </select>
+
 </mapper>

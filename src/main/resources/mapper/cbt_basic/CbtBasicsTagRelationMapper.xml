@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.cbt_basic.dao.CbtBasicsTagRelationMapper">
+
+    <insert id="insert">
+        INSERT INTO cbt_basics_tag_relations (cbt_basic_id, tag_id, created_at, updated_at)
+        VALUES (#{cbtBasicId}, #{tagId}, current_timestamp, current_timestamp)
+    </insert>
+
+    <delete id="deleteByCbtBasicId">
+        DELETE FROM cbt_basics_tag_relations
+        WHERE cbt_basic_id = #{cbtBasicId}
+    </delete>
+</mapper>

@@ -1,6 +1,7 @@
 package com.mentalapp.cbt_basic.dao;
 
 import com.mentalapp.cbt_basic.entity.CbtBasics;
+import com.mentalapp.common.entity.Tag;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,4 +62,29 @@ public interface CbtBasicsMapper {
    * @return ネガティブ感情名と出現回数のマップのリスト
    */
   List<Map<String, Object>> findTopNegativeFeelingsByUserId(@Param("userId") Long userId);
+
+  /**
+   * CBT BasicsのIDに紐づくタグを取得する
+   *
+   * @param id CBT BasicsのID
+   * @return タグのリスト
+   */
+  List<Tag> selectTagsByCbtBasicId(Long id);
+
+  /**
+   * 主キーによるCBT Basicsの取得（感情情報とタグ情報を含む）
+   *
+   * @param cbtBasicId CBT BasicsのID
+   * @return 感情情報とタグ情報を含むCBT Basicsエンティティ
+   */
+  CbtBasics selectByPrimaryKeyWithFeelsAndTags(Long cbtBasicId);
+
+  /**
+   * タグ名でCBT Basicsを検索する
+   *
+   * @param userId ユーザーID
+   * @param tagName タグ名
+   * @return 検索結果のCBT Basicsリスト
+   */
+  List<CbtBasics> searchByTagName(@Param("userId") Long userId, @Param("tagName") String tagName);
 }

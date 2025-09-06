@@ -3,11 +3,14 @@ package com.mentalapp.cbt_basic.service;
 import com.mentalapp.cbt_basic.dao.CbtBasicsMapper;
 import com.mentalapp.cbt_basic.dao.CbtBasicsNegativeFeelMapper;
 import com.mentalapp.cbt_basic.dao.CbtBasicsPositiveFeelMapper;
+import com.mentalapp.cbt_basic.dao.CbtBasicsTagRelationMapper;
 import com.mentalapp.cbt_basic.data.CbtBasicsConst;
 import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
+import com.mentalapp.cbt_basic.util.CbtBasicsTagRelationOperator;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
+import com.mentalapp.common.util.EntityTagProcessor;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import java.util.List;
@@ -26,8 +29,11 @@ public class CbtBasicsRegistService {
   private final CbtBasicsMapper cbtBasicsMapper;
   private final CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper;
   private final CbtBasicsPositiveFeelMapper cbtBasicsPositiveFeelMapper;
+  private final CbtBasicsTagRelationMapper cbtBasicsTagRelationMapper;
   private final MentalCommonUtils mentalCommonUtils;
   private final CbtBasicCommonUtils cbtBasicCommonUtils;
+  private final EntityTagProcessor entityTagProcessor;
+  private final CbtBasicsTagRelationOperator tagRelationOperator;
 
   /**
    * 新規作成処理
@@ -49,8 +55,8 @@ public class CbtBasicsRegistService {
     // ログインユーザーの取得
     cbtBasics.setUserId(mentalCommonUtils.getUser().getId());
 
-    // 保存（ネガティブ感情とポジティブ感情の関連付けも行う）
-    save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
+    // 保存（ネガティブ感情、ポジティブ感情、タグの関連付けも行う）
+    save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds(), form.getTagNames());
 
     return MemoListConst.REDIRECT_MEMOS;
   }
@@ -61,11 +67,15 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 保存するCBT Basics
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
+   * @param tagNames スペース区切りのタグ名
    * @return 保存されたCBT Basics
    */
   @Transactional
   public CbtBasics save(
-      CbtBasics cbtBasics, List<Long> negativeFeelIds, List<Long> positiveFeelIds) {
+      CbtBasics cbtBasics,
+      List<Long> negativeFeelIds,
+      List<Long> positiveFeelIds,
+      String tagNames) {
     // モニタリングの保存
     cbtBasicsMapper.insert(cbtBasics);
 
@@ -74,6 +84,10 @@ public class CbtBasicsRegistService {
 
     // ポジティブ感情の中間テーブルへの関連付け
     insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
+
+    // タグ処理を追加（ユーティリティクラスを使用）
+    entityTagProcessor.processEntityTags(
+        cbtBasics.getId(), tagNames, cbtBasics.getUserId(), tagRelationOperator);
 
     return cbtBasics;
   }
@@ -130,7 +144,7 @@ public class CbtBasicsRegistService {
     cbtBasics.setId(id);
 
     // 更新
-    update(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds());
+    update(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds(), form.getTagNames());
 
     return MemoListConst.REDIRECT_MEMOS;
   }
@@ -153,14 +167,19 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 更新するCBT Basics
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
+   * @param tagNames スペース区切りのタグ名
    * @return 更新されたCBT Basics
    */
   @Transactional
   public CbtBasics update(
-      CbtBasics cbtBasics, List<Long> negativeFeelIds, List<Long> positiveFeelIds) {
+      CbtBasics cbtBasics,
+      List<Long> negativeFeelIds,
+      List<Long> positiveFeelIds,
+      String tagNames) {
     // 既存の感情テーブルの関連を削除
     cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(cbtBasics.getId());
     cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasics.getId());
+    cbtBasicsTagRelationMapper.deleteByCbtBasicId(cbtBasics.getId());
 
     // 更新
     cbtBasicsMapper.updateByPrimaryKey(cbtBasics);
@@ -170,6 +189,10 @@ public class CbtBasicsRegistService {
 
     // ポジティブ感情の関連付け
     insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
+
+    // タグ処理（ユーティリティクラスを使用）
+    entityTagProcessor.processEntityTags(
+        cbtBasics.getId(), tagNames, cbtBasics.getUserId(), tagRelationOperator);
 
     return cbtBasics;
   }
@@ -200,9 +223,10 @@ public class CbtBasicsRegistService {
    */
   @Transactional
   public void deleteCbtBasics(Long id) {
-    // 関連するネガティブ感情とポジティブ感情の関連を削除
+    // 関連するネガティブ感情、ポジティブ感情、タグの関連を削除
     cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(id);
     cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(id);
+    cbtBasicsTagRelationMapper.deleteByCbtBasicId(id);
 
     // CBT Basicsを削除
     cbtBasicsMapper.deleteByPrimaryKey(id);
