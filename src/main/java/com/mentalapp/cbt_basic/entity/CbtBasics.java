@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/** CBT基礎モニタリングのエンティティクラス */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,6 +27,7 @@ public class CbtBasics {
   private String mind;
   private String body;
   private String behavior;
+  // スネークケースはデータベースのカラム名と一致させるために使用
   private Long user_id;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

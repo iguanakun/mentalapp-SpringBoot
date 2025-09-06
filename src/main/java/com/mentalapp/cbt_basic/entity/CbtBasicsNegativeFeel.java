@@ -17,7 +17,11 @@ public class CbtBasicsNegativeFeel {
   private CbtBasics cbtBasics;
   private NegativeFeel negativeFeel;
 
-  /** 複合主キーを表す内部クラス */
+  /**
+   * 複合主キーを表す内部クラス
+   * 注: このクラスは現在MyBatisの実装では直接使用されていませんが、
+   * JPA互換性のために保持されています。将来的にJPAを使用する可能性がある場合に備えて残しています。
+   */
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
@@ -26,6 +30,12 @@ public class CbtBasicsNegativeFeel {
     private Long negativeFeelingId;
   }
 
+  /**
+   * IDを指定して中間テーブルエンティティを作成するコンストラクタ
+   *
+   * @param cbtBasicId CBT基礎モニタリングのID
+   * @param negativeFeelingId ネガティブ感情のID
+   */
   public CbtBasicsNegativeFeel(Long cbtBasicId, Long negativeFeelingId) {
     this.cbtBasicId = cbtBasicId;
     this.negativeFeelingId = negativeFeelingId;

@@ -3,6 +3,7 @@ package com.mentalapp.common.entity;
 import java.time.LocalDateTime;
 import lombok.Data;
 
+/** ポジティブ感情のエンティティクラス */
 @Data
 public class PositiveFeel {
 
