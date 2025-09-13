@@ -87,4 +87,12 @@ public interface CbtBasicsMapper {
    * @return 検索結果のCBT Basicsリスト
    */
   List<CbtBasics> searchByTagName(@Param("userId") Long userId, @Param("tagName") String tagName);
+
+  /**
+   * ユーザーIDに基づいてCbtBasicsと関連する感情およびタグ情報を取得
+   *
+   * @param userId ユーザーID
+   * @return CbtBasicsのリスト（感情情報とタグ情報を含む）
+   */
+  List<CbtBasics> findCbtBasicsFeelsAndTagsListByUserId(@Param("userId") Long userId);
 }

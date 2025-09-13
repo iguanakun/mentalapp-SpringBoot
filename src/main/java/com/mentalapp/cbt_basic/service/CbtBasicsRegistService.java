@@ -10,8 +10,10 @@ import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.util.CbtBasicsTagRelationOperator;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
+import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.util.EntityTagProcessor;
 import com.mentalapp.common.util.MentalCommonUtils;
+import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +32,7 @@ public class CbtBasicsRegistService {
   private final CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper;
   private final CbtBasicsPositiveFeelMapper cbtBasicsPositiveFeelMapper;
   private final CbtBasicsTagRelationMapper cbtBasicsTagRelationMapper;
+  private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
   private final CbtBasicCommonUtils cbtBasicCommonUtils;
   private final EntityTagProcessor entityTagProcessor;
@@ -53,10 +56,11 @@ public class CbtBasicsRegistService {
     CbtBasics cbtBasics = form.getCbtBasics();
 
     // ログインユーザーの取得
-    cbtBasics.setUserId(mentalCommonUtils.getUser().getId());
+    Long userId = mentalCommonUtils.getUser().getId();
+    cbtBasics.setUserId(userId);
 
     // 保存（ネガティブ感情、ポジティブ感情、タグの関連付けも行う）
-    save(cbtBasics, form.getNegativeFeelIds(), form.getPositiveFeelIds(), form.getTagNames());
+    save(cbtBasics, form, userId);
 
     return MemoListConst.REDIRECT_MEMOS;
   }
@@ -71,11 +75,14 @@ public class CbtBasicsRegistService {
    * @return 保存されたCBT Basics
    */
   @Transactional
-  public CbtBasics save(
-      CbtBasics cbtBasics,
-      List<Long> negativeFeelIds,
-      List<Long> positiveFeelIds,
-      String tagNames) {
+  public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId) {
+    // ネガティブ感情IDリスト
+    List<Long> negativeFeelIds = form.getNegativeFeelIds();
+    // ポジティブ感情IDリスト
+    List<Long> positiveFeelIds = form.getPositiveFeelIds();
+    // タグ名一覧
+    String tagNames = form.getTagNames();
+
     // モニタリングの保存
     cbtBasicsMapper.insert(cbtBasics);
 
@@ -85,9 +92,21 @@ public class CbtBasicsRegistService {
     // ポジティブ感情の中間テーブルへの関連付け
     insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
 
+    // タグの保存
+    if (Objects.nonNull(tagNames)) {
+      // タグエンティティリストを作成
+      TagList tagList = new TagList(tagNames, userId, tagMapper);
+      // タグを新規登録（未作成のタグのみ）
+      tagList.insertTagList();
+      // タグIDリストを抽出
+      List<Long> tagIdList = tagList.extractTagIdList();
+      // タグの中間テーブルへの関連付け
+      tagIdList.forEach(tagId -> cbtBasicsTagRelationMapper.insert(cbtBasics.getId(), tagId));
+    }
+
     // タグ処理を追加（ユーティリティクラスを使用）
-    entityTagProcessor.processEntityTags(
-        cbtBasics.getId(), tagNames, cbtBasics.getUserId(), tagRelationOperator);
+    //    entityTagProcessor.processEntityTags(
+    //        cbtBasics.getId(), tagNames, cbtBasics.getUserId(), tagRelationOperator);
 
     return cbtBasics;
   }

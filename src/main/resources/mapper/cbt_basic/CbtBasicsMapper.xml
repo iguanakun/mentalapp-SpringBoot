@@ -305,4 +305,60 @@
         cb.user_id = #{userId} AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
     </select>
 
+    <!-- ユーザーIDに基づいてCbtBasicsリストと関連する感情およびタグ情報を取得 -->
+    <select id="findCbtBasicsFeelsAndTagsListByUserId" resultMap="cbtBasicsWithFeelsAndTags">
+        SELECT
+        cb.id,
+        cb.fact,
+        cb.mind,
+        cb.body,
+        cb.behavior,
+        cb.user_id,
+        cb.created_at,
+        cb.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at,
+        t.id as tag_id,
+        t.tag_name,
+        t.user_id as tag_user_id,
+        t.created_at as tag_created_at,
+        t.updated_at as tag_updated_at
+        FROM
+        cbt_basics cb
+        LEFT OUTER JOIN
+        cbt_basics_negative_feels cbnf
+        ON
+        cb.id = cbnf.cbt_basic_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        cbnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_basics_positive_feels cbpf
+        ON
+        cb.id = cbpf.cbt_basic_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        cbpf.positive_feel_id = pf.id
+        LEFT OUTER JOIN
+        cbt_basics_tag_relations cbtr
+        ON
+        cb.id = cbtr.cbt_basic_id
+        LEFT OUTER JOIN
+        tags t
+        ON
+        cbtr.tag_id = t.id
+        WHERE
+        cb.user_id = #{userId}
+        ORDER BY
+        cb.id, nf.id, pf.id, t.id
+    </select>
+
 </mapper>

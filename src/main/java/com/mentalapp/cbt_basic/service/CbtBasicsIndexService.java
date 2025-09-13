@@ -40,13 +40,13 @@ public class CbtBasicsIndexService {
   }
 
   /**
-   * 主キーによるCBT Basicsの取得（感情情報を含む）
+   * 主キーによるCBT Basicsの取得（感情情報とタグ情報を含む）
    *
    * @param cbtBasicId 取得するCBT BasicsのID
-   * @return 感情情報を含むCBT Basicsエンティティ
+   * @return 感情情報とタグ情報を含むCBT Basicsエンティティ
    */
-  public CbtBasics selectByPrimaryKeyWithFeels(Long cbtBasicId) {
-    return cbtBasicsMapper.selectByPrimaryKeyWithFeels(cbtBasicId);
+  public CbtBasics selectByPrimaryKeyWithFeelsAndTags(Long cbtBasicId) {
+    return cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasicId);
   }
 
   /**
@@ -57,8 +57,8 @@ public class CbtBasicsIndexService {
    * @return 遷移先のパス、またはnull（正常時）
    */
   public String processShow(Long id, Model model) {
-    // 表示するモニタリングデータを取得
-    CbtBasics cbtBasics = selectByPrimaryKeyWithFeels(id);
+    // 表示するモニタリングデータを取得（タグ情報も含める）
+    CbtBasics cbtBasics = selectByPrimaryKeyWithFeelsAndTags(id);
 
     // アクセス権をチェック
     if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
@@ -78,10 +78,10 @@ public class CbtBasicsIndexService {
    * @return 遷移先のパス、またはnull（正常時）
    */
   public String processEdit(Long id, Model model) {
-    // 編集対象のモニタリング情報を取得
-    CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKeyWithFeels(id);
+    // 編集対象のモニタリング情報を取得（タグ情報も含める）
+    CbtBasics cbtBasics = selectByPrimaryKeyWithFeelsAndTags(id);
 
-    // 　アクセス権チェック
+    // アクセス権チェック
     if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics))
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
 

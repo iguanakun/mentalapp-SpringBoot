@@ -130,11 +130,7 @@ public class CbtBasicCommonUtils {
     }
 
     // モニタリング情報へのユーザへのアクセス権チェック
-    if (!mentalCommonUtils.isAuthorized(cbtBasics.getUserId())) {
-      return false;
-    }
-
-    return true;
+    return mentalCommonUtils.isAuthorized(cbtBasics.getUserId());
   }
 
   /**

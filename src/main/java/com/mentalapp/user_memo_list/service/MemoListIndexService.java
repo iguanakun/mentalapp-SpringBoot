@@ -25,11 +25,11 @@ public class MemoListIndexService {
    * ユーザーIDに基づいてCbtBasicsのリストを作成
    *
    * @param userId ユーザーID
-   * @return CbtBasicsのリスト（感情情報を含む）
+   * @return CbtBasicsのリスト（感情情報とタグ情報を含む）
    */
   public List<CbtBasics> createCbtBasicsObjectList(Long userId) {
-    // ユーザIDに紐づくCbtBasicsと感情情報を一度に取得
-    return cbtBasicsMapper.findCbtBasicsFeelsListByUserId(userId);
+    // ユーザIDに紐づくCbtBasicsと感情情報およびタグ情報を一度に取得
+    return cbtBasicsMapper.findCbtBasicsFeelsAndTagsListByUserId(userId);
   }
 
   /**

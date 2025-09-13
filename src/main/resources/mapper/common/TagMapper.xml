@@ -22,6 +22,10 @@
         SELECT * FROM tags WHERE user_id = #{userId}
     </select>
 
+    <select id="findByTagNameAndUserId" resultMap="TagResultMap">
+        SELECT * FROM tags WHERE user_id = #{userId} and tag_name = #{tagName}
+    </select>
+
     <select id="findAll" resultMap="TagResultMap">
         SELECT * FROM tags
     </select>

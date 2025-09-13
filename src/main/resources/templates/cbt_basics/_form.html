@@ -24,7 +24,7 @@
               <span th:text="${feel.negativeFeelName}"></span>
             </label>
                     <!-- 10個目で改行を入れる -->
-              <div th:if="${feel.id == 10}" class="second-row"></div>
+              <div th:if="${feel.id == 10}" id="second-row"></div>
           </span>
             </div>
             <div class="monitor-info__feels">
@@ -35,7 +35,7 @@
               <span th:text="${feel.positiveFeelName}"></span>
             </label>
                     <!-- 10個目で改行を入れる -->
-              <div th:if="${feel.id == 10}" class="second-row"></div>
+              <div th:if="${feel.id == 10}" id="second-row-negative"></div>
           </span>
             </div>
         </div>
@@ -72,9 +72,9 @@
                 <div class="item-circle"></div>
                 <div class="monitor-item">タグ</div>
             </div>
-            <div class="monitor-info">タグを入力してください（カンマ区切りで複数入力可能）</div>
+            <div class="monitor-info">タグを入力してください（スペース区切りで複数入力可能）</div>
             <input type="text" th:field="*{tagNames}" class="tag-field" maxlength="255"
-                   placeholder="例: 仕事, 家族, 健康"/>
+                   placeholder="例: 仕事 家族 健康"/>
         </div>
 
         <div class="monitor-btn-contents">

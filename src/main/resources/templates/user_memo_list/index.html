@@ -30,7 +30,6 @@
             </div>
         </div>
 
-        <!-- TODO: タグ機能実装後に有効化
         <form th:action="@{/memos}" method="get" id="detailed-search-form">
           <div class="tag-search-field">
             <div class="icon">
@@ -42,7 +41,6 @@
             </div>
           </div>
         </form>
-        -->
 
         <!-- 一覧表示 - 全てのメモを更新日時の降順で表示 -->
         <div th:each="memo : ${allMemos}" th:remove="tag">
@@ -75,6 +73,12 @@
                         <div class="monitor-list-text">
                             <span th:each="feel : ${memo.negativeFeels}"
                                   th:text="${feel.negativeFeelName + '　'}"></span>
+                        </div>
+                    </div>
+                    <div class="monitor-list-content" th:if="${memo.tags != null and not #lists.isEmpty(memo.tags)}">
+                        <div class="monitor-list-item">タグ</div>
+                        <div class="monitor-list-tags">
+                            <div class="monitor-list-tag" th:each="tag : ${memo.tags}" th:text="${tag.tagName}"></div>
                         </div>
                     </div>
                 </a>

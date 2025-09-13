@@ -19,9 +19,9 @@ public class TagUtils {
   private final TagMapper tagMapper;
 
   /**
-   * スペース区切りのタグ文字列からタグリストを作成または取得する
+   * スペース（半角・全角）区切りのタグ文字列からタグリストを作成または取得する
    *
-   * @param tagNames スペース区切りのタグ名
+   * @param tagNames スペース（半角・全角）区切りのタグ名
    * @param userId ユーザーID
    * @return 処理されたタグのリスト
    */
@@ -30,8 +30,8 @@ public class TagUtils {
       return List.of();
     }
 
-    // スペースで区切られたタグを分割
-    String[] tagArray = tagNames.trim().split("\\s+");
+    // スペース（半角・全角）で区切られたタグを分割
+    String[] tagArray = tagNames.trim().split("[\\s\u3000]+");
 
     return Arrays.stream(tagArray)
         .filter(tagName -> !tagName.trim().isEmpty())
@@ -65,7 +65,7 @@ public class TagUtils {
     } catch (Exception e) {
       // ログ出力
       log.error("タグの検索/作成中にエラーが発生しました: {}", e.getMessage(), e);
-      throw new TagProcessingException("タグの処理中にエラーが発生しました", e);
+      throw new RuntimeException("タグの処理中にエラーが発生しました", e);
     }
   }
 
