@@ -12,12 +12,14 @@ import com.mentalapp.cbt_cr.entity.CbtCrPositiveFeel;
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
+import com.mentalapp.common.exception.DatabaseException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import org.springframework.validation.BindingResult;
 /** 認知再構成法の登録・更新・削除処理を行うサービスクラス */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CbtCrRegistService {
 
   private final CbtCrMapper cbtCrMapper;
@@ -233,24 +236,28 @@ public class CbtCrRegistService {
    * @param negativeFeelIds ネガティブ感情のIDリスト
    * @param positiveFeelIds ポジティブ感情のIDリスト
    * @param distortionIds 思考の歪みのIDリスト
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
   @Transactional
   public void insert(
-      CbtCr cbtCr,
-      List<Long> negativeFeelIds,
-      List<Long> positiveFeelIds,
-      List<Long> distortionIds) {
-    // 登録
-    cbtCrMapper.insert(cbtCr);
+      CbtCr cbtCr, List<Long> negativeFeelIds, List<Long> positiveFeelIds, List<Long> distortionIds)
+      throws DatabaseException {
+    try {
+      // 登録
+      cbtCrMapper.insert(cbtCr);
 
-    // ネガティブ感情の関連付け
-    insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
+      // ネガティブ感情の関連付け
+      insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
 
-    // ポジティブ感情の関連付け
-    insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
+      // ポジティブ感情の関連付け
+      insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
 
-    // 思考の歪みの関連付け
-    insertDistortionRelationsJoinTable(cbtCr, distortionIds);
+      // 思考の歪みの関連付け
+      insertDistortionRelationsJoinTable(cbtCr, distortionIds);
+    } catch (Exception e) {
+      log.error("認知再構成法登録中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("認知再構成法登録中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
@@ -258,17 +265,24 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param negativeFeelIds ネガティブ感情のIDリスト
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
-  private void insertNegativeFeelJoinTable(CbtCr cbtCr, List<Long> negativeFeelIds) {
+  private void insertNegativeFeelJoinTable(CbtCr cbtCr, List<Long> negativeFeelIds)
+      throws DatabaseException {
     if (Objects.isNull(negativeFeelIds) || negativeFeelIds.isEmpty()) {
       return;
     }
 
-    for (Long negativeFeelId : negativeFeelIds) {
-      CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
-      cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
-      cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
-      cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
+    try {
+      for (Long negativeFeelId : negativeFeelIds) {
+        CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
+        cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
+        cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
+        cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
+      }
+    } catch (Exception e) {
+      log.error("ネガティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("ネガティブ感情関連付け中にデータベースエラーが発生しました", e);
     }
   }
 
@@ -277,17 +291,24 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param positiveFeelIds ポジティブ感情のIDリスト
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
-  private void insertPositiveFeelsJoinTable(CbtCr cbtCr, List<Long> positiveFeelIds) {
+  private void insertPositiveFeelsJoinTable(CbtCr cbtCr, List<Long> positiveFeelIds)
+      throws DatabaseException {
     if (Objects.isNull(positiveFeelIds) || positiveFeelIds.isEmpty()) {
       return;
     }
 
-    for (Long positiveFeelId : positiveFeelIds) {
-      CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
-      cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
-      cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
-      cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
+    try {
+      for (Long positiveFeelId : positiveFeelIds) {
+        CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
+        cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
+        cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
+        cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
+      }
+    } catch (Exception e) {
+      log.error("ポジティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("ポジティブ感情関連付け中にデータベースエラーが発生しました", e);
     }
   }
 
@@ -296,17 +317,24 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param distortionIds 思考の歪みのIDリスト
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
-  private void insertDistortionRelationsJoinTable(CbtCr cbtCr, List<Long> distortionIds) {
+  private void insertDistortionRelationsJoinTable(CbtCr cbtCr, List<Long> distortionIds)
+      throws DatabaseException {
     if (Objects.isNull(distortionIds) || distortionIds.isEmpty()) {
       return;
     }
 
-    for (Long distortionId : distortionIds) {
-      CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
-      cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
-      cbtCrDistortionRelation.setDistortionListId(distortionId);
-      cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
+    try {
+      for (Long distortionId : distortionIds) {
+        CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
+        cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
+        cbtCrDistortionRelation.setDistortionListId(distortionId);
+        cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
+      }
+    } catch (Exception e) {
+      log.error("思考の歪み関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("思考の歪み関連付け中にデータベースエラーが発生しました", e);
     }
   }
 
@@ -317,29 +345,36 @@ public class CbtCrRegistService {
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    * @param distortionIds 関連付ける思考の歪みのIDリスト
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
   @Transactional
   public void update(
-      CbtCr cbtCr,
-      List<Long> negativeFeelIds,
-      List<Long> positiveFeelIds,
-      List<Long> distortionIds) {
-    // 既存の感情テーブルと思考の歪みテーブルの関連を削除
-    cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId());
-    cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId());
-    cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId());
+      CbtCr cbtCr, List<Long> negativeFeelIds, List<Long> positiveFeelIds, List<Long> distortionIds)
+      throws DatabaseException {
+    try {
+      // 既存の感情テーブルと思考の歪みテーブルの関連を削除
+      cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId());
+      cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId());
+      cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId());
 
-    // 更新
-    cbtCrMapper.updateByPrimaryKey(cbtCr);
+      // 更新
+      cbtCrMapper.updateByPrimaryKey(cbtCr);
 
-    // ネガティブ感情の関連付け
-    insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
+      // ネガティブ感情の関連付け
+      insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
 
-    // ポジティブ感情の関連付け
-    insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
+      // ポジティブ感情の関連付け
+      insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
 
-    // 思考の歪みの関連付け
-    insertDistortionRelationsJoinTable(cbtCr, distortionIds);
+      // 思考の歪みの関連付け
+      insertDistortionRelationsJoinTable(cbtCr, distortionIds);
+    } catch (DatabaseException e) {
+      // 既存のDatabaseExceptionを再スロー
+      throw e;
+    } catch (Exception e) {
+      log.error("認知再構成法更新中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("認知再構成法更新中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
@@ -349,30 +384,44 @@ public class CbtCrRegistService {
    * @return 遷移先のパス
    */
   public String processDelete(Long id) {
-    // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
-    if (Objects.isNull(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-    }
+    try {
+      // 認知再構成法を取得し、アクセス権限をチェック
+      CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+      if (Objects.isNull(cbtCr)) {
+        return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+      }
 
-    // 削除
-    delete(id);
-    return MemoListConst.REDIRECT_MEMOS;
+      // 削除
+      delete(id);
+      return MemoListConst.REDIRECT_MEMOS;
+    } catch (DatabaseException e) {
+      // 既存のDatabaseExceptionを再スロー
+      throw e;
+    } catch (Exception e) {
+      log.error("認知再構成法削除処理中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("認知再構成法削除処理中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
    * 指定されたIDの認知再構成法を削除
    *
    * @param id 削除する認知再構成法のID
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
   @Transactional
-  public void delete(Long id) {
-    // 関連するネガティブ感情、ポジティブ感情、思考の歪みの関連を削除
-    cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
-    cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
-    cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
+  public void delete(Long id) throws DatabaseException {
+    try {
+      // 関連するネガティブ感情、ポジティブ感情、思考の歪みの関連を削除
+      cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
+      cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
+      cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
 
-    // 認知再構成法を削除
-    cbtCrMapper.deleteByPrimaryKey(id);
+      // 認知再構成法を削除
+      cbtCrMapper.deleteByPrimaryKey(id);
+    } catch (Exception e) {
+      log.error("認知再構成法削除中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("認知再構成法削除中にデータベースエラーが発生しました", e);
+    }
   }
 }

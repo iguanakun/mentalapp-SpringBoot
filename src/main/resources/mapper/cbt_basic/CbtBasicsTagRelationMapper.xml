@@ -7,7 +7,7 @@
         VALUES (#{cbtBasicId}, #{tagId}, current_timestamp, current_timestamp)
     </insert>
 
-    <delete id="deleteByCbtBasicId">
+    <delete id="deleteByMonitoringId">
         DELETE FROM cbt_basics_tag_relations
         WHERE cbt_basic_id = #{cbtBasicId}
     </delete>

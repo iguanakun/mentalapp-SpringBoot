@@ -10,7 +10,7 @@ import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.Tag;
 import com.mentalapp.common.util.MentalCommonUtils;
-import com.mentalapp.common.util.TagUtils;
+import com.mentalapp.common.util.TagList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ public class CbtBasicCommonUtils {
   private final PositiveFeelMapper positiveFeelMapper;
   private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
-  private final TagUtils tagUtils;
 
   /**
    * エンティティからフォームへの変換
@@ -41,17 +40,34 @@ public class CbtBasicCommonUtils {
     // ポジティブ感情IDリストの抽出
     List<Long> positiveFeelIds = extractedPositiveFeelsIdList(cbtBasics);
 
+    // CbtBasicのフォーム作成し、値をセット
     CbtBasicsInputForm form = new CbtBasicsInputForm();
+    // モニタリング情報
     form.setCbtBasics(cbtBasics);
+    // ネガティブ感情
     form.setNegativeFeelIds(negativeFeelIds);
+    // ポジティブ感情
     form.setPositiveFeelIds(positiveFeelIds);
 
-    // タグ情報を設定
+    // タグ情報
     if (Objects.nonNull(cbtBasics.getTags()) && !cbtBasics.getTags().isEmpty()) {
-      form.setTagNames(tagUtils.convertTagsToString(cbtBasics.getTags()));
+      // tagListのインスタンス生成
+      TagList tagList = getTagList(cbtBasics);
+      // タグ一覧をセット
+      form.setTagNames(tagList.tagNamesToString());
     }
 
     return form;
+  }
+
+  /**
+   * CbtBasicsからTagListを作成する
+   *
+   * @param cbtBasics TagListを作成するCBT Basicsエンティティ
+   * @return 作成されたTagList
+   */
+  public TagList getTagList(CbtBasics cbtBasics) {
+    return new TagList(cbtBasics.getTags(), tagMapper);
   }
 
   /**

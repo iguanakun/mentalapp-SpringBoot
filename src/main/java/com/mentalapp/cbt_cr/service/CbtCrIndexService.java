@@ -11,17 +11,20 @@ import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.entity.DistortionList;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.exception.DatabaseException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 /** 認知再構成法の表示処理サービス */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CbtCrIndexService {
 
   private final NegativeFeelMapper negativeFeelMapper;
@@ -37,32 +40,46 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processNew(Model model) {
-    // ビューデータを作成
-    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+    try {
+      // ビューデータを作成
+      CbtCrViewData viewData = createCbtCrViewDataWithFeel();
 
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", new CbtCrInputForm());
+      // モデルに追加
+      model.addAttribute("viewData", viewData);
+      model.addAttribute("cbtCrForm", new CbtCrInputForm());
 
-    return CbtCrConst.NEW_PATH;
+      return CbtCrConst.NEW_PATH;
+    } catch (DatabaseException e) {
+      // 既存のDatabaseExceptionを再スロー
+      throw e;
+    } catch (Exception e) {
+      log.error("新規作成画面表示中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("新規作成画面表示中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
    * ネガティブ感情とポジティブ感情を含むビューデータを作成する
    *
    * @return 感情データを含むビューデータ
+   * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
-  private CbtCrViewData createCbtCrViewDataWithFeel() {
-    // 全ての感情を取得
-    List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
-    List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
+  private CbtCrViewData createCbtCrViewDataWithFeel() throws DatabaseException {
+    try {
+      // 全ての感情を取得
+      List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
+      List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
 
-    // ビューデータを作成
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setNegativeFeels(negativeFeels);
-    viewData.setPositiveFeels(positiveFeels);
+      // ビューデータを作成
+      CbtCrViewData viewData = new CbtCrViewData();
+      viewData.setNegativeFeels(negativeFeels);
+      viewData.setPositiveFeels(positiveFeels);
 
-    return viewData;
+      return viewData;
+    } catch (Exception e) {
+      log.error("感情データ取得中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("感情データ取得中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
@@ -101,18 +118,23 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processStep2(Model model) {
-    // 思考の歪みを取得
-    List<DistortionList> distortionLists = distortionListMapper.findAll();
+    try {
+      // 思考の歪みを取得
+      List<DistortionList> distortionLists = distortionListMapper.findAll();
 
-    // ビューデータを作成
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionLists);
+      // ビューデータを作成
+      CbtCrViewData viewData = new CbtCrViewData();
+      viewData.setDistortionLists(distortionLists);
 
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", new CbtCrInputForm());
+      // モデルに追加
+      model.addAttribute("viewData", viewData);
+      model.addAttribute("cbtCrForm", new CbtCrInputForm());
 
-    return CbtCrConst.STEP2_PATH;
+      return CbtCrConst.STEP2_PATH;
+    } catch (Exception e) {
+      log.error("ステップ2画面表示中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("ステップ2画面表示中にデータベースエラーが発生しました", e);
+    }
   }
 
   /**
@@ -123,16 +145,21 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processShow(Long id, Model model) {
-    // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
-    if (cbtCr == null) {
-      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+    try {
+      // 認知再構成法を取得し、アクセス権限をチェック
+      CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+      if (cbtCr == null) {
+        return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+      }
+
+      // モデルに追加
+      model.addAttribute("cbtCr", cbtCr);
+
+      return CbtCrConst.SHOW_PATH;
+    } catch (Exception e) {
+      log.error("詳細画面表示中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("詳細画面表示中にデータベースエラーが発生しました", e);
     }
-
-    // モデルに追加
-    model.addAttribute("cbtCr", cbtCr);
-
-    return CbtCrConst.SHOW_PATH;
   }
 
   /**
@@ -143,23 +170,31 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processEdit(Long id, Model model) {
-    // 認知再構成法を取得し、アクセス権限をチェック
-    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
-    if (cbtCr == null) {
-      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+    try {
+      // 認知再構成法を取得し、アクセス権限をチェック
+      CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+      if (cbtCr == null) {
+        return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+      }
+
+      // フォームに値をセット
+      CbtCrInputForm form = createCbtCrInputForm(cbtCr);
+
+      // ビューデータを作成
+      CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+
+      // モデルに追加
+      model.addAttribute("viewData", viewData);
+      model.addAttribute("cbtCrForm", form);
+
+      return CbtCrConst.EDIT_PATH;
+    } catch (DatabaseException e) {
+      // 既存のDatabaseExceptionを再スロー
+      throw e;
+    } catch (Exception e) {
+      log.error("編集画面表示中にデータベースエラーが発生しました: {}", e.getMessage(), e);
+      throw new DatabaseException("編集画面表示中にデータベースエラーが発生しました", e);
     }
-
-    // フォームに値をセット
-    CbtCrInputForm form = createCbtCrInputForm(cbtCr);
-
-    // ビューデータを作成
-    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
-
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", form);
-
-    return CbtCrConst.EDIT_PATH;
   }
 
   private static CbtCrInputForm createCbtCrInputForm(CbtCr cbtCr) {
