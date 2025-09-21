@@ -9,11 +9,9 @@ import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
-import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.DistortionList;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
-import com.mentalapp.common.entity.Tag;
 import com.mentalapp.common.exception.DatabaseException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
@@ -35,7 +33,6 @@ public class CbtCrIndexService {
   private final NegativeFeelMapper negativeFeelMapper;
   private final PositiveFeelMapper positiveFeelMapper;
   private final DistortionListMapper distortionListMapper;
-  private final TagMapper tagMapper;
   private final CbtCrCommonUtils cbtCrCommonUtils;
   private final MentalCommonUtils mentalCommonUtils;
   private final HttpSession session;
@@ -136,7 +133,7 @@ public class CbtCrIndexService {
   public String processShow(Long id, Model model) {
     try {
       // 認知再構成法を取得
-      CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+      CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
       // 存在チェックとアクセス権限チェック
       if (Objects.isNull(cbtCr) || !cbtCrCommonUtils.checkAccessPermission(cbtCr)) {
@@ -144,16 +141,7 @@ public class CbtCrIndexService {
       }
 
       // タグ情報を取得
-      String tagNames = "";
-      try {
-        List<Tag> tags = tagMapper.findByMonitoringId(id, "cbt_cr_tag_relations", "cbt_cr_id");
-        if (Objects.nonNull(tags) && !tags.isEmpty()) {
-          TagList tagList = new TagList(tags, tagMapper);
-          tagNames = tagList.tagNamesToString();
-        }
-      } catch (Exception e) {
-        log.warn("タグ情報の取得中にエラーが発生しました: {}", e.getMessage());
-      }
+      String tagNames = extractTagNamesToString(cbtCr);
 
       // モデルに追加
       model.addAttribute("cbtCr", cbtCr);
