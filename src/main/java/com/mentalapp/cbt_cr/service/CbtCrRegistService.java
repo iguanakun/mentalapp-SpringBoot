@@ -107,29 +107,13 @@ public class CbtCrRegistService {
     // IDを明示的に設定
     cbtCr.setId(id);
 
-    try {
-      // 更新
-      update(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
+    // 更新
+    update(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
 
-      // 更新成功後にセッションデータを削除
-      clearSessionData();
+    // 更新成功後にセッションデータを削除
+    clearSessionData();
 
-      return MemoListConst.REDIRECT_MEMOS;
-    } catch (Exception e) {
-      // エラー処理
-      // ログ出力
-      log.error("認知再構成法の更新中にエラーが発生しました: {}", e.getMessage(), e);
-
-      // ユーザーへのフィードバック
-      model.addAttribute("errorMessage", "更新処理中にエラーが発生しました。もう一度お試しください。");
-
-      // ビューデータを再作成して追加
-      CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
-      model.addAttribute("viewData", viewData);
-
-      // セッションデータは削除せず、エラー画面を表示
-      return CbtCrConst.EDIT_STEP2_PATH;
-    }
+    return MemoListConst.REDIRECT_MEMOS;
   }
 
   /**
@@ -271,16 +255,11 @@ public class CbtCrRegistService {
       return;
     }
 
-    try {
-      for (Long negativeFeelId : negativeFeelIds) {
-        CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
-        cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
-        cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
-        cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
-      }
-    } catch (Exception e) {
-      log.error("ネガティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ネガティブ感情関連付け中にデータベースエラーが発生しました", e);
+    for (Long negativeFeelId : negativeFeelIds) {
+      CbtCrNegativeFeel cbtCrNegativeFeel = new CbtCrNegativeFeel();
+      cbtCrNegativeFeel.setCbtCrId(cbtCr.getId());
+      cbtCrNegativeFeel.setNegativeFeelId(negativeFeelId.intValue());
+      cbtCrNegativeFeelMapper.insert(cbtCrNegativeFeel);
     }
   }
 
@@ -297,16 +276,11 @@ public class CbtCrRegistService {
       return;
     }
 
-    try {
-      for (Long positiveFeelId : positiveFeelIds) {
-        CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
-        cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
-        cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
-        cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
-      }
-    } catch (Exception e) {
-      log.error("ポジティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ポジティブ感情関連付け中にデータベースエラーが発生しました", e);
+    for (Long positiveFeelId : positiveFeelIds) {
+      CbtCrPositiveFeel cbtCrPositiveFeel = new CbtCrPositiveFeel();
+      cbtCrPositiveFeel.setCbtCrId(cbtCr.getId());
+      cbtCrPositiveFeel.setPositiveFeelId(positiveFeelId.intValue());
+      cbtCrPositiveFeelMapper.insert(cbtCrPositiveFeel);
     }
   }
 
@@ -346,16 +320,11 @@ public class CbtCrRegistService {
       return;
     }
 
-    try {
-      for (Long distortionId : distortionIds) {
-        CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
-        cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
-        cbtCrDistortionRelation.setDistortionListId(distortionId);
-        cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
-      }
-    } catch (Exception e) {
-      log.error("思考の歪み関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("思考の歪み関連付け中にデータベースエラーが発生しました", e);
+    for (Long distortionId : distortionIds) {
+      CbtCrDistortionRelation cbtCrDistortionRelation = new CbtCrDistortionRelation();
+      cbtCrDistortionRelation.setCbtCrId(cbtCr.getId());
+      cbtCrDistortionRelation.setDistortionListId(distortionId);
+      cbtCrDistortionRelationMapper.insert(cbtCrDistortionRelation);
     }
   }
 
@@ -376,34 +345,26 @@ public class CbtCrRegistService {
       List<Long> distortionIds,
       String tagNames)
       throws DatabaseException {
-    try {
-      // 既存の感情テーブルと思考の歪みテーブルの関連を削除
-      cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId());
-      cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId());
-      cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId());
-      cbtCrTagRelationMapper.deleteByMonitoringId(cbtCr.getId());
+    // 既存の感情テーブルと思考の歪みテーブルの関連を削除
+    cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId());
+    cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId());
+    cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId());
+    cbtCrTagRelationMapper.deleteByMonitoringId(cbtCr.getId());
 
-      // 更新
-      cbtCrMapper.updateByPrimaryKey(cbtCr);
+    // 更新
+    cbtCrMapper.updateByPrimaryKey(cbtCr);
 
-      // ネガティブ感情の関連付け
-      insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
+    // ネガティブ感情の関連付け
+    insertNegativeFeelJoinTable(cbtCr, negativeFeelIds);
 
-      // ポジティブ感情の関連付け
-      insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
+    // ポジティブ感情の関連付け
+    insertPositiveFeelsJoinTable(cbtCr, positiveFeelIds);
 
-      // 思考の歪みの関連付け
-      insertDistortionRelationsJoinTable(cbtCr, distortionIds);
+    // 思考の歪みの関連付け
+    insertDistortionRelationsJoinTable(cbtCr, distortionIds);
 
-      // タグの保存と関連付け
-      saveTags(cbtCr, cbtCr.getUserId(), tagNames);
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("認知再構成法更新中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("認知再構成法更新中にデータベースエラーが発生しました", e);
-    }
+    // タグの保存と関連付け
+    saveTags(cbtCr, cbtCr.getUserId(), tagNames);
   }
 
   /**
@@ -413,23 +374,15 @@ public class CbtCrRegistService {
    * @return 遷移先のパス
    */
   public String processDelete(Long id) {
-    try {
-      // 認知再構成法を取得し、アクセス権限をチェック
-      CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
-      if (Objects.isNull(cbtCr)) {
-        return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
-      }
-
-      // 削除
-      delete(id);
-      return MemoListConst.REDIRECT_MEMOS;
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("認知再構成法削除処理中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("認知再構成法削除処理中にデータベースエラーが発生しました", e);
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+    if (Objects.isNull(cbtCr)) {
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
+
+    // 削除
+    delete(id);
+    return MemoListConst.REDIRECT_MEMOS;
   }
 
   /**
@@ -440,18 +393,13 @@ public class CbtCrRegistService {
    */
   @Transactional
   public void delete(Long id) throws DatabaseException {
-    try {
-      // 関連するネガティブ感情、ポジティブ感情、思考の歪み、タグの関連を削除
-      cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
-      cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
-      cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
-      cbtCrTagRelationMapper.deleteByMonitoringId(id);
+    // 関連するネガティブ感情、ポジティブ感情、思考の歪み、タグの関連を削除
+    cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
+    cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
+    cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
+    cbtCrTagRelationMapper.deleteByMonitoringId(id);
 
-      // 認知再構成法を削除
-      cbtCrMapper.deleteByPrimaryKey(id);
-    } catch (Exception e) {
-      log.error("認知再構成法削除中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("認知再構成法削除中にデータベースエラーが発生しました", e);
-    }
+    // 認知再構成法を削除
+    cbtCrMapper.deleteByPrimaryKey(id);
   }
 }

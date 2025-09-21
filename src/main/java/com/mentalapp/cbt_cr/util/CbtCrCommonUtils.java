@@ -7,8 +7,10 @@ import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
+import com.mentalapp.common.entity.DistortionList;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -113,5 +115,33 @@ public class CbtCrCommonUtils {
    */
   public TagList getTagList(CbtCr cbtCr) {
     return new TagList(cbtCr.getTags(), tagMapper);
+  }
+
+  /**
+   * CbtCrエンティティから思考の歪みIDリストを抽出する
+   *
+   * @param cbtCr 認知再構成法エンティティ
+   * @return 思考の歪みIDのリスト、または歪みがない場合はnull
+   */
+  public List<Long> extractDistortionIds(CbtCr cbtCr) {
+    if (Objects.isNull(cbtCr.getDistortionLists())) {
+      return null;
+    }
+
+    return cbtCr.getDistortionLists().stream().map(DistortionList::getId).toList();
+  }
+  
+  /**
+   * CbtCrエンティティからタグ名の文字列を抽出する
+   *
+   * @param cbtCr 認知再構成法エンティティ
+   * @return タグ名の文字列、またはタグがない場合はnull
+   */
+  public String extractTagNamesToString(CbtCr cbtCr) {
+    if (Objects.isNull(cbtCr.getTags())) {
+      return null;
+    }
+    TagList tagList = getTagList(cbtCr);
+    return tagList.tagNamesToString();
   }
 }
