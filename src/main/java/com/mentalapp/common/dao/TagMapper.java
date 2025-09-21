@@ -64,4 +64,14 @@ public interface TagMapper {
    * @return 削除件数
    */
   int deleteByPrimaryKey(Long id);
+
+  /**
+   * モニタリングIDに紐づくタグを取得する
+   *
+   * @param monitoringId モニタリングID
+   * @param tableName 中間テーブル名
+   * @param columnName モニタリングIDのカラム名
+   * @return タグエンティティのリスト
+   */
+  List<Tag> findByMonitoringId(Long monitoringId, String tableName, String columnName);
 }

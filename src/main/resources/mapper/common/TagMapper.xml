@@ -46,4 +46,11 @@
     <delete id="deleteByPrimaryKey">
         DELETE FROM tags WHERE id = #{id}
     </delete>
+
+    <select id="findByMonitoringId" resultMap="TagResultMap">
+        SELECT t.*
+        FROM tags t
+        JOIN ${tableName} rel ON t.id = rel.tag_id
+        WHERE rel.${columnName} = #{monitoringId}
+    </select>
 </mapper>

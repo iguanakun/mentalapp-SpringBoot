@@ -73,4 +73,12 @@ public interface CbtCrMapper {
    * @return ネガティブ感情名と出現回数のマップのリスト
    */
   List<Map<String, Object>> findTopNegativeFeelingsByUserId(@Param("userId") Long userId);
+
+  /**
+   * 認知再構成法IDに基づいて認知再構成法と関連する感情・思考の歪み・タグを取得
+   *
+   * @param cbtCrId 認知再構成法ID
+   * @return 指定されたIDの認知再構成法（感情・思考の歪み・タグ情報を含む）
+   */
+  CbtCr selectByPrimaryKeyWithFeelsAndTags(Long cbtCrId);
 }

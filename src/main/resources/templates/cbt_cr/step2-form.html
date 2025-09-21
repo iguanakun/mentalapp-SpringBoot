@@ -54,14 +54,13 @@
             <textarea th:field="*{newThought}" class="monitor-text" rows="5" maxlength="40000"></textarea>
         </div>
 
-        <!-- タグ機能は不要
         <div class="monitor-contents">
-          <div class="monitor-wrapper">
-            <div class="monitor-item"><span style="font-size: 18px;">タグ</span></div>
-          </div>
-          <input type="text" th:field="*{tagName}" class="tag-field" placeholder="タグをつける(スペース区切りで複数追加)" maxlength="50" />
+            <div class="monitor-wrapper">
+                <div class="monitor-item"><span style="font-size: 18px;">タグ</span></div>
+            </div>
+            <input type="text" th:field="*{tagNames}" class="tag-field"
+                   placeholder="タグをつける(スペース区切りで複数追加)" maxlength="50"/>
         </div>
-        -->
 
         <div class="monitor-btn-contents">
             <button type="submit" class="monitor-btn" th:text="${buttonText != null ? buttonText : '作成する'}">

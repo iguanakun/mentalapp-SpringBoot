@@ -1,7 +1,11 @@
 package com.mentalapp.common.util;
 
 import com.mentalapp.common.dao.UserMapper;
+import com.mentalapp.common.entity.NegativeFeel;
+import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.User;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -33,5 +37,33 @@ public class MentalCommonUtils {
    */
   public boolean isAuthorized(Long userId) {
     return userId.equals(getUser().getId());
+  }
+
+  /**
+   * ネガティブ感情IDリストを抽出
+   *
+   * @param negativeFeelList 抽出元のCBT Basicsエンティティ
+   * @return ネガティブ感情IDのリスト、関連付けがない場合はnull
+   */
+  public List<Long> extractedNegativeFeelsIdList(List<NegativeFeel> negativeFeelList) {
+    if (Objects.isNull(negativeFeelList) || negativeFeelList.isEmpty()) {
+      return null;
+    }
+
+    return negativeFeelList.stream().map(NegativeFeel::getId).toList();
+  }
+
+  /**
+   * ネガティブ感情IDリストを抽出
+   *
+   * @param positiveFeelList 抽出元のCBT Basicsエンティティ
+   * @return ネガティブ感情IDのリスト、関連付けがない場合はnull
+   */
+  public List<Long> extractedPositiveFeelsIdList(List<PositiveFeel> positiveFeelList) {
+    if (Objects.isNull(positiveFeelList) || positiveFeelList.isEmpty()) {
+      return null;
+    }
+
+    return positiveFeelList.stream().map(PositiveFeel::getId).toList();
   }
 }

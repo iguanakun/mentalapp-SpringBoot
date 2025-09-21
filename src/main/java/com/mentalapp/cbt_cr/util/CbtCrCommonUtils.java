@@ -6,7 +6,9 @@ import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
+import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.util.MentalCommonUtils;
+import com.mentalapp.common.util.TagList;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ public class CbtCrCommonUtils {
   private final NegativeFeelMapper negativeFeelMapper;
   private final PositiveFeelMapper positiveFeelMapper;
   private final DistortionListMapper distortionListMapper;
+  private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
 
   /**
@@ -100,5 +103,15 @@ public class CbtCrCommonUtils {
     }
 
     return cbtCr;
+  }
+
+  /**
+   * CbtCrからTagListを作成する
+   *
+   * @param cbtCr TagListを作成する認知再構成法エンティティ
+   * @return 作成されたTagList
+   */
+  public TagList getTagList(CbtCr cbtCr) {
+    return new TagList(cbtCr.getTags(), tagMapper);
   }
 }

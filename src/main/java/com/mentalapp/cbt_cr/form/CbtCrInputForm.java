@@ -38,13 +38,21 @@ public class CbtCrInputForm {
   /** ユーザーID */
   private Long userId;
 
+  /** タグ名（スペース区切り） */
+  private String tagNames;
+
   /**
    * バリデーション用のメソッド - いずれかの項目が入力されているか
    *
    * @return いずれかの項目が入力されている場合はtrue
    */
   public boolean hasAnyContent() {
-    // Check for negativeFeelIds, positiveFeelIds, and distortionIds first
+    // Check for tagNames
+    if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
+      return true;
+    }
+
+    // Check for negativeFeelIds, positiveFeelIds, and distortionIds
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
     }

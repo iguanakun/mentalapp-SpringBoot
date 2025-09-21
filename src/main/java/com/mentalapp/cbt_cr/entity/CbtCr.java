@@ -3,6 +3,7 @@ package com.mentalapp.cbt_cr.entity;
 import com.mentalapp.common.entity.DistortionList;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.entity.Tag;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -19,9 +20,11 @@ import lombok.ToString;
       "cbtCrNegativeFeels",
       "cbtCrPositiveFeels",
       "cbtCrDistortionRelations",
+      "cbtCrTagRelations",
       "negativeFeels",
       "positiveFeels",
-      "distortionLists"
+      "distortionLists",
+      "tags"
     })
 public class CbtCr {
 
@@ -39,9 +42,11 @@ public class CbtCr {
   private List<CbtCrNegativeFeel> cbtCrNegativeFeels;
   private List<CbtCrPositiveFeel> cbtCrPositiveFeels;
   private List<CbtCrDistortionRelation> cbtCrDistortionRelations;
+  private List<CbtCrTagRelation> cbtCrTagRelations;
   private List<NegativeFeel> negativeFeels;
   private List<PositiveFeel> positiveFeels;
   private List<DistortionList> distortionLists;
+  private List<Tag> tags;
 
   /**
    * ユーザーIDを取得する（命名規則の互換性のため）

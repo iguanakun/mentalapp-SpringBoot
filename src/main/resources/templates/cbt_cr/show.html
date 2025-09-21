@@ -66,6 +66,13 @@
                 <div class="monitor-list-item">新しい考え方</div>
                 <div class="monitor-list-text" th:text="${cbtCr.newThought}"></div>
             </div>
+            <div class="monitor-list-content" th:if="${not #strings.isEmpty(tagNames)}">
+                <div class="monitor-list-item" id="tag">タグ</div>
+                <div class="monitor-list-tags">
+                    <div class="monitor-list-tag" th:each="tag : ${#strings.arraySplit(tagNames, ' ')}"
+                         th:text="${tag}"></div>
+                </div>
+            </div>
         </div>
 
         <a th:href="@{/memos}" class="monitor-show__btn">一覧にもどる</a>
