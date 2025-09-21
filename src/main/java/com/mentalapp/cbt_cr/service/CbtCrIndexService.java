@@ -10,8 +10,6 @@ import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.entity.DistortionList;
-import com.mentalapp.common.entity.NegativeFeel;
-import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.exception.DatabaseException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.servlet.http.HttpSession;
@@ -44,33 +42,14 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   public String processNew(Model model) {
-    // ビューデータを作成
-    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+    // ビューデータを作成（共通ユーティリティクラスのメソッドを使用）
+    CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsViewData();
 
     // モデルに追加
     model.addAttribute("viewData", viewData);
     model.addAttribute("cbtCrForm", new CbtCrInputForm());
 
     return CbtCrConst.NEW_PATH;
-  }
-
-  /**
-   * ネガティブ感情とポジティブ感情を含むビューデータを作成する
-   *
-   * @return 感情データを含むビューデータ
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
-   */
-  private CbtCrViewData createCbtCrViewDataWithFeel() throws DatabaseException {
-    // 全ての感情を取得
-    List<NegativeFeel> negativeFeels = negativeFeelMapper.selectAll();
-    List<PositiveFeel> positiveFeels = positiveFeelMapper.selectAll();
-
-    // ビューデータを作成
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setNegativeFeels(negativeFeels);
-    viewData.setPositiveFeels(positiveFeels);
-
-    return viewData;
   }
 
   /**
@@ -173,8 +152,32 @@ public class CbtCrIndexService {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
-    // step1の入力値をフォームに設定
-    CbtCrInputForm form = createCbtCrInputForm(cbtCr);
+    // step1の入力値を設定
+    Long cbtCrId = cbtCr.getId();
+    String fact = null;
+    String mind = null;
+    List<Long> negativeFeelIds = null;
+    List<Long> positiveFeelIds = null;
+    // もどる時の復元処理
+    if (Objects.nonNull(session.getAttribute("fact"))
+        || Objects.nonNull(session.getAttribute("mind"))
+        || Objects.nonNull(session.getAttribute("negativeFeelIds"))
+        || Objects.nonNull(session.getAttribute("positiveFeelIds"))) {
+      fact = (String) session.getAttribute("fact");
+      mind = (String) session.getAttribute("mind");
+      negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
+      positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
+    } else {
+      // もどるではない場合、DB取得値を設定
+      fact = cbtCr.getFact();
+      mind = cbtCr.getMind();
+      negativeFeelIds = mentalCommonUtils.extractedNegativeFeelsIdList(cbtCr.getNegativeFeels());
+      positiveFeelIds = mentalCommonUtils.extractedPositiveFeelsIdList(cbtCr.getPositiveFeels());
+    }
+
+    // フォームに設定
+    CbtCrInputForm form =
+        createCbtCrInputForm(cbtCrId, fact, mind, negativeFeelIds, positiveFeelIds);
 
     // step2の入力値をセッションに設定
     session.setAttribute("distortionIds", cbtCrCommonUtils.extractDistortionIds(cbtCr));
@@ -184,7 +187,7 @@ public class CbtCrIndexService {
     session.setAttribute("tagNames", cbtCrCommonUtils.extractTagNamesToString(cbtCr));
 
     // ビューデータを作成
-    CbtCrViewData viewData = createCbtCrViewDataWithFeel();
+    CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsViewData();
 
     // モデルに追加
     model.addAttribute("cbtCrForm", form);
@@ -199,21 +202,25 @@ public class CbtCrIndexService {
    * @param cbtCr 認知再構成法エンティティ
    * @return 作成されたフォーム
    */
-  private CbtCrInputForm createCbtCrInputForm(CbtCr cbtCr) {
+  private CbtCrInputForm createCbtCrInputForm(
+      Long cbtCrId,
+      String fact,
+      String mind,
+      List<Long> negativeFeelIds,
+      List<Long> positiveFeelIds) {
     CbtCrInputForm form = new CbtCrInputForm();
     // ID
-    form.setId(cbtCr.getId());
+    form.setId(cbtCrId);
+
     // 事実
-    form.setFact(cbtCr.getFact());
+    form.setFact(fact);
     // 思考
-    form.setMind(cbtCr.getMind());
+    form.setMind(mind);
 
     // ネガティブ感情
-    form.setNegativeFeelIds(
-        mentalCommonUtils.extractedNegativeFeelsIdList(cbtCr.getNegativeFeels()));
+    form.setNegativeFeelIds(negativeFeelIds);
     // ポジティブ感情
-    form.setPositiveFeelIds(
-        mentalCommonUtils.extractedPositiveFeelsIdList(cbtCr.getPositiveFeels()));
+    form.setPositiveFeelIds(positiveFeelIds);
 
     return form;
   }

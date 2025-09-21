@@ -130,7 +130,7 @@ public class CbtCrCommonUtils {
 
     return cbtCr.getDistortionLists().stream().map(DistortionList::getId).toList();
   }
-  
+
   /**
    * CbtCrエンティティからタグ名の文字列を抽出する
    *

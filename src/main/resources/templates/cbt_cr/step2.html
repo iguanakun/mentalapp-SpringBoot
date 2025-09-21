@@ -10,6 +10,10 @@
     <div th:replace="~{common/_header-margin :: header-margin}"></div>
 
     <div th:replace="~{cbt_cr/step2-form :: step2-form(url=@{/cbt_cr/regist}, method='post', buttonText='作成する')}"></div>
+
+    <div class="monitor-lists">
+        <a th:href="@{/cbt_cr/back}" class="monitor-show__btn">もどる</a>
+    </div>
 </div>
 </body>
 </html>

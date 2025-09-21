@@ -1,6 +1,7 @@
 package com.mentalapp.cbt_cr.controller;
 
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
+import com.mentalapp.cbt_cr.service.CbtCrBackService;
 import com.mentalapp.cbt_cr.service.CbtCrIndexService;
 import com.mentalapp.cbt_cr.service.CbtCrRegistService;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class CbtCrController {
 
   private final CbtCrIndexService cbtCrIndexService;
   private final CbtCrRegistService cbtCrRegistService;
+  private final CbtCrBackService cbtCrBackService;
 
   /**
    * 新規作成フォーム表示（ステップ1）
@@ -151,5 +153,28 @@ public class CbtCrController {
   @DeleteMapping("/{id}")
   public String delete(@PathVariable Long id) {
     return cbtCrRegistService.processDelete(id);
+  }
+
+  /**
+   * ステップ2からステップ1に戻る処理
+   *
+   * @param model モデル
+   * @return ビュー名
+   */
+  @GetMapping("/back")
+  public String backToStep1(Model model) {
+    return cbtCrBackService.processBackToStep1(model);
+  }
+
+  /**
+   * 編集時にステップ2からステップ1に戻る処理
+   *
+   * @param id 認知再構成法のID
+   * @param model モデル
+   * @return ビュー名
+   */
+  @GetMapping("/{id}/back")
+  public String backToEditStep1(@PathVariable Long id, Model model) {
+    return cbtCrBackService.processBackToEditStep1(id, model);
   }
 }
