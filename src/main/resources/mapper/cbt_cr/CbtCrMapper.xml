@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.cbt_cr.dao.CbtCrMapper">
+
+    <!-- マッピング定義(CbtCr) -->
+    <resultMap type="com.mentalapp.cbt_cr.entity.CbtCr" id="cbtCrWithFeelsAndDistortions">
+        <id column="id" property="id"/>
+        <result column="fact" property="fact"/>
+        <result column="mind" property="mind"/>
+        <result column="why_correct" property="whyCorrect"/>
+        <result column="why_doubt" property="whyDoubt"/>
+        <result column="new_thought" property="newThought"/>
+        <result column="user_id" property="user_id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <collection property="negativeFeels" resultMap="negativeFeel"/>
+        <collection property="positiveFeels" resultMap="positiveFeel"/>
+        <collection property="distortionLists" resultMap="distortionList"/>
+    </resultMap>
+
+    <!-- マッピング定義(CbtCrWithFeelsDistortionsAndTags) -->
+    <resultMap type="com.mentalapp.cbt_cr.entity.CbtCr" id="cbtCrWithFeelsDistortionsAndTags"
+               extends="cbtCrWithFeelsAndDistortions">
+        <collection property="tags" resultMap="tag"/>
+    </resultMap>
+
+    <!-- マッピング定義(Tag) -->
+    <resultMap type="com.mentalapp.common.entity.Tag" id="tag">
+        <id column="tag_id" property="id"/>
+        <result column="tag_name" property="tagName"/>
+        <result column="tag_user_id" property="userId"/>
+        <result column="tag_created_at" property="createdAt"/>
+        <result column="tag_updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- マッピング定義(NegativeFeel) -->
+    <resultMap type="com.mentalapp.common.entity.NegativeFeel" id="negativeFeel">
+        <id column="nf_id" property="id"/>
+        <result column="negative_feel_name" property="negativeFeelName"/>
+        <result column="nf_created_at" property="createdAt"/>
+        <result column="nf_updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- マッピング定義(PositiveFeel) -->
+    <resultMap type="com.mentalapp.common.entity.PositiveFeel" id="positiveFeel">
+        <id column="pf_id" property="id"/>
+        <result column="positive_feel_name" property="positiveFeelName"/>
+        <result column="pf_created_at" property="createdAt"/>
+        <result column="pf_updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- マッピング定義(DistortionList) -->
+    <resultMap type="com.mentalapp.common.entity.DistortionList" id="distortionList">
+        <id column="dl_id" property="id"/>
+        <result column="distortion_name" property="distortionName"/>
+        <result column="info" property="info"/>
+        <result column="dl_created_at" property="createdAt"/>
+        <result column="dl_updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- １件取得 -->
+    <select id="selectByPrimaryKey" resultType="com.mentalapp.cbt_cr.entity.CbtCr">
+        SELECT
+        *
+        FROM
+        cbt_cr
+        WHERE
+        id = #{id}
+    </select>
+
+    <!-- ユーザーIDによる取得 -->
+    <select id="selectByUserId" resultType="com.mentalapp.cbt_cr.entity.CbtCr">
+        SELECT
+        *
+        FROM
+        cbt_cr
+        WHERE
+        user_id = #{userId}
+    </select>
+
+    <!-- 登録 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        cbt_cr(fact, mind, why_correct, why_doubt, new_thought, user_id, created_at, updated_at)
+        VALUES
+        (#{fact}, #{mind}, #{whyCorrect}, #{whyDoubt}, #{newThought}, #{user_id}, current_timestamp, current_timestamp)
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateByPrimaryKey">
+        UPDATE
+        cbt_cr
+        SET
+        fact = #{fact},
+        mind = #{mind},
+        why_correct = #{whyCorrect},
+        why_doubt = #{whyDoubt},
+        new_thought = #{newThought},
+        updated_at = current_timestamp
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 削除 -->
+    <delete id="deleteByPrimaryKey">
+        DELETE
+        FROM
+        cbt_cr
+        WHERE
+        id = #{id}
+    </delete>
+
+    <!-- ユーザーIDに基づいて認知再構成法リストと関連する感情・思考の歪みリストを取得 -->
+    <select id="findCbtCrFeelsListByUserId" resultMap="cbtCrWithFeelsAndDistortions">
+        SELECT
+        cc.id,
+        cc.fact,
+        cc.mind,
+        cc.why_correct,
+        cc.why_doubt,
+        cc.new_thought,
+        cc.user_id,
+        cc.created_at,
+        cc.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at,
+        dl.id as dl_id,
+        dl.distortion_name,
+        dl.info,
+        dl.created_at as dl_created_at,
+        dl.updated_at as dl_updated_at
+        FROM
+        cbt_cr cc
+        LEFT OUTER JOIN
+        cbt_cr_negative_feels ccnf
+        ON
+        cc.id = ccnf.cbt_cr_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        ccnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_cr_positive_feels ccpf
+        ON
+        cc.id = ccpf.cbt_cr_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        ccpf.positive_feel_id = pf.id
+        LEFT OUTER JOIN
+        cbt_cr_distortion_relations ccdr
+        ON
+        cc.id = ccdr.cbt_cr_id
+        LEFT OUTER JOIN
+        distortion_lists dl
+        ON
+        ccdr.distortion_list_id = dl.id
+        WHERE
+        cc.user_id = #{userId}
+        ORDER BY
+        cc.id, nf.id, pf.id, dl.id
+    </select>
+
+    <!-- 認知再構成法IDに基づいて認知再構成法と関連する感情・思考の歪みリストを取得 -->
+    <select id="selectByPrimaryKeyWithFeels" resultMap="cbtCrWithFeelsAndDistortions">
+        SELECT
+        cc.id,
+        cc.fact,
+        cc.mind,
+        cc.why_correct,
+        cc.why_doubt,
+        cc.new_thought,
+        cc.user_id,
+        cc.created_at,
+        cc.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at,
+        dl.id as dl_id,
+        dl.distortion_name,
+        dl.info,
+        dl.created_at as dl_created_at,
+        dl.updated_at as dl_updated_at
+        FROM
+        cbt_cr cc
+        LEFT OUTER JOIN
+        cbt_cr_negative_feels ccnf
+        ON
+        cc.id = ccnf.cbt_cr_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        ccnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_cr_positive_feels ccpf
+        ON
+        cc.id = ccpf.cbt_cr_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        ccpf.positive_feel_id = pf.id
+        LEFT OUTER JOIN
+        cbt_cr_distortion_relations ccdr
+        ON
+        cc.id = ccdr.cbt_cr_id
+        LEFT OUTER JOIN
+        distortion_lists dl
+        ON
+        ccdr.distortion_list_id = dl.id
+        WHERE
+        cc.id = #{cbtCrId}
+        ORDER BY
+        cc.id, nf.id, pf.id, dl.id
+    </select>
+
+    <!-- ユーザーIDに基づいて、ネガティブ感情の出現回数上位3つを取得 -->
+    <select id="findTopNegativeFeelingsByUserId" resultType="java.util.HashMap">
+        SELECT
+        nf.negative_feel_name as negativeFeelName,
+        COUNT(ccnf.negative_feel_id) as count
+        FROM
+        cbt_cr cc
+        INNER JOIN cbt_cr_negative_feels ccnf ON cc.id = ccnf.cbt_cr_id
+        INNER JOIN negative_feels nf ON ccnf.negative_feel_id = nf.id
+        WHERE
+        cc.user_id = #{userId}
+        GROUP BY
+        nf.negative_feel_name
+        ORDER BY
+        COUNT(ccnf.negative_feel_id) DESC
+        LIMIT 3
+    </select>
+
+    <!-- 主キーによる認知再構成法の取得（感情情報、思考の歪み情報、タグ情報を含む） -->
+    <select id="selectByPrimaryKeyWithFeelsAndTags" resultMap="cbtCrWithFeelsDistortionsAndTags">
+        SELECT
+        cc.id,
+        cc.fact,
+        cc.mind,
+        cc.why_correct,
+        cc.why_doubt,
+        cc.new_thought,
+        cc.user_id,
+        cc.created_at,
+        cc.updated_at,
+        nf.id as nf_id,
+        nf.negative_feel_name,
+        nf.created_at as nf_created_at,
+        nf.updated_at as nf_updated_at,
+        pf.id as pf_id,
+        pf.positive_feel_name,
+        pf.created_at as pf_created_at,
+        pf.updated_at as pf_updated_at,
+        dl.id as dl_id,
+        dl.distortion_name,
+        dl.info,
+        dl.created_at as dl_created_at,
+        dl.updated_at as dl_updated_at,
+        t.id as tag_id,
+        t.tag_name,
+        t.user_id as tag_user_id,
+        t.created_at as tag_created_at,
+        t.updated_at as tag_updated_at
+        FROM
+        cbt_cr cc
+        LEFT OUTER JOIN
+        cbt_cr_negative_feels ccnf
+        ON
+        cc.id = ccnf.cbt_cr_id
+        LEFT OUTER JOIN
+        negative_feels nf
+        ON
+        ccnf.negative_feel_id = nf.id
+        LEFT OUTER JOIN
+        cbt_cr_positive_feels ccpf
+        ON
+        cc.id = ccpf.cbt_cr_id
+        LEFT OUTER JOIN
+        positive_feels pf
+        ON
+        ccpf.positive_feel_id = pf.id
+        LEFT OUTER JOIN
+        cbt_cr_distortion_relations ccdr
+        ON
+        cc.id = ccdr.cbt_cr_id
+        LEFT OUTER JOIN
+        distortion_lists dl
+        ON
+        ccdr.distortion_list_id = dl.id
+        LEFT OUTER JOIN
+        cbt_cr_tag_relations cctr
+        ON
+        cc.id = cctr.cbt_cr_id
+        LEFT OUTER JOIN
+        tags t
+        ON
+        cctr.tag_id = t.id
+        WHERE
+        cc.id = #{cbtCrId}
+        ORDER BY
+        cc.id, nf.id, pf.id, dl.id, t.id
+    </select>
+
+</mapper>

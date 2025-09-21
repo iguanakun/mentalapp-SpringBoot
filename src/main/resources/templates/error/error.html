@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>エラー</title>
+    <style>
+        .error-container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .error-code {
+            font-size: 72px;
+            color: #b63000;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .error-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+        
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <main layout:fragment="content">
+        <div class="error-container">
+            <div class="error-code" th:text="${statusCode}">500</div>
+            <div class="error-message" th:text="${errorMessage}">エラーが発生しました</div>
+            <div class="error-description">
+                申し訳ありませんが、リクエストの処理中に問題が発生しました。<br>
+                しばらく経ってからもう一度お試しいただくか、別の操作を行ってください。
+            </div>
+            <a th:href="@{/}" class="back-button">トップページに戻る</a>
+        </div>
+    </main>
+</body>
+</html>

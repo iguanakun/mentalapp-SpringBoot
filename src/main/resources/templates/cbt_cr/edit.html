@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>認知再構成法 - 編集</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+    <div th:replace="~{cbt_cr/_monitor-form :: monitor-form(url=@{/cbt_cr/{id}/edit_step2(id=${cbtCrForm.id})}, method='get')}"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<div class="monitor-list" th:fragment="list(cbtBasic)">
+  <div class="monitor-list-upper">
+    <div class="monitor-list__date" th:text="${#temporals.format(cbtBasic.createdAt, 'yyyy/MM/dd')}"></div>
+    <div class="monitor-list-more">
+      <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+      <ul class="monitor-list-more__items">
+        <a th:href="@{/cbt_basics/{id}/edit(id=${cbtBasic.id})}">
+          <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+        </a>
+        <a th:href="@{/cbt_basics/{id}(id=${cbtBasic.id})}" data-turbo-method="delete">
+          <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i> 削除</li>
+        </a>
+      </ul>
+    </div>
+  </div>
+  <a th:href="@{/cbt_basics/{id}(id=${cbtBasic.id})}">
+    <div class="monitor-list-content">
+      <div class="monitor-list-item">状況</div>
+      <div class="monitor-list-text" th:text="${cbtBasic.fact}"></div>
+    </div>
+    <div class="monitor-list-content">
+      <div class="monitor-list-item">ネガティブな感情</div>
+      <div class="monitor-list-text">
+        <span th:each="feel : ${cbtBasic.negativeFeels}" th:text="${feel.negativeFeelName + '　'}"></span>
+      </div>
+    </div>
+  </a>
+</div>

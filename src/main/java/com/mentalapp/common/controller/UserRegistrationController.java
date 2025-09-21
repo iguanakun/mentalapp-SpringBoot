@@ -5,7 +5,9 @@ import com.mentalapp.common.service.UserServiceImpl;
 import com.mentalapp.common.user.WebUser;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Objects;
+import java.util.logging.Logger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,69 +15,85 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
-
+/** ユーザー登録処理を行うコントローラークラス */
 @Controller
 @RequestMapping("/register")
+@RequiredArgsConstructor
 public class UserRegistrationController {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+  private Logger logger = Logger.getLogger(getClass().getName());
 
-    private UserServiceImpl userService;
+  private final UserServiceImpl userService;
 
-	@Autowired
-	public UserRegistrationController(UserServiceImpl userService) {
-		this.userService = userService;
-	}
+  /**
+   * 文字列トリミングエディタを登録
+   *
+   * @param dataBinder WebDataBinder
+   */
+  @InitBinder
+  public void initBinder(WebDataBinder dataBinder) {
 
-	@InitBinder
-	public void initBinder(WebDataBinder dataBinder) {
-		
-		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
-		
-		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
-	}	
-	
-	@GetMapping("/showRegistrationForm02")
-	public String showMyLoginPage(Model theModel) {
-		
-		theModel.addAttribute("webUser", new WebUser());
-		
-		return "register/registration-form02";
-	}
+    StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
 
-	@PostMapping("/processRegistrationForm02")
-	public String processRegistrationForm(
-			@Valid @ModelAttribute("webUser") WebUser theWebUser,
-			BindingResult theBindingResult,
-			HttpSession session, Model theModel) {
+    dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+  }
 
-		String userName = theWebUser.getUserName();
-		logger.info("Processing registration form for: " + userName);
-		
-		// form validation
-		 if (theBindingResult.hasErrors()){
-			 return "register/registration-form02";
-		 }
+  /**
+   * 登録フォームを表示
+   *
+   * @param theModel モデル
+   * @return 登録フォームのビュー名
+   */
+  @GetMapping("/showRegistrationForm02")
+  public String showMyLoginPage(Model theModel) {
 
-		// check the database if user already exists
-        User existing = userService.findByUserName(userName);
-        if (existing != null){
-        	theModel.addAttribute("webUser", new WebUser());
-			theModel.addAttribute("registrationError", "User name already exists.");
+    theModel.addAttribute("webUser", new WebUser());
 
-			logger.warning("User name already exists.");
-        	return "register/registration-form02";
-        }
-        
-        // create user account and store in the databse
-        userService.save(theWebUser);
-        
-        logger.info("Successfully created user: " + userName);
+    return "register/registration-form02";
+  }
 
-		// place user in the web http session for later use
-		session.setAttribute("user", theWebUser);
+  /**
+   * 登録フォームの処理
+   *
+   * @param theWebUser ユーザー情報
+   * @param theBindingResult バリデーション結果
+   * @param session HTTPセッション
+   * @param theModel モデル
+   * @return 登録確認ページまたは登録フォームのビュー名
+   */
+  @PostMapping("/processRegistrationForm02")
+  public String processRegistrationForm(
+      @Valid @ModelAttribute("webUser") WebUser theWebUser,
+      BindingResult theBindingResult,
+      HttpSession session,
+      Model theModel) {
 
-        return "register/registration-confirmation";
-	}
+    String userName = theWebUser.getUserName();
+    logger.info("Processing registration form for: " + userName);
+
+    // form validation
+    if (theBindingResult.hasErrors()) {
+      return "register/registration-form02";
+    }
+
+    // check the database if user already exists
+    User existing = userService.findByUserName(userName);
+    if (Objects.nonNull(existing)) {
+      theModel.addAttribute("webUser", new WebUser());
+      theModel.addAttribute("registrationError", "User name already exists.");
+
+      logger.warning("User name already exists.");
+      return "register/registration-form02";
+    }
+
+    // create user account and store in the databse
+    userService.save(theWebUser);
+
+    logger.info("Successfully created user: " + userName);
+
+    // place user in the web http session for later use
+    session.setAttribute("user", theWebUser);
+
+    return "register/registration-confirmation";
+  }
 }

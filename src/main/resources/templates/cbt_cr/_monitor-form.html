@@ -1,0 +1,56 @@
+<div class="monitor-main" th:fragment="monitor-form(url, method)" xmlns:th="http://www.w3.org/1999/xhtml">
+    <form th:action="${url}" th:method="${method != null ? method : 'get'}" th:object="${cbtCrForm}">
+        <div class="monitor-contents">
+            <div class="monitor-wrapper">
+                <div class="item-circle"></div>
+                <div class="monitor-item">出来事</div>
+            </div>
+            <div class="monitor-info">最近あった出来事はなんですか？<br>
+                いつ、どこで、誰と、何を、どのように、を具体的に記述してください。
+            </div>
+            <textarea th:field="*{fact}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+        </div>
+
+        <div class="monitor-contents">
+            <div class="monitor-wrapper">
+                <div class="item-circle"></div>
+                <div class="monitor-item">感情</div>
+            </div>
+            <div class="monitor-info__feels">
+                <div class="feel-kinds">ネガティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
+                <span th:each="feel, stat : ${viewData.negativeFeels}">
+                    <label class="checkbox" id="negative-group">
+                        <input type="checkbox" th:field="*{negativeFeelIds}" th:value="${feel.id}"/>
+                        <span th:text="${feel.negativeFeelName}"></span>
+                    </label>
+                    <!-- 10個目で改行を入れる -->
+                    <div th:if="${feel.id == 10}" class="second-row"></div>
+                </span>
+            </div>
+            <div class="monitor-info__feels">
+                <div class="feel-kinds">ポジティブ<i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i></div>
+                <span th:each="feel, stat : ${viewData.positiveFeels}">
+                    <label class="checkbox" id="positive-group">
+                        <input type="checkbox" th:field="*{positiveFeelIds}" th:value="${feel.id}"/>
+                        <span th:text="${feel.positiveFeelName}"></span>
+                    </label>
+                    <!-- 10個目で改行を入れる -->
+                    <div th:if="${feel.id == 10}" class="second-row"></div>
+                </span>
+            </div>
+        </div>
+
+        <div class="monitor-contents">
+            <div class="monitor-wrapper">
+                <div class="item-circle"></div>
+                <div class="monitor-item">思考</div>
+            </div>
+            <div class="monitor-info">頭に浮かんだ考えはありますか？</div>
+            <textarea th:field="*{mind}" class="monitor-text" rows="5" maxlength="40000"></textarea>
+        </div>
+
+        <div class="monitor-btn-contents">
+            <button type="submit" class="monitor-btn">次へ</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>メモ一覧</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
+
+    <div class="monitor-lists" id="lists">
+        <!-- 統計 -->
+        <div class="monitor-statistics-list">
+            <div class="monitor-list-content">
+                <div class="monitor-list-item">統計</div>
+                <div class="monitor-statistics-wrapper">
+                    <div class="monitor-statistics__negative">
+                        上位3つのネガティブな感情
+                        <ol class="monitor-statistics__lists" th:if="${not #lists.isEmpty(negativeFeels)}">
+                            <li th:each="list : ${negativeFeels}">
+                                <span th:text="${list.negativeFeelName}"></span>
+                                :
+                                <span th:text="${list.count}"></span>
+                            </li>
+                        </ol>
+                        <p th:if="${#lists.isEmpty(negativeFeels)}">なし</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form th:action="@{/memos}" method="get" id="detailed-search-form">
+          <div class="tag-search-field">
+            <div class="icon">
+              <i class="fa-solid fa-magnifying-glass" style="color:#b9b9b9;"></i>
+            </div>
+            <input type="text" name="q[tags_tag_name]" th:value="${param.q != null ? param.q[0] : ''}" placeholder="タグで絞り込み" class="search-field" />
+            <div class="btn">
+              <button type="submit">検索</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- 一覧表示 - 全てのメモを更新日時の降順で表示 -->
+        <div th:each="memo : ${allMemos}" th:remove="tag">
+            <!-- CbtBasics表示 -->
+            <div th:if="${memo instanceof T(com.mentalapp.cbt_basic.entity.CbtBasics)}" class="monitor-list">
+                <div class="monitor-list-upper">
+                    <div class="monitor-list__date"
+                         th:text="${#temporals.format(memo.updatedAt, 'yyyy/MM/dd HH:mm')}"></div>
+                    <div class="monitor-list-more">
+                        <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+                        <ul class="monitor-list-more__items">
+                            <a th:href="@{/cbt_basics/{id}/edit(id=${memo.id})}">
+                                <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+                            </a>
+                            <form th:action="@{/cbt_basics/{id}(id=${memo.id})}" th:method="delete">
+                                <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                                    <button type="submit" class="delete-button">削除</button>
+                                </li>
+                            </form>
+                        </ul>
+                    </div>
+                </div>
+                <a th:href="@{/cbt_basics/{id}(id=${memo.id})}">
+                    <div class="monitor-list-content">
+                        <div class="monitor-list-item">状況</div>
+                        <div class="monitor-list-text" th:text="${memo.fact}"></div>
+                    </div>
+                    <div class="monitor-list-content">
+                        <div class="monitor-list-item">ネガティブな感情</div>
+                        <div class="monitor-list-text">
+                            <span th:each="feel : ${memo.negativeFeels}"
+                                  th:text="${feel.negativeFeelName + '　'}"></span>
+                        </div>
+                    </div>
+                    <div class="monitor-list-content" th:if="${memo.tags != null and not #lists.isEmpty(memo.tags)}">
+                        <div class="monitor-list-item">タグ</div>
+                        <div class="monitor-list-tags">
+                            <div class="monitor-list-tag" th:each="tag : ${memo.tags}" th:text="${tag.tagName}"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- CbtCr表示 -->
+            <div th:if="${memo instanceof T(com.mentalapp.cbt_cr.entity.CbtCr)}" class="monitor-list">
+                <div class="monitor-list-upper">
+                    <div class="monitor-list__date"
+                         th:text="${#temporals.format(memo.updatedAt, 'yyyy/MM/dd HH:mm')}"></div>
+                    <div class="monitor-list-more">
+                        <i class="fa-solid fa-chevron-down" style="color: #b9b9b9;"></i>
+                        <ul class="monitor-list-more__items">
+                            <a th:href="@{/cbt_cr/{id}/edit(id=${memo.id})}">
+                                <li><i class="fa-solid fa-pen" aria-hidden="true"></i> 編集</li>
+                            </a>
+                            <form th:action="@{/cbt_cr/{id}(id=${memo.id})}" th:method="delete">
+                                <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                                    <button type="submit" class="delete-button">削除</button>
+                                </li>
+                            </form>
+                        </ul>
+                    </div>
+                </div>
+                <a th:href="@{/cbt_cr/{id}(id=${memo.id})}">
+                    <div class="monitor-list-content">
+                        <div class="monitor-list-item">状況</div>
+                        <div class="monitor-list-text" th:text="${memo.fact}"></div>
+                    </div>
+                    <div class="monitor-list-content">
+                        <div class="monitor-list-item">ネガティブな感情</div>
+                        <div class="monitor-list-text">
+                            <span th:each="feel : ${memo.negativeFeels}"
+                                  th:text="${feel.negativeFeelName + '　'}"></span>
+                        </div>
+                    </div>
+                    <div class="monitor-list-content">
+                        <div class="monitor-list-item">思考のゆがみ</div>
+                        <div class="monitor-list-text">
+                  <span th:each="distortion : ${memo.distortionLists}"
+                        th:text="${distortion.distortionName + '　'}"></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

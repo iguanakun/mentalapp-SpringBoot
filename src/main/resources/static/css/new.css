@@ -1,6 +1,7 @@
 .monitor-main{
   width: 880px;
-  height: calc(1600px - 56px - 56px); /* 画面全体の高さ-ヘッダー-フッター */
+  min-height: calc(1600px - 56px - 56px); /* 画面全体の高さ-ヘッダー-フッター */
+  height: auto; /* 高さを自動調整に変更 */
   margin-left: calc(280px + 36px);
 }
 
@@ -85,7 +86,7 @@ input[type=checkbox]{
   color: #0eb457;
 }
 
-#second-row{
+#second-row, #second-row-negative{
   margin-bottom: 8px;
 }
 
@@ -104,6 +105,11 @@ input[type=checkbox]{
   border: solid 1px #cccccc;
   padding: 8px;
   font-size: 12px;
+}
+
+.monitor-btn-contents{
+  width: 808px;
+  margin-bottom: 60px; /* フッターとの間に余白を追加 */
 }
 
 .monitor-btn{

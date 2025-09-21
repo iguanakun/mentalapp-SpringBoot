@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mentalapp.common.dao.DistortionListMapper">
+
+    <!-- 思考の歪みリストを主キーで検索する -->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long"
+            resultType="com.mentalapp.common.entity.DistortionList">
+        SELECT
+        id,
+        distortion_name,
+        info,
+        created_at,
+        updated_at
+        FROM
+        distortion_lists
+        WHERE
+        id = #{id}
+    </select>
+
+    <!-- 全ての思考の歪みリストを取得する -->
+    <select id="findAll" resultType="com.mentalapp.common.entity.DistortionList">
+        SELECT
+        id,
+        distortion_name,
+        info,
+        created_at,
+        updated_at
+        FROM
+        distortion_lists
+        ORDER BY
+        id
+    </select>
+
+    <!-- 思考の歪みリストを新規登録する -->
+    <insert id="insert" parameterType="com.mentalapp.common.entity.DistortionList" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO distortion_lists (
+        distortion_name,
+        info,
+        created_at,
+        updated_at
+        ) VALUES (
+        #{distortionName},
+        #{info},
+        #{createdAt},
+        #{updatedAt}
+        )
+    </insert>
+
+    <!-- 思考の歪みリストを更新する -->
+    <update id="updateByPrimaryKey" parameterType="com.mentalapp.common.entity.DistortionList">
+        UPDATE
+        distortion_lists
+        SET
+        distortion_name = #{distortionName},
+        info = #{info},
+        updated_at = #{updatedAt}
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 思考の歪みリストを削除する -->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM
+        distortion_lists
+        WHERE
+        id = #{id}
+    </delete>
+
+</mapper>

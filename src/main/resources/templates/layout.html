@@ -33,6 +33,7 @@
 
   <body>
     <header th:insert="~{common/_header :: header}"></header>
+    <div th:replace="~{common/_header-margin :: header-margin}"></div>
     
     <main layout:fragment="content">
       <!-- Content will be replaced by views -->
@@ -40,6 +41,7 @@
     
     <footer th:insert="~{common/_footer :: footer}"></footer>
     <script type="text/javascript" th:src="@{/js/navbar.js}"></script>
+    <script type="text/javascript" th:src="@{/js/feel-checkbox.js}"></script>
 
   </body>
 </html>
