@@ -3,7 +3,6 @@ package com.mentalapp.cbt_cr.service;
 import com.mentalapp.cbt_cr.data.CbtCrConst;
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
-import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +26,17 @@ public class CbtCrBackService {
    * @return ビュー名
    */
   public String processBackToStep1(Model model) {
-    // セッションからステップ1の入力値を取得してフォームにセット
-    CbtCrInputForm form = createFormFromSession();
+    //    // セッションからステップ1の入力値を取得してフォームにセット
+    //    CbtCrInputForm form = createFormFromSession();
+    //
+    //    // ビューデータを作成
+    //    CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsViewData();
+    //
+    //    // モデルに追加
+    //    model.addAttribute("viewData", viewData);
+    //    model.addAttribute("cbtCrForm", form);
 
-    // ビューデータを作成（共通ユーティリティクラスのメソッドを使用）
-    CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsViewData();
-
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", form);
-
-    return CbtCrConst.NEW_PATH;
+    return CbtCrConst.REDIRECT_NEW_PATH;
   }
 
   /**
@@ -48,18 +47,7 @@ public class CbtCrBackService {
    * @return ビュー名
    */
   public String processBackToEditStep1(Long id, Model model) {
-    // セッションからステップ1の入力値を取得してフォームにセット
-    CbtCrInputForm form = createFormFromSession();
-    form.setId(id); // IDの設定は必要（編集時の識別に必要）
-
-    // ビューデータを作成（共通ユーティリティクラスのメソッドを使用）
-    CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsViewData();
-
-    // モデルに追加
-    model.addAttribute("viewData", viewData);
-    model.addAttribute("cbtCrForm", form);
-
-    return CbtCrConst.EDIT_PATH;
+    return CbtCrConst.REDIRECT_PREFIX + id + CbtCrConst.EDIT_SUFFIX;
   }
 
   /**
