@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="">
+<head>
+    <title>エラー</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="monitor-lists">
+        <div class="error-container">
+            <div class="error-caption" th:text="${errorMessage}">エラーが発生しました</div>
+            <div class="error-description">
+                申し訳ありませんが、リクエストの処理中に問題が発生しました。<br>
+                しばらく経ってからもう一度お試しいただくか、別の操作を行ってください。
+            </div>
+            <a th:href="@{/}" class="back-top-button">トップページに戻る</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
