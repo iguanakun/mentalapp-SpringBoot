@@ -4,61 +4,38 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * Controller for handling static pages without using Thymeleaf templates. This controller serves
- * static HTML pages from the resource/work_care directory.
- */
+/** 仕事の対処の静的ページのコントローラ */
 @Controller
 @RequestMapping("/work_care")
 public class workCareIndexController {
 
-  /**
-   * Display the content1 page
-   *
-   * @return the path to the static HTML page
-   */
+  /** トップページを表示 */
   @GetMapping("/content1")
   public String showContent1() {
     return "work_care/content1";
   }
 
-  /**
-   * Display the page1 page
-   *
-   * @return the path to the static HTML page
-   */
+  /** ページ1を表示 */
   @GetMapping("/page1")
   public String showPage1() {
-    return "redirect:/work_care/page1.html";
+    return "work_care/page1";
   }
 
-  /**
-   * Display the page2 page
-   *
-   * @return the path to the static HTML page
-   */
+  /** ページ2を表示 */
   @GetMapping("/page2")
   public String showPage2() {
-    return "redirect:/work_care/page2.html";
+    return "work_care/page2";
   }
 
-  /**
-   * Display the page3 page
-   *
-   * @return the path to the static HTML page
-   */
+  /** ページ3を表示 */
   @GetMapping("/page3")
   public String showPage3() {
-    return "redirect:/work_care/page3.html";
+    return "work_care/page3";
   }
 
-  /**
-   * Display the page4 page
-   *
-   * @return the path to the static HTML page
-   */
+  /** ページ4を表示 */
   @GetMapping("/page4")
   public String showPage4() {
-    return "redirect:/work_care/page4.html";
+    return "work_care/page4";
   }
 }

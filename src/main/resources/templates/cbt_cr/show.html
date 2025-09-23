@@ -67,7 +67,7 @@
                 <div class="monitor-list-text" th:text="${cbtCr.newThought}"></div>
             </div>
             <div class="monitor-list-content"
-                 th:if="${$cbtCr.tags != null and not #lists.isEmpty(cbtCr.tags) and not #strings.isEmpty(cbtCr.tags[0].tagName)}">
+                 th:if="${cbtCr.tags != null and not #lists.isEmpty(cbtCr.tags) and not #strings.isEmpty(cbtCr.tags[0].tagName)}">
                 <div class="monitor-list-item" id="tag">タグ</div>
                 <div class="monitor-list-tags">
                     <div class="monitor-list-tag" th:each="tag : ${cbtCr.tags}" th:text="${tag.tagName}"></div>
