@@ -1,6 +1,9 @@
 <div class="monitor-main" th:fragment="form(url, method)" xmlns:th="http://www.w3.org/1999/xhtml">
     <form th:action="${url}" th:method="${method}" th:object="${cbtBasicsForm}">
         <div class="monitor-contents">
+            <div class="error-alert" th:if="${errMsg != null}">
+                <div class="error-message" th:text="${errMsg}"></div>
+            </div>
             <div class="monitor-wrapper">
                 <div class="item-circle"></div>
                 <div class="monitor-item">出来事</div>

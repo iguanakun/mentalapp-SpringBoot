@@ -15,9 +15,12 @@ import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -36,6 +39,9 @@ public class CbtBasicsRegistService {
   private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
   private final CbtBasicCommonUtils cbtBasicCommonUtils;
+
+  // プロパティファイルからメッセージ読込
+  @Autowired MessageSource messages;
 
   /**
    * 新規作成処理
@@ -73,36 +79,29 @@ public class CbtBasicsRegistService {
    * @return 保存されたCBT Basics
    */
   @Transactional
-  public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId) {
-    try {
-      // フォームからデータを取得
-      // ネガティブ感情IDリスト
-      List<Long> negativeFeelIds = form.getNegativeFeelIds();
-      // ポジティブ感情IDリスト
-      List<Long> positiveFeelIds = form.getPositiveFeelIds();
-      // タグ名一覧
-      String tagNames = form.getTagNames();
+  public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId)
+      throws DatabaseException {
+    // フォームからデータを取得
+    // ネガティブ感情IDリスト
+    List<Long> negativeFeelIds = form.getNegativeFeelIds();
+    // ポジティブ感情IDリスト
+    List<Long> positiveFeelIds = form.getPositiveFeelIds();
+    // タグ名一覧
+    String tagNames = form.getTagNames();
 
-      // モニタリングの保存
-      cbtBasicsMapper.insert(cbtBasics);
+    // モニタリングの保存
+    cbtBasicsMapper.insert(cbtBasics);
 
-      // ネガティブ感情の中間テーブルへの関連付け
-      insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
+    // ネガティブ感情の中間テーブルへの関連付け
+    insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
 
-      // ポジティブ感情の中間テーブルへの関連付け
-      insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
+    // ポジティブ感情の中間テーブルへの関連付け
+    insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
 
-      // タグの保存
-      saveTags(cbtBasics, userId, tagNames);
+    // タグの保存
+    saveTags(cbtBasics, userId, tagNames);
 
-      return cbtBasics;
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("CBT Basics保存中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics保存中にデータベースエラーが発生しました", e);
-    }
+    return cbtBasics;
   }
 
   /**
@@ -140,17 +139,12 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    */
-  private void insertNegativeFeelJoinTable(CbtBasics cbtBasics, List<Long> negativeFeelIds) {
-    try {
-      // ネガティブ感情が入力されているときのみ、処理を実施
-      if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
-        negativeFeelIds.forEach(
-            negativeFeelId ->
-                cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId));
-      }
-    } catch (Exception e) {
-      log.error("ネガティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ネガティブ感情関連付け中にデータベースエラーが発生しました", e);
+  private void insertNegativeFeelJoinTable(CbtBasics cbtBasics, List<Long> negativeFeelIds)
+      throws DatabaseException {
+    // ネガティブ感情が入力されているときのみ、処理を実施
+    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
+      negativeFeelIds.forEach(
+          negativeFeelId -> cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId));
     }
   }
 
@@ -160,17 +154,12 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    */
-  private void insertPositiveFeelsJoinTable(CbtBasics cbtBasics, List<Long> positiveFeelIds) {
-    try {
-      // ポジティブ感情が入力されているときのみ、処理を実施
-      if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
-        positiveFeelIds.forEach(
-            positiveFeelId ->
-                cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId));
-      }
-    } catch (Exception e) {
-      log.error("ポジティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ポジティブ感情関連付け中にデータベースエラーが発生しました", e);
+  private void insertPositiveFeelsJoinTable(CbtBasics cbtBasics, List<Long> positiveFeelIds)
+      throws DatabaseException {
+    // ポジティブ感情が入力されているときのみ、処理を実施
+    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
+      positiveFeelIds.forEach(
+          positiveFeelId -> cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId));
     }
   }
 
@@ -221,6 +210,10 @@ public class CbtBasicsRegistService {
       // ビューデータを作成して追加
       CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();
       model.addAttribute("viewData", viewData);
+
+      // エラーメッセージ追加
+      String errMsg = messages.getMessage("error.atleastone.required", null, Locale.JAPAN);
+      model.addAttribute("errMsg", errMsg);
       return true;
     }
     return false;

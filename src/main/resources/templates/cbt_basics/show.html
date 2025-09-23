@@ -55,11 +55,12 @@
                 <div class="monitor-list-item">行動</div>
                 <div class="monitor-list-text" th:text="${cbtBasic.behavior}"></div>
             </div>
-            <div class="monitor-list-content" th:if="${cbtBasic.tags != null and not #lists.isEmpty(cbtBasic.tags)}">
-              <div class="monitor-list-item" id="tag">タグ</div>
-              <div class="monitor-list-tags">
-                <div class="monitor-list-tag" th:each="tag : ${cbtBasic.tags}" th:text="${tag.tagName}"></div>
-              </div>
+            <div class="monitor-list-content"
+                 th:if="${cbtBasic.tags != null and not #lists.isEmpty(cbtBasic.tags) and not #strings.isEmpty(cbtBasic.tags[0].tagName)}">
+                <div class="monitor-list-item" id="tag">タグ</div>
+                <div class="monitor-list-tags">
+                    <div class="monitor-list-tag" th:each="tag : ${cbtBasic.tags}" th:text="${tag.tagName}"></div>
+                </div>
             </div>
         </div>
 
