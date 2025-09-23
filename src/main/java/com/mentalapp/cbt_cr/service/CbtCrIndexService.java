@@ -144,12 +144,8 @@ public class CbtCrIndexService {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
-    // タグ情報を取得
-    String tagNames = cbtCrCommonUtils.extractTagNamesToString(cbtCr);
-
     // モデルに追加
     model.addAttribute("cbtCr", cbtCr);
-    model.addAttribute("tagNames", tagNames);
 
     return CbtCrConst.SHOW_PATH;
   }
