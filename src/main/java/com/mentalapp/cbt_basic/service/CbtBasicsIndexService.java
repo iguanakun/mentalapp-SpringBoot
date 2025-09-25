@@ -71,8 +71,9 @@ public class CbtBasicsIndexService {
     CbtBasics cbtBasics = selectByPrimaryKeyWithFeelsAndTags(id);
 
     // アクセス権チェック
-    if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics))
+    if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
+    }
 
     // ビューデータを作成
     CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();
