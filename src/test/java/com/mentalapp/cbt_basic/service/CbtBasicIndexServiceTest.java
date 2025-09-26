@@ -8,9 +8,11 @@ import static org.mockito.Mockito.when;
 import com.mentalapp.cbt_basic.dao.CbtBasicsMapper;
 import com.mentalapp.cbt_basic.data.CbtBasicsConst;
 import com.mentalapp.cbt_basic.entity.CbtBasics;
+import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.TestUtils;
+import com.mentalapp.common.util.MentalCommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,11 +53,49 @@ public class CbtBasicIndexServiceTest {
   @Test
   // アクセス権チェック成功時
   void testProcessShow() {
-    when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(1L)).thenReturn(cbtBasics);
+    when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
+        .thenReturn(cbtBasics);
     when(cbtBasicCommonUtils.checkAccessPermission(cbtBasics)).thenReturn(true);
 
-    String result = cbtBasicsIndexService.processShow(1L, model);
+    String result = cbtBasicsIndexService.processShow(cbtBasics.getId(), model);
 
     assertEquals(CbtBasicsConst.SHOW_PATH, result);
+  }
+
+  @Test
+  void testProcessShow_AccessDenied() {
+    when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
+        .thenReturn(cbtBasics);
+    when(cbtBasicCommonUtils.checkAccessPermission(cbtBasics)).thenReturn(false);
+
+    String result = cbtBasicsIndexService.processShow(cbtBasics.getId(), model);
+
+    assertEquals(MentalCommonUtils.REDIRECT_TOP_PAGE, result);
+  }
+
+  @Test
+  // アクセス権チェック成功時
+  void testProcessEdit() {
+    when(cbtBasicCommonUtils.createAllFeelsViewData()).thenReturn(new CbtBasicsViewData());
+    when(cbtBasicCommonUtils.convertToForm(cbtBasics)).thenReturn(new CbtBasicsInputForm());
+    when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
+        .thenReturn(cbtBasics);
+    when(cbtBasicCommonUtils.checkAccessPermission(cbtBasics)).thenReturn(true);
+
+    String result = cbtBasicsIndexService.processEdit(cbtBasics.getId(), model);
+
+    assertEquals(CbtBasicsConst.EDIT_PATH, result);
+  }
+
+  @Test
+  // アクセス権チェック成功時
+  void testProcessEdit_AccessDenied() {
+    when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
+        .thenReturn(cbtBasics);
+    when(cbtBasicCommonUtils.checkAccessPermission(cbtBasics)).thenReturn(false);
+
+    String result = cbtBasicsIndexService.processEdit(cbtBasics.getId(), model);
+
+    assertEquals(MentalCommonUtils.REDIRECT_TOP_PAGE, result);
   }
 }
