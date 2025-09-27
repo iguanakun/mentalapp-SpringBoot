@@ -20,7 +20,6 @@ public class CbtBasicsInputForm {
    * @return いずれかの項目が入力されている場合はtrue
    */
   public boolean hasAnyContent() {
-    // Check for negativeFeelIds and positiveFeelIds first
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
     }
@@ -28,12 +27,10 @@ public class CbtBasicsInputForm {
       return true;
     }
 
-    // Check for tagNames
     if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
       return true;
     }
 
-    // Then check cbtBasics fields if cbtBasics is not null
     return Objects.nonNull(cbtBasics)
         && (Objects.nonNull(cbtBasics.getFact()) && !cbtBasics.getFact().trim().isEmpty()
             || Objects.nonNull(cbtBasics.getMind()) && !cbtBasics.getMind().trim().isEmpty()
