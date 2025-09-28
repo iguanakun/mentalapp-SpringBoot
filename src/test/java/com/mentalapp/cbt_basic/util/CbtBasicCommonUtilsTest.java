@@ -18,7 +18,6 @@ import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
-import com.mentalapp.common.entity.Tag;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.ArrayList;
@@ -46,9 +45,6 @@ public class CbtBasicCommonUtilsTest {
 
   @InjectMocks private CbtBasicCommonUtils cbtBasicCommonUtils;
 
-  private List<NegativeFeel> negativeFeels;
-  private List<PositiveFeel> positiveFeels;
-  private List<Tag> tags;
   private CbtBasics cbtBasics;
 
   @BeforeEach
@@ -135,6 +131,9 @@ public class CbtBasicCommonUtilsTest {
   /** 全ての感情を含むビューデータ作成のテスト */
   @Test
   public void testCreateAllFeelsViewData() {
+    // 戻り値の設定
+    List<NegativeFeel> negativeFeels = TestUtils.createNegativeFeels();
+    List<PositiveFeel> positiveFeels = TestUtils.createPositiveFeels();
     // モックの設定
     when(negativeFeelMapper.selectAll()).thenReturn(negativeFeels);
     when(positiveFeelMapper.selectAll()).thenReturn(positiveFeels);
