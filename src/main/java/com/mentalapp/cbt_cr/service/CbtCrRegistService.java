@@ -55,7 +55,7 @@ public class CbtCrRegistService {
   public String processRegist(CbtCrInputForm form, BindingResult bindingResult, Model model) {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
-      return CbtCrConst.STEP2_PATH;
+      return CbtCrConst.REDIRECT_NEW_PATH;
     }
 
     // セッションからデータを取得
@@ -70,7 +70,7 @@ public class CbtCrRegistService {
     CbtCr cbtCr = createCbtCr(form);
 
     // 登録
-    insert(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
+    save(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
 
     // 登録成功後にセッションデータを削除
     clearSessionData();
@@ -219,7 +219,7 @@ public class CbtCrRegistService {
    * @throws DatabaseException データベース操作中にエラーが発生した場合
    */
   @Transactional
-  public void insert(
+  public void save(
       CbtCr cbtCr,
       List<Long> negativeFeelIds,
       List<Long> positiveFeelIds,
