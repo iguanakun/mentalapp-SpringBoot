@@ -179,7 +179,7 @@ public class CbtBasicsRegistService {
     }
 
     // アクセス権チェック
-    if (!mentalCommonUtils.isAuthorized(form.getUserId())) {
+    if (!mentalCommonUtils.isAuthorized(form.getCbtBasics().getUserId())) {
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
 

@@ -38,13 +38,4 @@ public class CbtBasicsInputForm {
             || Objects.nonNull(cbtBasics.getBehavior())
                 && !cbtBasics.getBehavior().trim().isEmpty());
   }
-
-  /**
-   * ユーザーIDを取得
-   *
-   * @return ユーザーID
-   */
-  public Long getUserId() {
-    return Objects.nonNull(cbtBasics) ? cbtBasics.getUserId() : null;
-  }
 }
