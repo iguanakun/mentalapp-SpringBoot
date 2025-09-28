@@ -56,7 +56,7 @@ public class CbtCrIndexService {
 
   /** もどる押下判定 */
   private Boolean isPushedBackButton() {
-    // step1のいずれかの項目が入力されている場合、もどる判定
+    // step1のいずれかの項目がセッション格納されている場合、もどる判定
     return Objects.nonNull(session.getAttribute("fact"))
         || Objects.nonNull(session.getAttribute("mind"))
         || Objects.nonNull(session.getAttribute("negativeFeelIds"))
