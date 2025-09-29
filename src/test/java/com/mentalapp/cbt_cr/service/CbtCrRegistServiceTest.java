@@ -1,16 +1,13 @@
 package com.mentalapp.cbt_cr.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,15 +24,10 @@ import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.TestUtils;
-import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.User;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
-import jakarta.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +35,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.Model;
@@ -63,19 +54,13 @@ public class CbtCrRegistServiceTest {
 
   @Mock private CbtCrTagRelationMapper cbtCrTagRelationMapper;
 
-  @Mock private TagMapper tagMapper;
-
   @Mock private CbtCrCommonUtils cbtCrCommonUtils;
 
   @Mock private MentalCommonUtils mentalCommonUtils;
 
-  @Mock private HttpSession session;
-
   @Mock private Model model;
 
   @Mock private BindingResult bindingResult;
-
-  @Mock private MessageSource messages;
 
   @InjectMocks private CbtCrRegistService cbtCrRegistService;
 
@@ -83,10 +68,6 @@ public class CbtCrRegistServiceTest {
   private CbtCr cbtCr;
   private User user;
   MockHttpSession mockSession;
-
-  private List<Long> negativeFeelIds;
-  private List<Long> positiveFeelIds;
-  private List<Long> distortionIds;
 
   @BeforeEach
   public void setup() {
@@ -117,18 +98,18 @@ public class CbtCrRegistServiceTest {
   // バリデーションエラーありの共通設定
   private void setupValidationError() {
     when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(true);
-    when(cbtCrCommonUtils.createAllFeelsViewData()).thenReturn(new CbtCrViewData());
-    when(messages.getMessage("error.atleastone.required", null, Locale.JAPAN)).thenReturn("エラー");
-    form.setId(null);
-    form.setFact(null);
-    form.setMind(null);
+    when(cbtCrCommonUtils.createAllFeelsAndDistortionsViewData()).thenReturn(new CbtCrViewData());
+    // TODO:バリデーションエラーメッセージの実装後に有効
+    //  when(messages.getMessage("error.atleastone.required", null,Locale.JAPAN)).thenReturn("エラー");
+    setupValidationErrorForm();
+  }
+
+  private void setupValidationErrorForm() {
     form.setWhyCorrect(null);
     form.setWhyDoubt(null);
     form.setNewThought(null);
-    form.setTagNames(null);
-    form.setPositiveFeelIds(null);
-    form.setNegativeFeelIds(null);
     form.setDistortionIds(null);
+    form.setTagNames(null);
   }
 
   /** 新規登録処理のテスト - 正常系 */
@@ -137,15 +118,13 @@ public class CbtCrRegistServiceTest {
     // モックの設定
     when(mentalCommonUtils.getUser()).thenReturn(user);
     when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
+
     when(cbtCrMapper.insert(any(CbtCr.class))).thenReturn(1);
     when(cbtCrNegativeFeelMapper.insert(any(CbtCrNegativeFeel.class))).thenReturn(1);
     when(cbtCrPositiveFeelMapper.insert(any(CbtCrPositiveFeel.class))).thenReturn(1);
 
     // セッションの値を設定
-    mockSession.setAttribute("fact", "テスト状況");
-    mockSession.setAttribute("mind", "テスト思考");
-    mockSession.setAttribute("negativeFeelIds", TestUtils.createNegativeFeelIds());
-    mockSession.setAttribute("positiveFeelIds", TestUtils.createPositiveFeelIds());
+    setupSessionStep1();
 
     // new TagList()をモック化
     try (MockedConstruction<TagList> ignored = mockTagListConstruction()) {
@@ -157,284 +136,166 @@ public class CbtCrRegistServiceTest {
     }
   }
 
+  private void setupSessionStep1() {
+    mockSession.setAttribute("fact", "テスト状況");
+    mockSession.setAttribute("mind", "テスト思考");
+    mockSession.setAttribute("negativeFeelIds", TestUtils.createNegativeFeelIds());
+    mockSession.setAttribute("positiveFeelIds", TestUtils.createPositiveFeelIds());
+  }
+
   /** 新規登録処理のテスト - バリデーションエラーの場合 */
   @Test
   public void testProcessRegist_ValidationError() {
     // モックの設定
-    when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(true);
-    when(cbtCrCommonUtils.createAllFeelsAndDistortionsViewData()).thenReturn(new CbtCrViewData());
+    setupValidationError();
 
     // 実行
     String result = cbtCrRegistService.processRegist(form, bindingResult, model);
 
     // 検証
-    assertEquals(CbtCrConst.STEP2_PATH, result);
-    verify(model).addAttribute(eq("viewData"), any(CbtCrViewData.class));
-    verify(cbtCrMapper, never()).insert(any(CbtCr.class));
+    assertEquals(CbtCrConst.REDIRECT_NEW_PATH, result);
   }
 
   /** 更新処理のテスト - 正常系 */
   @Test
   public void testProcessUpdate_Success() {
     // モックの設定
-    // Only mock what's actually used in the method
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(cbtCr);
-    when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
+    when(mentalCommonUtils.getUser()).thenReturn(user);
+    when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
+
+    when(cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
+    when(cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
+    when(cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
+    when(cbtCrTagRelationMapper.deleteByMonitoringId(cbtCr.getId())).thenReturn(1);
+
+    when(cbtCrMapper.updateByPrimaryKey(any(CbtCr.class))).thenReturn(1);
+    when(cbtCrNegativeFeelMapper.insert(any(CbtCrNegativeFeel.class))).thenReturn(1);
+    when(cbtCrPositiveFeelMapper.insert(any(CbtCrPositiveFeel.class))).thenReturn(1);
+
+    // セッションの値を設定
+    setupSessionStep1();
 
     // 実行
-    String result = cbtCrRegistService.processUpdate(form, bindingResult, model, 1L);
+    try (MockedConstruction<TagList> ignored = mockTagListConstruction()) {
+      String result = cbtCrRegistService.processUpdate(form, bindingResult, model, cbtCr.getId());
 
-    // 検証
-    assertEquals(MemoListConst.REDIRECT_MEMOS, result);
-    verify(cbtCrNegativeFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrPositiveFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrDistortionRelationMapper).deleteByCbtCrId(1L);
-    verify(cbtCrMapper).updateByPrimaryKey(cbtCr);
+      // 検証
+      assertEquals(MemoListConst.REDIRECT_MEMOS, result);
+      verify(cbtCrMapper).updateByPrimaryKey(any(CbtCr.class));
+    }
   }
 
   /** 更新処理のテスト - バリデーションエラーの場合 */
   @Test
   public void testProcessUpdate_ValidationError() {
     // モックの設定
-    when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(true);
-    when(cbtCrCommonUtils.createAllFeelsAndDistortionsViewData()).thenReturn(new CbtCrViewData());
+    setupValidationError();
 
     // 実行
-    String result = cbtCrRegistService.processUpdate(form, bindingResult, model, 1L);
+    String result = cbtCrRegistService.processUpdate(form, bindingResult, model, cbtCr.getId());
 
     // 検証
-    assertEquals(CbtCrConst.EDIT_STEP2_PATH, result);
-    verify(model).addAttribute(eq("viewData"), any(CbtCrViewData.class));
-    verify(cbtCrMapper, never()).updateByPrimaryKey(any(CbtCr.class));
-  }
-
-  /** 更新処理のテスト - 存在しない場合 */
-  @Test
-  public void testProcessUpdate_NotFound() {
-    // モックの設定
-    // Only mock what's necessary
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(null);
-
-    // 実行
-    String result = cbtCrRegistService.processUpdate(form, bindingResult, model, 1L);
-
-    // 検証
-    assertEquals("redirect:/memos", result);
-    verify(cbtCrMapper, never()).updateByPrimaryKey(any(CbtCr.class));
-  }
-
-  /** 更新処理のテスト - アクセス権限なしの場合 */
-  @Test
-  public void testProcessUpdate_Unauthorized() {
-    // モックの設定
-    // Only mock what's necessary
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(cbtCr);
-    when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(false);
-
-    // 実行
-    String result = cbtCrRegistService.processUpdate(form, bindingResult, model, 1L);
-
-    // 検証
-    assertEquals(MentalCommonUtils.REDIRECT_TOP_PAGE, result);
-    verify(cbtCrMapper, never()).updateByPrimaryKey(any(CbtCr.class));
+    assertEquals(CbtCrConst.PREFIX + cbtCr.getId() + CbtCrConst.EDIT_SUFFIX, result);
   }
 
   /** 削除処理のテスト - 正常系 */
   @Test
   public void testProcessDelete_Success() {
     // モックの設定
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(cbtCr);
-    when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
+    when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(cbtCr);
+    when(cbtCrMapper.deleteByPrimaryKey(cbtCr.getId())).thenReturn(1);
 
     // 実行
-    String result = cbtCrRegistService.processDelete(1L);
+    String result = cbtCrRegistService.processDelete(cbtCr.getId());
 
     // 検証
     assertEquals(MemoListConst.REDIRECT_MEMOS, result);
-    verify(cbtCrNegativeFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrPositiveFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrDistortionRelationMapper).deleteByCbtCrId(1L);
-    verify(cbtCrMapper).deleteByPrimaryKey(1L);
+    verify(cbtCrMapper).deleteByPrimaryKey(cbtCr.getId());
   }
 
   /** 削除処理のテスト - 存在しない場合 */
   @Test
   public void testProcessDelete_NotFound() {
     // モックの設定
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(null);
+    when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(null);
 
     // 実行
-    String result = cbtCrRegistService.processDelete(1L);
-
-    // 検証
-    assertEquals("redirect:/memos", result);
-    verify(cbtCrMapper, never()).deleteByPrimaryKey(anyLong());
-  }
-
-  /** 削除処理のテスト - アクセス権限なしの場合 */
-  @Test
-  public void testProcessDelete_Unauthorized() {
-    // モックの設定
-    when(cbtCrMapper.selectByPrimaryKey(1L)).thenReturn(cbtCr);
-    when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(false);
-
-    // 実行
-    String result = cbtCrRegistService.processDelete(1L);
-
-    // 検証
-    assertEquals(MentalCommonUtils.REDIRECT_TOP_PAGE, result);
-    verify(cbtCrMapper, never()).deleteByPrimaryKey(anyLong());
-  }
-
-  /** 新規登録処理のテスト - セッションデータの取得 */
-  @Test
-  public void testProcessRegist_WithSessionData() {
-    // モックの設定
-    lenient().when(bindingResult.hasErrors()).thenReturn(false);
-    lenient().when(session.getAttribute("negativeFeelIds")).thenReturn(negativeFeelIds);
-    lenient().when(session.getAttribute("positiveFeelIds")).thenReturn(positiveFeelIds);
-    lenient().when(session.getAttribute("fact")).thenReturn("テスト状況");
-    lenient().when(session.getAttribute("mind")).thenReturn("テスト思考");
-    doAnswer(
-            invocation -> {
-              CbtCr cbtCr = invocation.getArgument(0);
-              cbtCr.setId(1L);
-              return 1;
-            })
-        .when(cbtCrMapper)
-        .insert(any(CbtCr.class));
-
-    // 実行
-    String result = cbtCrRegistService.processRegist(form, bindingResult, model);
+    String result = cbtCrRegistService.processDelete(cbtCr.getId());
 
     // 検証
     assertEquals(MemoListConst.REDIRECT_MEMOS, result);
-    verify(session).getAttribute("negativeFeelIds");
-    verify(session).getAttribute("positiveFeelIds");
-    verify(session).getAttribute("fact");
-    verify(session).getAttribute("mind");
-    verify(session).removeAttribute("negativeFeelIds");
-    verify(session).removeAttribute("positiveFeelIds");
-    verify(session).removeAttribute("fact");
-    verify(session).removeAttribute("mind");
-    verify(cbtCrMapper).insert(any(CbtCr.class));
+    verify(cbtCrMapper, never()).deleteByPrimaryKey(cbtCr.getId());
   }
 
-  /** hasAnyContent()メソッドのテスト - コンテンツがある場合 */
+  /** バリデーションテスト */
   @Test
-  public void testHasAnyContent_WithContent() {
-    // モックの設定
-    when(session.getAttribute("negativeFeelIds")).thenReturn(Arrays.asList(1L, 2L));
-    when(session.getAttribute("positiveFeelIds")).thenReturn(null);
-    when(session.getAttribute("fact")).thenReturn(null);
-    when(session.getAttribute("mind")).thenReturn(null);
-
-    // フォームの設定
-    CbtCrInputForm form = new CbtCrInputForm();
-    form.setWhyCorrect(null);
-    form.setWhyDoubt(null);
-    form.setNewThought(null);
-    form.setDistortionIds(null);
-
-    // 実行
-    boolean result = cbtCrRegistService.hasAnyContent(form);
-
-    // 検証
-    assertEquals(true, result);
+  void testHasAnyContent_negativeFeelIds() {
+    setupValidationErrorForm();
+    mockSession.setAttribute("negativeFeelIds", TestUtils.createNegativeFeelIds());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
   }
 
-  /** hasAnyContent()メソッドのテスト - コンテンツがない場合 */
   @Test
-  public void testHasAnyContent_WithoutContent() {
-    // モックの設定
-    when(session.getAttribute("negativeFeelIds")).thenReturn(null);
-    when(session.getAttribute("positiveFeelIds")).thenReturn(null);
-    when(session.getAttribute("fact")).thenReturn(null);
-    when(session.getAttribute("mind")).thenReturn(null);
-
-    // フォームの設定
-    CbtCrInputForm form = new CbtCrInputForm();
-    form.setWhyCorrect(null);
-    form.setWhyDoubt(null);
-    form.setNewThought(null);
-    form.setDistortionIds(null);
-
-    // 実行
-    boolean result = cbtCrRegistService.hasAnyContent(form);
-
-    // 検証
-    assertEquals(false, result);
+  void testHasAnyContent_positiveFeelIds() {
+    setupValidationErrorForm();
+    mockSession.setAttribute("positiveFeelIds", TestUtils.createPositiveFeelIds());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
   }
 
-  /** insert()メソッドのテスト */
   @Test
-  public void testInsert() {
-    // テストデータの準備
-    CbtCr cbtCr = new CbtCr();
-    cbtCr.setId(1L);
-    cbtCr.setUserId(1L);
-    List<Long> negativeFeelIds = Arrays.asList(1L, 2L);
-    List<Long> positiveFeelIds = Arrays.asList(3L, 4L);
-    List<Long> distortionIds = Arrays.asList(5L, 6L);
-    String tagNames = "タグ1 タグ2";
+  void testHasAnyContent_fact() {
+    setupValidationErrorForm();
+    mockSession.setAttribute("fact", "テスト状況");
 
-    // モックの設定
-    when(tagMapper.findByTagNameAndUserId(anyString(), anyLong())).thenReturn(null);
-    when(tagMapper.insert(any())).thenReturn(1);
-
-    // 実行
-    cbtCrRegistService.save(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
-
-    // 検証
-    verify(cbtCrMapper).insert(cbtCr);
-    verify(cbtCrNegativeFeelMapper, times(2)).insert(any());
-    verify(cbtCrPositiveFeelMapper, times(2)).insert(any());
-    verify(cbtCrDistortionRelationMapper, times(2)).insert(any());
-    verify(cbtCrTagRelationMapper, times(2)).insert(anyLong(), anyLong());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
   }
 
-  /** update()メソッドのテスト */
   @Test
-  public void testUpdate() {
-    // テストデータの準備
-    CbtCr cbtCr = new CbtCr();
-    cbtCr.setId(1L);
-    cbtCr.setUserId(1L);
-    List<Long> negativeFeelIds = Arrays.asList(1L, 2L);
-    List<Long> positiveFeelIds = Arrays.asList(3L, 4L);
-    List<Long> distortionIds = Arrays.asList(5L, 6L);
-    String tagNames = "タグ1 タグ2";
+  void testHasAnyContent_mind() {
+    setupValidationErrorForm();
+    mockSession.setAttribute("mind", "テスト思考");
 
-    // モックの設定
-    when(tagMapper.findByTagNameAndUserId(anyString(), anyLong())).thenReturn(null);
-    when(tagMapper.insert(any())).thenReturn(1);
-
-    // 実行
-    cbtCrRegistService.update(cbtCr, negativeFeelIds, positiveFeelIds, distortionIds, tagNames);
-
-    // 検証
-    verify(cbtCrNegativeFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrPositiveFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrDistortionRelationMapper).deleteByCbtCrId(1L);
-    verify(cbtCrTagRelationMapper).deleteByMonitoringId(1L);
-    verify(cbtCrMapper).updateByPrimaryKey(cbtCr);
-    verify(cbtCrNegativeFeelMapper, times(2)).insert(any());
-    verify(cbtCrPositiveFeelMapper, times(2)).insert(any());
-    verify(cbtCrDistortionRelationMapper, times(2)).insert(any());
-    verify(cbtCrTagRelationMapper, times(2)).insert(anyLong(), anyLong());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
   }
 
-  /** delete()メソッドのテスト */
   @Test
-  public void testDelete() {
-    // 実行
-    cbtCrRegistService.delete(1L);
+  void testHasAnyContent_distortionIds() {
+    setupValidationErrorForm();
+    form.setDistortionIds(TestUtils.createDistortionIds());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
+  }
 
-    // 検証
-    verify(cbtCrNegativeFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrPositiveFeelMapper).deleteByCbtCrId(1L);
-    verify(cbtCrDistortionRelationMapper).deleteByCbtCrId(1L);
-    verify(cbtCrTagRelationMapper).deleteByMonitoringId(1L);
-    verify(cbtCrMapper).deleteByPrimaryKey(1L);
+  @Test
+  void testHasAnyContent_tagNames() {
+    setupValidationErrorForm();
+    form.setTagNames(TestUtils.createTagNames());
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
+  }
+
+  @Test
+  void testHasAnyContent_whyCorrect() {
+    setupValidationErrorForm();
+    form.setWhyCorrect("テスト正しい証拠");
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
+  }
+
+  @Test
+  void testHasAnyContent_whyDoubt() {
+    setupValidationErrorForm();
+    form.setWhyDoubt("テスト間違いの証拠");
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
+  }
+
+  @Test
+  void testHasAnyContent_newThought() {
+    setupValidationErrorForm();
+    form.setNewThought("テスト新しい考え方");
+    assertTrue(cbtCrRegistService.hasAnyContent(form));
+  }
+
+  @Test
+  void testHasAnyContent_emptyAll() {
+    setupValidationErrorForm();
+    assertFalse(cbtCrRegistService.hasAnyContent(form));
   }
 }

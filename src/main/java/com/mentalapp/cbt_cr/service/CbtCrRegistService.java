@@ -91,7 +91,7 @@ public class CbtCrRegistService {
       CbtCrInputForm form, BindingResult bindingResult, Model model, Long id) {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
-      return CbtCrConst.EDIT_STEP2_PATH;
+      return CbtCrConst.PREFIX + id + CbtCrConst.EDIT_SUFFIX;
     }
 
     // セッションからデータを取得
@@ -148,13 +148,13 @@ public class CbtCrRegistService {
     List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
     String fact = (String) session.getAttribute("fact");
     String mind = (String) session.getAttribute("mind");
-    String tagNames = (String) session.getAttribute("tagNames");
 
     // フォームからデータを取得
     List<Long> distortionIds = form.getDistortionIds();
     String whyCorrect = form.getWhyCorrect();
     String whyDoubt = form.getWhyDoubt();
     String newThought = form.getNewThought();
+    String tagNames = form.getTagNames();
 
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
@@ -346,10 +346,7 @@ public class CbtCrRegistService {
       String tagNames)
       throws DatabaseException {
     // 既存の感情テーブルと思考の歪みテーブルの関連を削除
-    cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId());
-    cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId());
-    cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId());
-    cbtCrTagRelationMapper.deleteByMonitoringId(cbtCr.getId());
+    deleteCbtCrRelation(cbtCr.getId());
 
     // 更新
     cbtCrMapper.updateByPrimaryKey(cbtCr);
@@ -377,7 +374,7 @@ public class CbtCrRegistService {
     // 認知再構成法を取得し、アクセス権限をチェック
     CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (Objects.isNull(cbtCr)) {
-      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+      return MemoListConst.REDIRECT_MEMOS;
     }
 
     // 削除
@@ -393,13 +390,18 @@ public class CbtCrRegistService {
    */
   @Transactional
   public void delete(Long id) throws DatabaseException {
-    // 関連するネガティブ感情、ポジティブ感情、思考の歪み、タグの関連を削除
+    // 関連する中間テーブルを削除
+    deleteCbtCrRelation(id);
+
+    // 認知再構成法を削除
+    cbtCrMapper.deleteByPrimaryKey(id);
+  }
+
+  private void deleteCbtCrRelation(Long id) {
+    // 関連するネガティブ感情、ポジティブ感情、思考の歪み、タグの中間テーブルを削除
     cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
     cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
     cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
     cbtCrTagRelationMapper.deleteByMonitoringId(id);
-
-    // 認知再構成法を削除
-    cbtCrMapper.deleteByPrimaryKey(id);
   }
 }

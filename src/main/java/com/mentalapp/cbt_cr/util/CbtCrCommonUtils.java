@@ -92,7 +92,7 @@ public class CbtCrCommonUtils {
    */
   public CbtCr validateAccessPermission(Long id) {
     // モニタリング情報を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
     // 存在チェック
     if (Objects.isNull(cbtCr)) {
