@@ -13,6 +13,7 @@ import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.TestUtils;
 import com.mentalapp.common.dao.DistortionListMapper;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,6 @@ public class CbtCrIndexServiceTest {
   @Mock private DistortionListMapper distortionListMapper;
 
   @Mock private CbtCrCommonUtils cbtCrCommonUtils;
-
-  @Mock private MentalCommonUtils mentalCommonUtils;
 
   @Mock private Model model;
 
@@ -107,7 +106,7 @@ public class CbtCrIndexServiceTest {
 
   /** ステップ2画面の処理のテスト - セッションからデータを取得 */
   @Test
-  public void testProcessStep2() {
+  public void testProcessStep2() throws MentalSystemException {
     // モックの設定
     when(distortionListMapper.findAll()).thenReturn(TestUtils.createDistortions());
 
@@ -120,7 +119,7 @@ public class CbtCrIndexServiceTest {
 
   /** 詳細画面の処理のテスト - 正常系 */
   @Test
-  public void testProcessShow_Success() {
+  public void testProcessShow_Success() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
@@ -134,7 +133,7 @@ public class CbtCrIndexServiceTest {
 
   /** 詳細画面の処理のテスト - 存在しない場合 */
   @Test
-  public void testProcessShow_NotFound() {
+  public void testProcessShow_NotFound() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(null);
 
@@ -147,7 +146,7 @@ public class CbtCrIndexServiceTest {
 
   /** 詳細画面の処理のテスト - アクセス権限なしの場合 */
   @Test
-  public void testProcessShow_Unauthorized() {
+  public void testProcessShow_Unauthorized() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(false);
@@ -161,7 +160,7 @@ public class CbtCrIndexServiceTest {
 
   /** 編集画面の処理のテスト - 正常系 */
   @Test
-  public void testProcessEdit_Success() {
+  public void testProcessEdit_Success() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
@@ -176,7 +175,7 @@ public class CbtCrIndexServiceTest {
 
   /** 編集画面の処理のテスト - 正常系 */
   @Test
-  public void testProcessEdit_Recovery() {
+  public void testProcessEdit_Recovery() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
@@ -202,7 +201,7 @@ public class CbtCrIndexServiceTest {
 
   /** 編集画面の処理のテスト - 存在しない場合 */
   @Test
-  public void testProcessEdit_NotFound() {
+  public void testProcessEdit_NotFound() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(null);
 
@@ -215,7 +214,7 @@ public class CbtCrIndexServiceTest {
 
   /** 編集画面の処理のテスト - アクセス権限なしの場合 */
   @Test
-  public void testProcessEdit_Unauthorized() {
+  public void testProcessEdit_Unauthorized() throws MentalSystemException {
     // モックの設定
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(false);
@@ -244,7 +243,7 @@ public class CbtCrIndexServiceTest {
 
   /** 編集ステップ2画面の処理のテスト - セッションからデータを取得 */
   @Test
-  public void testProcessEditStep2FromSession() {
+  public void testProcessEditStep2FromSession() throws MentalSystemException {
     // モックの設定
     when(distortionListMapper.findAll()).thenReturn(TestUtils.createDistortions());
 

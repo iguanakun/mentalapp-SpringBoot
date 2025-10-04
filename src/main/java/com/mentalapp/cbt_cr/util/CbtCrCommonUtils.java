@@ -8,6 +8,7 @@ import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class CbtCrCommonUtils {
    * @param cbtCr 認知再構成法エンティティ
    * @return タグ名の文字列、またはタグがない場合はnull
    */
-  public String extractTagNamesToString(CbtCr cbtCr) {
+  public String extractTagNamesToString(CbtCr cbtCr) throws MentalSystemException {
     if (Objects.isNull(cbtCr.getTags())) {
       return null;
     }

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.mentalapp.cbt_basic.dao.CbtBasicsMapper;
 import com.mentalapp.cbt_basic.dao.CbtBasicsNegativeFeelMapper;
 import com.mentalapp.cbt_basic.dao.CbtBasicsPositiveFeelMapper;
+import com.mentalapp.cbt_basic.dao.CbtBasicsTagRelationMapper;
 import com.mentalapp.cbt_basic.data.CbtBasicsConst;
 import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
@@ -18,6 +19,7 @@ import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.TestUtils;
 import com.mentalapp.common.entity.User;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
@@ -43,6 +45,7 @@ class CbtBasicRegistServiceTest {
   @Mock private CbtBasicsMapper cbtBasicsMapper;
   @Mock private CbtBasicsNegativeFeelMapper cbtBasicsNegativeFeelMapper;
   @Mock private CbtBasicsPositiveFeelMapper cbtBasicsPositiveFeelMapper;
+  @Mock private CbtBasicsTagRelationMapper cbtBasicsTagRelationMapper;
   @Mock private Model model;
   @Mock private BindingResult bindingResult;
   @Mock private MessageSource messages;
@@ -92,7 +95,7 @@ class CbtBasicRegistServiceTest {
   /** テストケース */
   @Test
   // バリデーションエラーなし
-  void testProcessRegist() {
+  void testProcessRegist() throws MentalSystemException {
     when(cbtBasicCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
     when(mentalCommonUtils.getUser()).thenReturn(user);
     when(cbtBasicsMapper.insert(form.getCbtBasics())).thenReturn(1);
@@ -111,7 +114,7 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // バリデーションエラーあり
-  void testProcessRegist_ValidationError() {
+  void testProcessRegist_ValidationError() throws MentalSystemException {
     setupValidationError();
     String result = cbtBasicsRegistService.processRegist(form, bindingResult, model);
     assertEquals(CbtBasicsConst.NEW_PATH, result);
@@ -119,7 +122,7 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // 更新処理（バリデーションエラーなし、認可あり）
-  void testProcessUpdate_Authorized() {
+  void testProcessUpdate_Authorized() throws MentalSystemException {
     when(cbtBasicCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
     setupAuthorized(true);
     when(cbtBasicsMapper.updateByPrimaryKey(any())).thenReturn(1);
@@ -149,7 +152,7 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // 更新処理（バリデーションエラーあり）
-  void testProcessUpdate_ValidationError() {
+  void testProcessUpdate_ValidationError() throws MentalSystemException {
     // UPDATE向けにformを更新
     CbtBasicsInputForm updateForm = setupUpdateForm(form);
     setupValidationError();
@@ -159,7 +162,7 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // 更新処理（認可エラー）
-  void testProcessUpdate_Unauthorized() {
+  void testProcessUpdate_Unauthorized() throws MentalSystemException {
     // UPDATE向けにformを更新
     CbtBasicsInputForm updateForm = setupUpdateForm(form);
     when(cbtBasicCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
@@ -170,10 +173,11 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // 削除処理（認可あり）
-  void testProcessDelete() {
+  void testProcessDelete() throws MentalSystemException {
     when(cbtBasicsMapper.selectByPrimaryKey(anyLong())).thenReturn(cbtBasics);
     when(cbtBasicCommonUtils.checkAccessPermission(any(CbtBasics.class))).thenReturn(true);
     when(cbtBasicsMapper.deleteByPrimaryKey(anyLong())).thenReturn(1);
+    when(cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasics.getId())).thenReturn(1);
 
     String result = cbtBasicsRegistService.processDelete(1L);
     assertEquals(MemoListConst.REDIRECT_MEMOS, result);
@@ -181,7 +185,7 @@ class CbtBasicRegistServiceTest {
 
   @Test
   // 削除処理（認可エラー）
-  void testProcessDelete_Unauthorized() {
+  void testProcessDelete_Unauthorized() throws MentalSystemException {
     when(cbtBasicsMapper.selectByPrimaryKey(anyLong())).thenReturn(cbtBasics);
     when(cbtBasicCommonUtils.checkAccessPermission(any(CbtBasics.class))).thenReturn(false);
 

@@ -18,6 +18,7 @@ import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class CbtBasicCommonUtilsTest {
 
   /** エンティティからフォームへの変換テスト - タグ情報あり */
   @Test
-  public void testConvertToForm() {
+  public void testConvertToForm() throws MentalSystemException {
     // new TagList()をモック化
     try (MockedConstruction<TagList> ignored = mockTagListConstruction()) {
       CbtBasicsInputForm result = cbtBasicCommonUtils.convertToForm(cbtBasics);
@@ -76,7 +77,7 @@ public class CbtBasicCommonUtilsTest {
 
   /** エンティティからフォームへの変換テスト - タグ情報あり、ネガティブ感情なし */
   @Test
-  public void testConvertToForm_WithoutNegativeFeel() {
+  public void testConvertToForm_WithoutNegativeFeel() throws MentalSystemException {
     // new TagList()をモック化
     try (MockedConstruction<TagList> ignored = mockTagListConstruction()) {
       cbtBasics.setNegativeFeels(null);
@@ -89,7 +90,7 @@ public class CbtBasicCommonUtilsTest {
 
   /** エンティティからフォームへの変換テスト - タグ情報あり、ポジティブ感情なし */
   @Test
-  public void testConvertToForm_WithoutPositiveFeel() {
+  public void testConvertToForm_WithoutPositiveFeel() throws MentalSystemException {
     // new TagList()をモック化
     try (MockedConstruction<TagList> ignored = mockTagListConstruction()) {
       cbtBasics.setPositiveFeels(null);
@@ -102,7 +103,7 @@ public class CbtBasicCommonUtilsTest {
 
   /** エンティティからフォームへの変換テスト - タグ情報なし */
   @Test
-  public void testConvertToForm_WithoutTags() {
+  public void testConvertToForm_WithoutTags() throws MentalSystemException {
     // モックの設定
     cbtBasics.setTags(null);
 
@@ -116,7 +117,7 @@ public class CbtBasicCommonUtilsTest {
 
   /** エンティティからフォームへの変換テスト - 空のタグリスト */
   @Test
-  public void testConvertToForm_WithEmptyTags() {
+  public void testConvertToForm_WithEmptyTags() throws MentalSystemException {
     // モックの設定
     cbtBasics.setTags(new ArrayList<>());
 

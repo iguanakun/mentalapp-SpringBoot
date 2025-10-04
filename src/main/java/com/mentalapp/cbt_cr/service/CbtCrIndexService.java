@@ -8,7 +8,7 @@ import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.entity.DistortionList;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -112,7 +112,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processStep2(Model model) throws DatabaseException {
+  public String processStep2(Model model) throws MentalSystemException {
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
 
@@ -135,7 +135,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processShow(Long id, Model model) throws DatabaseException {
+  public String processShow(Long id, Model model) throws MentalSystemException {
     // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
@@ -158,7 +158,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processEdit(Long id, Model model) throws DatabaseException {
+  public String processEdit(Long id, Model model) throws MentalSystemException {
     // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
@@ -188,7 +188,7 @@ public class CbtCrIndexService {
     return CbtCrConst.EDIT_PATH;
   }
 
-  private void setStep2Session(CbtCr cbtCr) {
+  private void setStep2Session(CbtCr cbtCr) throws MentalSystemException {
     // step2の入力値をセッションに設定
     session.setAttribute("distortionIds", cbtCrCommonUtils.extractDistortionIds(cbtCr));
     session.setAttribute("whyCorrect", cbtCr.getWhyCorrect());
@@ -245,7 +245,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processEditStep2FromSession(Long id, Model model) throws DatabaseException {
+  public String processEditStep2FromSession(Long id, Model model) throws MentalSystemException {
     // 思考の歪みを取得
     List<DistortionList> distortionLists = distortionListMapper.findAll();
 

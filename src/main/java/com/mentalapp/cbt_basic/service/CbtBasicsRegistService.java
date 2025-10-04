@@ -10,7 +10,7 @@ import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.dao.TagMapper;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
@@ -51,7 +51,8 @@ public class CbtBasicsRegistService {
    * @param model モデル
    * @return 遷移先のパス
    */
-  public String processRegist(CbtBasicsInputForm form, BindingResult bindingResult, Model model) {
+  public String processRegist(CbtBasicsInputForm form, BindingResult bindingResult, Model model)
+      throws MentalSystemException {
     // バリデーションエラーがある場合
     if (hasValidationError(form, bindingResult, model)) {
       return CbtBasicsConst.NEW_PATH;
@@ -80,7 +81,7 @@ public class CbtBasicsRegistService {
    */
   @Transactional
   public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId)
-      throws DatabaseException {
+      throws MentalSystemException {
     // フォームからデータを取得
     // ネガティブ感情IDリスト
     List<Long> negativeFeelIds = form.getNegativeFeelIds();
@@ -110,10 +111,10 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param userId ユーザーID
    * @param tagNames スペース区切りのタグ名
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   private void saveTags(CbtBasics cbtBasics, Long userId, String tagNames)
-      throws DatabaseException {
+      throws MentalSystemException {
     // タグが付与されていない場合、処理を終了
     if (Objects.isNull(tagNames)) {
       return;
@@ -139,7 +140,7 @@ public class CbtBasicsRegistService {
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    */
   private void insertNegativeFeelJoinTable(CbtBasics cbtBasics, List<Long> negativeFeelIds)
-      throws DatabaseException {
+      throws MentalSystemException {
     // ネガティブ感情が入力されているときのみ、処理を実施
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       negativeFeelIds.forEach(
@@ -154,7 +155,7 @@ public class CbtBasicsRegistService {
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    */
   private void insertPositiveFeelsJoinTable(CbtBasics cbtBasics, List<Long> positiveFeelIds)
-      throws DatabaseException {
+      throws MentalSystemException {
     // ポジティブ感情が入力されているときのみ、処理を実施
     if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
       positiveFeelIds.forEach(
@@ -172,7 +173,8 @@ public class CbtBasicsRegistService {
    * @return 遷移先のパス
    */
   public String processUpdate(
-      CbtBasicsInputForm form, BindingResult bindingResult, Model model, Long id) {
+      CbtBasicsInputForm form, BindingResult bindingResult, Model model, Long id)
+      throws MentalSystemException {
     // バリデーションエラーがある場合
     if (hasValidationError(form, bindingResult, model)) {
       return CbtBasicsConst.EDIT_PATH;
@@ -230,7 +232,7 @@ public class CbtBasicsRegistService {
   @Transactional
   public CbtBasics update(
       CbtBasics cbtBasics, List<Long> negativeFeelIds, List<Long> positiveFeelIds, String tagNames)
-      throws DatabaseException {
+      throws MentalSystemException {
     // 中間テーブルの関連を削除
     deleteCbtBasicsRelation(cbtBasics.getId());
 
@@ -252,16 +254,16 @@ public class CbtBasicsRegistService {
   /**
    * CBT Basicsに関連する中間テーブルのデータを削除する
    *
-   * @param cbtBasics CBT BasicsのID
+   * @param cbtBasicsId CBT BasicsのID
    */
-  private void deleteCbtBasicsRelation(Long cbtBasics) throws DatabaseException {
+  private void deleteCbtBasicsRelation(Long cbtBasicsId) throws MentalSystemException {
     // 関連する中間テーブルのデータをすべて削除
     // ネガティブ感情の中間テーブルを削除
-    cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(cbtBasics);
+    cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(cbtBasicsId);
     // ポジティブ感情の中間テーブルを削除
-    cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasics);
+    cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasicsId);
     // タグの中間テーブルを削除
-    cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasics);
+    cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasicsId);
   }
 
   /**
@@ -270,7 +272,7 @@ public class CbtBasicsRegistService {
    * @param id CBT BasicsのID
    * @return 遷移先のパス
    */
-  public String processDelete(Long id) throws DatabaseException {
+  public String processDelete(Long id) throws MentalSystemException {
     // 削除対象の取得
     CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKey(id);
     // アクセス権チェック
@@ -289,7 +291,7 @@ public class CbtBasicsRegistService {
    * @param id 削除するCBT BasicsのID
    */
   @Transactional
-  public void deleteCbtBasics(Long id) throws DatabaseException {
+  public void deleteCbtBasics(Long id) throws MentalSystemException {
     // 関連するネガティブ感情、ポジティブ感情、タグの関連を削除
     deleteCbtBasicsRelation(id);
 

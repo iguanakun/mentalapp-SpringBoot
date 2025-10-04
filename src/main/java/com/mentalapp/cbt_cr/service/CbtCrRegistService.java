@@ -14,7 +14,7 @@ import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.TagMapper;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
@@ -52,7 +52,8 @@ public class CbtCrRegistService {
    * @param model モデル
    * @return 遷移先のパス
    */
-  public String processRegist(CbtCrInputForm form, BindingResult bindingResult, Model model) {
+  public String processRegist(CbtCrInputForm form, BindingResult bindingResult, Model model)
+      throws MentalSystemException {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
       return CbtCrConst.REDIRECT_NEW_PATH;
@@ -88,7 +89,8 @@ public class CbtCrRegistService {
    * @return 遷移先のパス
    */
   public String processUpdate(
-      CbtCrInputForm form, BindingResult bindingResult, Model model, Long id) {
+      CbtCrInputForm form, BindingResult bindingResult, Model model, Long id)
+      throws MentalSystemException {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
       return CbtCrConst.PREFIX + id + CbtCrConst.EDIT_SUFFIX;
@@ -216,7 +218,7 @@ public class CbtCrRegistService {
    * @param negativeFeelIds ネガティブ感情のIDリスト
    * @param positiveFeelIds ポジティブ感情のIDリスト
    * @param distortionIds 思考の歪みのIDリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   @Transactional
   public void save(
@@ -225,7 +227,7 @@ public class CbtCrRegistService {
       List<Long> positiveFeelIds,
       List<Long> distortionIds,
       String tagNames)
-      throws DatabaseException {
+      throws MentalSystemException {
     // 登録
     cbtCrMapper.insert(cbtCr);
 
@@ -247,10 +249,10 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param negativeFeelIds ネガティブ感情のIDリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   private void insertNegativeFeelJoinTable(CbtCr cbtCr, List<Long> negativeFeelIds)
-      throws DatabaseException {
+      throws MentalSystemException {
     if (Objects.isNull(negativeFeelIds) || negativeFeelIds.isEmpty()) {
       return;
     }
@@ -268,10 +270,10 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param positiveFeelIds ポジティブ感情のIDリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   private void insertPositiveFeelsJoinTable(CbtCr cbtCr, List<Long> positiveFeelIds)
-      throws DatabaseException {
+      throws MentalSystemException {
     if (Objects.isNull(positiveFeelIds) || positiveFeelIds.isEmpty()) {
       return;
     }
@@ -290,9 +292,9 @@ public class CbtCrRegistService {
    * @param cbtCr 関連付け対象の認知再構成法エンティティ
    * @param userId ユーザーID
    * @param tagNames スペース区切りのタグ名
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  private void saveTags(CbtCr cbtCr, Long userId, String tagNames) throws DatabaseException {
+  private void saveTags(CbtCr cbtCr, Long userId, String tagNames) throws MentalSystemException {
     // タグが付与されていない場合、処理を終了
     if (Objects.isNull(tagNames)) {
       return;
@@ -312,10 +314,10 @@ public class CbtCrRegistService {
    *
    * @param cbtCr 認知再構成法
    * @param distortionIds 思考の歪みのIDリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   private void insertDistortionRelationsJoinTable(CbtCr cbtCr, List<Long> distortionIds)
-      throws DatabaseException {
+      throws MentalSystemException {
     if (Objects.isNull(distortionIds) || distortionIds.isEmpty()) {
       return;
     }
@@ -335,7 +337,7 @@ public class CbtCrRegistService {
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    * @param distortionIds 関連付ける思考の歪みのIDリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   @Transactional
   public void update(
@@ -344,7 +346,7 @@ public class CbtCrRegistService {
       List<Long> positiveFeelIds,
       List<Long> distortionIds,
       String tagNames)
-      throws DatabaseException {
+      throws MentalSystemException {
     // 既存の感情テーブルと思考の歪みテーブルの関連を削除
     deleteCbtCrRelation(cbtCr.getId());
 
@@ -370,7 +372,7 @@ public class CbtCrRegistService {
    * @param id 認知再構成法のID
    * @return 遷移先のパス
    */
-  public String processDelete(Long id) {
+  public String processDelete(Long id) throws MentalSystemException {
     // 認知再構成法を取得し、アクセス権限をチェック
     CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
     if (Objects.isNull(cbtCr)) {
@@ -386,10 +388,10 @@ public class CbtCrRegistService {
    * 指定されたIDの認知再構成法を削除
    *
    * @param id 削除する認知再構成法のID
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   @Transactional
-  public void delete(Long id) throws DatabaseException {
+  public void delete(Long id) throws MentalSystemException {
     // 関連する中間テーブルを削除
     deleteCbtCrRelation(id);
 

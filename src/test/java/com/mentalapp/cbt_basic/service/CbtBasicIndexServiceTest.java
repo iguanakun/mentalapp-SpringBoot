@@ -12,6 +12,7 @@ import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.TestUtils;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ public class CbtBasicIndexServiceTest {
 
   @Test
   // アクセス権チェック成功時
-  void testProcessEdit() {
+  void testProcessEdit() throws MentalSystemException {
     when(cbtBasicCommonUtils.createAllFeelsViewData()).thenReturn(new CbtBasicsViewData());
     when(cbtBasicCommonUtils.convertToForm(cbtBasics)).thenReturn(new CbtBasicsInputForm());
     when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
@@ -89,7 +90,7 @@ public class CbtBasicIndexServiceTest {
 
   @Test
   // アクセス権チェック成功時
-  void testProcessEdit_AccessDenied() {
+  void testProcessEdit_AccessDenied() throws MentalSystemException {
     when(cbtBasicsMapper.selectByPrimaryKeyWithFeelsAndTags(cbtBasics.getId()))
         .thenReturn(cbtBasics);
     when(cbtBasicCommonUtils.checkAccessPermission(cbtBasics)).thenReturn(false);

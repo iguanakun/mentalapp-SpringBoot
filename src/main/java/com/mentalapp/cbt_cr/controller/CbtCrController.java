@@ -4,6 +4,7 @@ import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.service.CbtCrBackService;
 import com.mentalapp.cbt_cr.service.CbtCrIndexService;
 import com.mentalapp.cbt_cr.service.CbtCrRegistService;
+import com.mentalapp.common.exception.MentalSystemException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -56,7 +57,7 @@ public class CbtCrController {
    * @return ステップ2フォームのビュー名
    */
   @GetMapping("/step2_view")
-  public String step2View(Model model) {
+  public String step2View(Model model) throws MentalSystemException {
     return cbtCrIndexService.processStep2(model);
   }
 
@@ -72,7 +73,8 @@ public class CbtCrController {
   public String create(
       @Valid @ModelAttribute("cbtCrForm") CbtCrInputForm form,
       BindingResult bindingResult,
-      Model model) {
+      Model model)
+      throws MentalSystemException {
     return cbtCrRegistService.processRegist(form, bindingResult, model);
   }
 
@@ -84,7 +86,7 @@ public class CbtCrController {
    * @return 詳細ページのビュー名
    */
   @GetMapping("/{id}")
-  public String show(@PathVariable Long id, Model model) {
+  public String show(@PathVariable Long id, Model model) throws MentalSystemException {
     return cbtCrIndexService.processShow(id, model);
   }
 
@@ -96,7 +98,7 @@ public class CbtCrController {
    * @return 編集フォームのビュー名
    */
   @GetMapping("/{id}/edit")
-  public String edit(@PathVariable Long id, Model model) {
+  public String edit(@PathVariable Long id, Model model) throws MentalSystemException {
     return cbtCrIndexService.processEdit(id, model);
   }
 
@@ -122,7 +124,7 @@ public class CbtCrController {
    * @return ステップ2編集フォームのビュー名
    */
   @GetMapping("/{id}/edit_step2_view")
-  public String editStep2View(@PathVariable Long id, Model model) {
+  public String editStep2View(@PathVariable Long id, Model model) throws MentalSystemException {
     return cbtCrIndexService.processEditStep2FromSession(id, model);
   }
 
@@ -140,7 +142,8 @@ public class CbtCrController {
       @PathVariable Long id,
       @Valid @ModelAttribute("cbtCrForm") CbtCrInputForm form,
       BindingResult bindingResult,
-      Model model) {
+      Model model)
+      throws MentalSystemException {
     return cbtCrRegistService.processUpdate(form, bindingResult, model, id);
   }
 
@@ -151,7 +154,7 @@ public class CbtCrController {
    * @return 遷移先のビュー名
    */
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable Long id) {
+  public String delete(@PathVariable Long id) throws MentalSystemException {
     return cbtCrRegistService.processDelete(id);
   }
 

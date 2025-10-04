@@ -25,6 +25,7 @@ import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.TestUtils;
 import com.mentalapp.common.entity.User;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
@@ -114,7 +115,7 @@ public class CbtCrRegistServiceTest {
 
   /** 新規登録処理のテスト - 正常系 */
   @Test
-  public void testProcessRegist_Success() {
+  public void testProcessRegist_Success() throws MentalSystemException {
     // モックの設定
     when(mentalCommonUtils.getUser()).thenReturn(user);
     when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
@@ -145,7 +146,7 @@ public class CbtCrRegistServiceTest {
 
   /** 新規登録処理のテスト - バリデーションエラーの場合 */
   @Test
-  public void testProcessRegist_ValidationError() {
+  public void testProcessRegist_ValidationError() throws MentalSystemException {
     // モックの設定
     setupValidationError();
 
@@ -158,7 +159,7 @@ public class CbtCrRegistServiceTest {
 
   /** 更新処理のテスト - 正常系 */
   @Test
-  public void testProcessUpdate_Success() {
+  public void testProcessUpdate_Success() throws MentalSystemException {
     // モックの設定
     when(mentalCommonUtils.getUser()).thenReturn(user);
     when(cbtCrCommonUtils.checkValidationError(bindingResult)).thenReturn(false);
@@ -187,7 +188,7 @@ public class CbtCrRegistServiceTest {
 
   /** 更新処理のテスト - バリデーションエラーの場合 */
   @Test
-  public void testProcessUpdate_ValidationError() {
+  public void testProcessUpdate_ValidationError() throws MentalSystemException {
     // モックの設定
     setupValidationError();
 
@@ -200,7 +201,7 @@ public class CbtCrRegistServiceTest {
 
   /** 削除処理のテスト - 正常系 */
   @Test
-  public void testProcessDelete_Success() {
+  public void testProcessDelete_Success() throws MentalSystemException {
     // モックの設定
     when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrMapper.deleteByPrimaryKey(cbtCr.getId())).thenReturn(1);
@@ -215,7 +216,7 @@ public class CbtCrRegistServiceTest {
 
   /** 削除処理のテスト - 存在しない場合 */
   @Test
-  public void testProcessDelete_NotFound() {
+  public void testProcessDelete_NotFound() throws MentalSystemException {
     // モックの設定
     when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(null);
 

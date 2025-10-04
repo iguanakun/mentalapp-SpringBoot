@@ -8,6 +8,7 @@ import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class CbtBasicCommonUtils {
    * @param cbtBasics 変換元のCBT Basicsエンティティ
    * @return 変換後のフォーム
    */
-  public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
+  public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) throws MentalSystemException {
     // ネガティブ感情IDリストの抽出
     List<Long> negativeFeelIds = extractedNegativeFeelsIdList(cbtBasics);
 
