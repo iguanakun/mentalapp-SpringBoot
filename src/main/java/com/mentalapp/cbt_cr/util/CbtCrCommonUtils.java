@@ -46,6 +46,11 @@ public class CbtCrCommonUtils {
    * @return アクセス権限がある場合はtrue
    */
   public Boolean checkAccessPermission(CbtCr cbtCr) {
+    // NULLチェック
+    if (Objects.isNull(cbtCr)) {
+      return false;
+    }
+
     return mentalCommonUtils.isAuthorized(cbtCr.getUserId());
   }
 
@@ -71,17 +76,6 @@ public class CbtCrCommonUtils {
     CbtCrViewData viewData = new CbtCrViewData();
     viewData.setNegativeFeels(negativeFeelMapper.selectAll());
     viewData.setPositiveFeels(positiveFeelMapper.selectAll());
-    return viewData;
-  }
-
-  /**
-   * 全ての思考の歪みを含むビューデータを作成する
-   *
-   * @return ビューデータ
-   */
-  public CbtCrViewData createAllDistortionsViewData() {
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionListMapper.findAll());
     return viewData;
   }
 

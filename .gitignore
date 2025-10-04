@@ -84,6 +84,10 @@ $RECYCLE.BIN/
 .env.*
 !.env.example
 
+# CLAUDE
+CLAUDE.md
+.claude
+
 # JUNIEツール関連
 .junie/
 
