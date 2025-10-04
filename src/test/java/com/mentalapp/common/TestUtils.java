@@ -12,28 +12,9 @@ import com.mentalapp.common.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /** テストユーティリティクラス テストで共通して使用される操作のためのユーティリティメソッドを提供します */
 public class TestUtils {
-
-  /**
-   * セキュリティコンテキストにユーザー認証情報をセットアップします
-   *
-   * @param user 認証するユーザー
-   */
-  public static void setupSecurityContext(User user) {
-    Authentication auth = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-    SecurityContextHolder.getContext().setAuthentication(auth);
-  }
-
-  /** セキュリティコンテキストをクリアします テスト後のクリーンアップに使用します */
-  public static void clearSecurityContext() {
-    SecurityContextHolder.clearContext();
-  }
-
   public static CbtBasics createCbtBasics() {
     CbtBasics cbtBasics = new CbtBasics();
     cbtBasics.setId(1L);
