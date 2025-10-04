@@ -154,7 +154,7 @@ public class CbtCrRegistServiceTest {
     String result = cbtCrRegistService.processRegist(form, bindingResult, model);
 
     // 検証
-    assertEquals(CbtCrConst.REDIRECT_NEW_PATH, result);
+    assertEquals(CbtCrConst.NEW_PATH, result);
   }
 
   /** 更新処理のテスト - 正常系 */
@@ -196,7 +196,7 @@ public class CbtCrRegistServiceTest {
     String result = cbtCrRegistService.processUpdate(form, bindingResult, model, cbtCr.getId());
 
     // 検証
-    assertEquals(CbtCrConst.PREFIX + cbtCr.getId() + CbtCrConst.EDIT_SUFFIX, result);
+    assertEquals(CbtCrConst.EDIT_PATH, result);
   }
 
   /** 削除処理のテスト - 正常系 */

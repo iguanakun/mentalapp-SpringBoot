@@ -56,7 +56,7 @@ public class CbtCrRegistService {
       throws MentalSystemException {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
-      return CbtCrConst.REDIRECT_NEW_PATH;
+      return CbtCrConst.NEW_PATH;
     }
 
     // セッションからデータを取得
@@ -93,7 +93,7 @@ public class CbtCrRegistService {
       throws MentalSystemException {
     // バリデーションエラーチェック
     if (hasValidationError(form, bindingResult, model)) {
-      return CbtCrConst.PREFIX + id + CbtCrConst.EDIT_SUFFIX;
+      return CbtCrConst.EDIT_PATH;
     }
 
     // セッションからデータを取得

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <!-- バリデーションエラーメッセージ表示フラグメント -->
-<div th:fragment="err-area" class="error-alert" th:if="${errMsg != null}">
+<div th:fragment="error" class="error-alert" th:if="${errMsg != null}">
     <div class="error-message" th:text="${errMsg}"></div>
 </div>
 </body>

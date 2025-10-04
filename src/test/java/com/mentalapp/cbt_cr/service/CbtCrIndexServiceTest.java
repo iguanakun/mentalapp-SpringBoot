@@ -36,6 +36,8 @@ public class CbtCrIndexServiceTest {
 
   @Mock private CbtCrCommonUtils cbtCrCommonUtils;
 
+  @Mock private MentalCommonUtils mentalCommonUtils;
+
   @Mock private Model model;
 
   @InjectMocks private CbtCrIndexService cbtCrIndexService;
@@ -165,6 +167,8 @@ public class CbtCrIndexServiceTest {
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
     when(cbtCrCommonUtils.createAllFeelsViewData()).thenReturn(new CbtCrViewData());
+    when(mentalCommonUtils.extractedNegativeFeelsIdList(cbtCr.getNegativeFeels())).thenReturn(null);
+    when(mentalCommonUtils.extractedPositiveFeelsIdList(cbtCr.getPositiveFeels())).thenReturn(null);
 
     // 実行
     String result = cbtCrIndexService.processEdit(cbtCr.getId(), model);
@@ -180,6 +184,8 @@ public class CbtCrIndexServiceTest {
     when(cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(cbtCr.getId())).thenReturn(cbtCr);
     when(cbtCrCommonUtils.checkAccessPermission(cbtCr)).thenReturn(true);
     when(cbtCrCommonUtils.createAllFeelsViewData()).thenReturn(new CbtCrViewData());
+    when(mentalCommonUtils.extractedNegativeFeelsIdList(cbtCr.getNegativeFeels())).thenReturn(null);
+    when(mentalCommonUtils.extractedPositiveFeelsIdList(cbtCr.getPositiveFeels())).thenReturn(null);
 
     // セッションの値を設定
     String testFact = "テスト状況";
