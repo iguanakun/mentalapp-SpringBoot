@@ -39,49 +39,9 @@ public class MemoListIndexServiceTest {
 
   @BeforeEach
   public void setup() {
-    userId = 1L;
+    userId = TestUtils.createUser().getId();
     cbtBasicsList = createTestCbtBasicsList();
     cbtCrList = createTestCbtCrList();
-  }
-
-  /**
-   * CbtBasicsリスト作成のテスト
-   *
-   * <p>ユーザーIDに基づいてCbtBasicsのリストが正しく取得できることを検証
-   */
-  @Test
-  public void testCreateCbtBasicsObjectList() {
-    // モックの設定
-    when(cbtBasicsMapper.findCbtBasicsFeelsAndTagsListByUserId(userId)).thenReturn(cbtBasicsList);
-
-    // 実行
-    List<CbtBasics> result = memoListIndexService.createCbtBasicsObjectList(userId);
-
-    // 検証
-    assertNotNull(result);
-    assertEquals(2, result.size());
-    assertEquals(cbtBasicsList, result);
-    verify(cbtBasicsMapper).findCbtBasicsFeelsAndTagsListByUserId(userId);
-  }
-
-  /**
-   * CbtCrリスト作成のテスト
-   *
-   * <p>ユーザーIDに基づいてCbtCrのリストが正しく取得できることを検証
-   */
-  @Test
-  public void testCreateCbtCrList() {
-    // モックの設定
-    when(cbtCrMapper.findCbtCrFeelsListByUserId(userId)).thenReturn(cbtCrList);
-
-    // 実行
-    List<CbtCr> result = memoListIndexService.createCbtCrList(userId);
-
-    // 検証
-    assertNotNull(result);
-    assertEquals(2, result.size());
-    assertEquals(cbtCrList, result);
-    verify(cbtCrMapper).findCbtCrFeelsListByUserId(userId);
   }
 
   /**
@@ -205,7 +165,7 @@ public class MemoListIndexServiceTest {
   public void testGetUserMemoList() {
     // モックの設定
     when(cbtBasicsMapper.findCbtBasicsFeelsAndTagsListByUserId(userId)).thenReturn(cbtBasicsList);
-    when(cbtCrMapper.findCbtCrFeelsListByUserId(userId)).thenReturn(cbtCrList);
+    when(cbtCrMapper.findCbtCrFeelsAndTagsListByUserId(userId)).thenReturn(cbtCrList);
     when(cbtBasicsMapper.findTopNegativeFeelingsByUserId(userId)).thenReturn(new ArrayList<>());
     when(cbtCrMapper.findTopNegativeFeelingsByUserId(userId)).thenReturn(new ArrayList<>());
 
@@ -249,7 +209,7 @@ public class MemoListIndexServiceTest {
     }
 
     verify(cbtBasicsMapper).findCbtBasicsFeelsAndTagsListByUserId(userId);
-    verify(cbtCrMapper).findCbtCrFeelsListByUserId(userId);
+    verify(cbtCrMapper).findCbtCrFeelsAndTagsListByUserId(userId);
     verify(cbtBasicsMapper).findTopNegativeFeelingsByUserId(userId);
     verify(cbtCrMapper).findTopNegativeFeelingsByUserId(userId);
   }

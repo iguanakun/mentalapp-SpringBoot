@@ -19,14 +19,6 @@ public interface CbtCrMapper {
   CbtCr selectByPrimaryKey(Long id);
 
   /**
-   * ユーザーIDに紐づく認知再構成法を全て取得する
-   *
-   * @param userId ユーザーID
-   * @return 認知再構成法エンティティのリスト
-   */
-  List<CbtCr> selectByUserId(Long userId);
-
-  /**
    * 認知再構成法を新規登録する
    *
    * @param record 認知再構成法エンティティ
@@ -51,14 +43,6 @@ public interface CbtCrMapper {
   int deleteByPrimaryKey(Long id);
 
   /**
-   * ユーザーIDに基づいて認知再構成法と関連する感情・思考の歪みを取得
-   *
-   * @param userId ユーザーID
-   * @return 認知再構成法のリスト（感情・思考の歪み情報を含む）
-   */
-  List<CbtCr> findCbtCrFeelsListByUserId(@Param("userId") Long userId);
-
-  /**
    * 認知再構成法IDに基づいて認知再構成法と関連する感情・思考の歪みを取得
    *
    * @param cbtCrId 認知再構成法ID
@@ -81,4 +65,12 @@ public interface CbtCrMapper {
    * @return 指定されたIDの認知再構成法（感情・思考の歪み・タグ情報を含む）
    */
   CbtCr selectByPrimaryKeyWithFeelsAndTags(Long cbtCrId);
+
+  /**
+   * ユーザーIDに基づいて認知再構成法と関連する感情・思考の歪み・タグを取得
+   *
+   * @param userId ユーザーID
+   * @return 認知再構成法のリスト（感情・思考の歪み・タグ情報を含む）
+   */
+  List<CbtCr> findCbtCrFeelsAndTagsListByUserId(@Param("userId") Long userId);
 }
