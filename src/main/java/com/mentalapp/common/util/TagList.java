@@ -61,7 +61,7 @@ public class TagList {
     }
 
     // タグを半角スペース、全角スペース区切りで分割
-    String[] splitTagList = tagNames.trim().split("[\\\\s\u3000]+");
+    String[] splitTagList = tagNames.trim().split("[\\s\u3000]+");
 
     // 重複を排除
     return Arrays.stream(splitTagList).distinct().toArray(String[]::new);
