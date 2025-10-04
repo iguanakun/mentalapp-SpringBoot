@@ -23,7 +23,6 @@ import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +30,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -48,7 +45,6 @@ class CbtBasicRegistServiceTest {
   @Mock private CbtBasicsTagRelationMapper cbtBasicsTagRelationMapper;
   @Mock private Model model;
   @Mock private BindingResult bindingResult;
-  @Mock private MessageSource messages;
 
   private CbtBasicsInputForm form;
   private User user;
@@ -60,8 +56,6 @@ class CbtBasicRegistServiceTest {
     form = TestUtils.createCbtBasicsInputForm();
     user = TestUtils.createUser();
     cbtBasics = TestUtils.createCbtBasics();
-    // メッセージプロパティに値をセット
-    ReflectionTestUtils.setField(cbtBasicsRegistService, "messages", messages);
   }
 
   /** 共通ヘルパーメソッド */
@@ -80,7 +74,7 @@ class CbtBasicRegistServiceTest {
   private void setupValidationError() {
     when(cbtBasicCommonUtils.checkValidationError(bindingResult)).thenReturn(true);
     when(cbtBasicCommonUtils.createAllFeelsViewData()).thenReturn(new CbtBasicsViewData());
-    when(messages.getMessage("error.atleastone.required", null, Locale.JAPAN)).thenReturn("エラー");
+    doNothing().when(mentalCommonUtils).addValidationErrorMessage(model);
     form.setCbtBasics(null);
     form.setTagNames(null);
     form.setPositiveFeelIds(null);

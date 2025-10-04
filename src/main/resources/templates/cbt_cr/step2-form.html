@@ -3,6 +3,7 @@
 <body>
 <div class="monitor-main" th:fragment="step2-form(url, method, buttonText)">
     <form th:action="${url}" th:method="${method}" th:object="${cbtCrForm}">
+        <div th:replace="~{shared/_error-message :: error}"></div>
         <div class="monitor-contents">
             <div class="monitor-wrapper">
                 <div class="item-circle"></div>

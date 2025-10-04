@@ -16,6 +16,7 @@ import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +24,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 
 /** 共通ユーティリティクラスのテスト */
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +39,10 @@ public class MentalCommonUtilsTest {
   @Mock private SecurityContext securityContext;
 
   @Mock private Authentication authentication;
+
+  @Mock private MessageSource messageSource;
+
+  @Mock private Model model;
 
   @InjectMocks private MentalCommonUtils mentalCommonUtils;
 
@@ -227,5 +234,26 @@ public class MentalCommonUtilsTest {
 
     // 検証
     assertNull(result);
+  }
+
+  /**
+   * バリデーションエラーメッセージ追加のテスト
+   *
+   * <p>モデルにエラーメッセージが正しく追加されることを検証
+   */
+  @Test
+  public void testAddValidationErrorMessage() {
+    // モックの設定
+    String expectedMessage = "いずれか1つの項目を入力してください。";
+    when(messageSource.getMessage("error.atleastone.required", null, Locale.JAPAN))
+        .thenReturn(expectedMessage);
+
+    mentalCommonUtils.messages = messageSource;
+
+    // 実行
+    mentalCommonUtils.addValidationErrorMessage(model);
+
+    // 検証
+    verify(model).addAttribute("errMsg", expectedMessage);
   }
 }

@@ -133,6 +133,9 @@ public class CbtCrRegistService {
       // ビューデータを作成して追加
       CbtCrViewData viewData = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
       model.addAttribute("viewData", viewData);
+
+      // エラーメッセージ追加
+      mentalCommonUtils.addValidationErrorMessage(model);
       return true;
     }
     return false;

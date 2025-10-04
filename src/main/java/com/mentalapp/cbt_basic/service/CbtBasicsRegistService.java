@@ -15,12 +15,9 @@ import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -39,9 +36,6 @@ public class CbtBasicsRegistService {
   private final TagMapper tagMapper;
   private final MentalCommonUtils mentalCommonUtils;
   private final CbtBasicCommonUtils cbtBasicCommonUtils;
-
-  // プロパティファイルからメッセージ読込
-  @Autowired MessageSource messages;
 
   /**
    * 新規作成処理
@@ -213,8 +207,7 @@ public class CbtBasicsRegistService {
       model.addAttribute("viewData", viewData);
 
       // エラーメッセージ追加
-      String errMsg = messages.getMessage("error.atleastone.required", null, Locale.JAPAN);
-      model.addAttribute("errMsg", errMsg);
+      mentalCommonUtils.addValidationErrorMessage(model);
       return true;
     }
     return false;
