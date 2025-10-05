@@ -22,8 +22,7 @@
                         <form th:action="@{/cbt_cr/{id}(id=${cbtCr.id})}" method="post" style="display: inline;">
                             <input type="hidden" name="_method" value="delete"/>
                             <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                <button type="submit" class="delete-button"
-                                        onclick="return confirm('本当に削除しますか？');">
+                                <button type="button" class="delete-button">
                                     削除
                                 </button>
                             </li>
@@ -77,6 +76,9 @@
 
         <a th:href="@{/memos}" class="monitor-show__btn">一覧にもどる</a>
     </div>
+
+    <!-- 削除確認モーダル -->
+    <div th:replace="~{common/_delete-modal :: delete-modal}"></div>
 </div>
 </body>
 </html>

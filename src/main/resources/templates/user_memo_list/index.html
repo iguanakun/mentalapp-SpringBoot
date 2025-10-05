@@ -58,7 +58,7 @@
                             </a>
                             <form th:action="@{/cbt_basics/{id}(id=${memo.id})}" th:method="delete">
                                 <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                    <button type="submit" class="delete-button">削除</button>
+                                    <button type="button" class="delete-button">削除</button>
                                 </li>
                             </form>
                         </ul>
@@ -99,7 +99,7 @@
                             </a>
                             <form th:action="@{/cbt_cr/{id}(id=${memo.id})}" th:method="delete">
                                 <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                    <button type="submit" class="delete-button">削除</button>
+                                    <button type="button" class="delete-button">削除</button>
                                 </li>
                             </form>
                         </ul>
@@ -128,6 +128,9 @@
             </div>
         </div>
     </div>
+
+    <!-- 削除確認モーダル -->
+    <div th:replace="~{common/_delete-modal :: delete-modal}"></div>
 </div>
 </body>
 </html>

@@ -1,0 +1,14 @@
+<!-- 削除確認モーダル -->
+<div th:fragment="delete-modal" id="deleteModal" class="modal" style="display: none;"
+     xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-body">
+            <p>削除しますか?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-btn modal-btn-cancel" id="modalCancelBtn">キャンセル</button>
+            <button type="button" class="modal-btn modal-btn-delete" id="modalConfirmBtn">削除</button>
+        </div>
+    </div>
+</div>
