@@ -247,10 +247,11 @@ public class CbtCrIndexServiceTest {
         result);
   }
 
-  /** 編集ステップ2画面の処理のテスト - セッションからデータを取得 */
+  /** 編集ステップ2画面の処理のテスト - 正常系 */
   @Test
-  public void testProcessEditStep2FromSession() throws MentalSystemException {
+  public void testProcessEditStep2FromSession_Success() throws MentalSystemException {
     // モックの設定
+    when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(cbtCr);
     when(distortionListMapper.findAll()).thenReturn(TestUtils.createDistortions());
 
     // 実行
@@ -258,6 +259,33 @@ public class CbtCrIndexServiceTest {
 
     // 検証
     assertEquals(CbtCrConst.EDIT_STEP2_PATH, result);
+  }
+
+  /** 編集ステップ2画面の処理のテスト - 存在しない場合 */
+  @Test
+  public void testProcessEditStep2FromSession_NotFound() throws MentalSystemException {
+    // モックの設定
+    when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(null);
+
+    // 実行
+    String result = cbtCrIndexService.processEditStep2FromSession(cbtCr.getId(), model);
+
+    // 検証
+    assertEquals(MentalCommonUtils.REDIRECT_MEMOS_PAGE, result);
+  }
+
+  /** 編集ステップ2画面の処理のテスト - アクセス権限なしの場合 */
+  @Test
+  public void testProcessEditStep2FromSession_Unauthorized() throws MentalSystemException {
+    // モックの設定
+    // validateAccessPermissionはアクセス権限なしの場合もnullを返す
+    when(cbtCrCommonUtils.validateAccessPermission(cbtCr.getId())).thenReturn(null);
+
+    // 実行
+    String result = cbtCrIndexService.processEditStep2FromSession(cbtCr.getId(), model);
+
+    // 検証
+    assertEquals(MentalCommonUtils.REDIRECT_MEMOS_PAGE, result);
   }
 
   private static CbtCrInputForm getCbtCrInputFormStep1() {

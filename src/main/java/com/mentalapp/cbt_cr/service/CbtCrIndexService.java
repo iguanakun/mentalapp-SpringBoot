@@ -246,6 +246,12 @@ public class CbtCrIndexService {
    */
   @Transactional
   public String processEditStep2FromSession(Long id, Model model) throws MentalSystemException {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+    if (Objects.isNull(cbtCr)) {
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+    }
+
     // 思考の歪みを取得
     List<Distortion> distortions = distortionListMapper.findAll();
 
