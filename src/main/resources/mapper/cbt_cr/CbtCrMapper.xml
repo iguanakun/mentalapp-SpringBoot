@@ -15,7 +15,7 @@
         <result column="updated_at" property="updatedAt"/>
         <collection property="negativeFeels" resultMap="negativeFeel"/>
         <collection property="positiveFeels" resultMap="positiveFeel"/>
-        <collection property="distortionLists" resultMap="distortionList"/>
+        <collection property="distortions" resultMap="distortionList"/>
     </resultMap>
 
     <!-- マッピング定義(CbtCrWithFeelsDistortionsAndTags) -->
@@ -49,8 +49,8 @@
         <result column="pf_updated_at" property="updatedAt"/>
     </resultMap>
 
-    <!-- マッピング定義(DistortionList) -->
-    <resultMap type="com.mentalapp.common.entity.DistortionList" id="distortionList">
+    <!-- マッピング定義(Distortion) -->
+    <resultMap type="com.mentalapp.common.entity.Distortion" id="distortionList">
         <id column="dl_id" property="id"/>
         <result column="distortion_name" property="distortionName"/>
         <result column="info" property="info"/>

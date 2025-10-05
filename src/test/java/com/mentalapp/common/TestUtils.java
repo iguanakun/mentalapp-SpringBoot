@@ -4,7 +4,7 @@ import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_cr.entity.CbtCr;
 import com.mentalapp.cbt_cr.form.CbtCrInputForm;
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.Tag;
@@ -146,7 +146,7 @@ public class TestUtils {
     cbtCr.setNewThought("テスト新しい考え方");
     cbtCr.setNegativeFeels(createNegativeFeels());
     cbtCr.setPositiveFeels(createPositiveFeels());
-    cbtCr.setDistortionLists(createDistortions());
+    cbtCr.setDistortions(createDistortions());
     cbtCr.setTags(createTags());
     cbtCr.setCreatedAt(getLocalDateTime());
     cbtCr.setUpdatedAt(getLocalDateTime());
@@ -155,11 +155,11 @@ public class TestUtils {
     return cbtCr;
   }
 
-  public static List<DistortionList> createDistortions() {
-    List<DistortionList> distortionList = new ArrayList<>();
+  public static List<Distortion> createDistortions() {
+    List<Distortion> distortionList = new ArrayList<>();
 
     for (Long id : createDistortionIds()) {
-      DistortionList distortion = new DistortionList();
+      Distortion distortion = new Distortion();
       distortion.setId(id);
       distortion.setDistortionName("思考の歪み" + id);
       distortion.setCreatedAt(getLocalDateTime());
@@ -203,7 +203,7 @@ public class TestUtils {
     // 画面の入力値に合わせてnullをセット
     cbtCr.setNegativeFeels(null);
     cbtCr.setPositiveFeels(null);
-    cbtCr.setDistortionLists(null);
+    cbtCr.setDistortions(null);
     cbtCr.setTags(null);
     cbtCr.setUserId(null);
 

@@ -18,7 +18,7 @@ import com.mentalapp.common.TestUtils;
 import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.exception.MentalSystemException;
@@ -141,12 +141,12 @@ public class CbtCrCommonUtilsTest {
     // 戻り値の設定
     List<NegativeFeel> negativeFeels = TestUtils.createNegativeFeels();
     List<PositiveFeel> positiveFeels = TestUtils.createPositiveFeels();
-    List<DistortionList> distortionLists = TestUtils.createDistortions();
+    List<Distortion> distortions = TestUtils.createDistortions();
 
     // モックの設定
     when(negativeFeelMapper.selectAll()).thenReturn(negativeFeels);
     when(positiveFeelMapper.selectAll()).thenReturn(positiveFeels);
-    when(distortionListMapper.findAll()).thenReturn(distortionLists);
+    when(distortionListMapper.findAll()).thenReturn(distortions);
 
     // 実行
     CbtCrViewData result = cbtCrCommonUtils.createAllFeelsAndDistortionsViewData();
@@ -155,7 +155,7 @@ public class CbtCrCommonUtilsTest {
     assertNotNull(result);
     assertEquals(negativeFeels, result.getNegativeFeels());
     assertEquals(positiveFeels, result.getPositiveFeels());
-    assertEquals(distortionLists, result.getDistortionLists());
+    assertEquals(distortions, result.getDistortions());
     verify(negativeFeelMapper).selectAll();
     verify(positiveFeelMapper).selectAll();
     verify(distortionListMapper).findAll();
@@ -179,7 +179,7 @@ public class CbtCrCommonUtilsTest {
     assertNotNull(result);
     assertEquals(negativeFeels, result.getNegativeFeels());
     assertEquals(positiveFeels, result.getPositiveFeels());
-    assertNull(result.getDistortionLists());
+    assertNull(result.getDistortions());
     verify(negativeFeelMapper).selectAll();
     verify(positiveFeelMapper).selectAll();
     verify(distortionListMapper, never()).findAll();
@@ -265,7 +265,7 @@ public class CbtCrCommonUtilsTest {
   @Test
   public void testExtractDistortionIds_WithoutDistortions() {
     // モックの設定
-    cbtCr.setDistortionLists(null);
+    cbtCr.setDistortions(null);
 
     // 実行
     List<Long> result = cbtCrCommonUtils.extractDistortionIds(cbtCr);

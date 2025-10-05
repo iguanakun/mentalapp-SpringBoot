@@ -7,7 +7,7 @@ import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.servlet.http.HttpSession;
@@ -114,11 +114,11 @@ public class CbtCrIndexService {
   @Transactional
   public String processStep2(Model model) throws MentalSystemException {
     // 思考の歪みを取得
-    List<DistortionList> distortionLists = distortionListMapper.findAll();
+    List<Distortion> distortions = distortionListMapper.findAll();
 
     // ビューデータを作成
     CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionLists);
+    viewData.setDistortions(distortions);
 
     // モデルに追加
     model.addAttribute("viewData", viewData);
@@ -247,11 +247,11 @@ public class CbtCrIndexService {
   @Transactional
   public String processEditStep2FromSession(Long id, Model model) throws MentalSystemException {
     // 思考の歪みを取得
-    List<DistortionList> distortionLists = distortionListMapper.findAll();
+    List<Distortion> distortions = distortionListMapper.findAll();
 
     // ビューデータを作成
     CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionLists);
+    viewData.setDistortions(distortions);
 
     // フォームに既存の値をセット
     CbtCrInputForm form = new CbtCrInputForm();

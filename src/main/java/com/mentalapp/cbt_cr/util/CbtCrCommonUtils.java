@@ -7,7 +7,7 @@ import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
@@ -63,7 +63,7 @@ public class CbtCrCommonUtils {
     CbtCrViewData viewData = new CbtCrViewData();
     viewData.setNegativeFeels(negativeFeelMapper.selectAll());
     viewData.setPositiveFeels(positiveFeelMapper.selectAll());
-    viewData.setDistortionLists(distortionListMapper.findAll());
+    viewData.setDistortions(distortionListMapper.findAll());
     return viewData;
   }
 
@@ -119,11 +119,11 @@ public class CbtCrCommonUtils {
    * @return 思考の歪みIDのリスト、または歪みがない場合はnull
    */
   public List<Long> extractDistortionIds(CbtCr cbtCr) {
-    if (Objects.isNull(cbtCr.getDistortionLists())) {
+    if (Objects.isNull(cbtCr.getDistortions())) {
       return null;
     }
 
-    return cbtCr.getDistortionLists().stream().map(DistortionList::getId).toList();
+    return cbtCr.getDistortions().stream().map(Distortion::getId).toList();
   }
 
   /**

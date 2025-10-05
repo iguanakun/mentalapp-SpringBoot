@@ -5,7 +5,7 @@ import lombok.Data;
 
 /** 思考の歪みリストのエンティティクラス */
 @Data
-public class DistortionList {
+public class Distortion {
 
   private Long id;
   private String distortionName;

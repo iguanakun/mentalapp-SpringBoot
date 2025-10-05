@@ -1,6 +1,6 @@
 package com.mentalapp.cbt_cr.entity;
 
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,5 +15,5 @@ public class CbtCrDistortionRelation {
   private Long cbtCrId;
   private Long distortionListId;
   private CbtCr cbtCr;
-  private DistortionList distortionList;
+  private Distortion distortion;
 }

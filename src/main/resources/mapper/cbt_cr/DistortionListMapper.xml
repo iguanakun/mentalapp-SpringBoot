@@ -4,7 +4,7 @@
 
     <!-- 思考の歪みリストを主キーで検索する -->
     <select id="selectByPrimaryKey" parameterType="java.lang.Long"
-            resultType="com.mentalapp.common.entity.DistortionList">
+            resultType="com.mentalapp.common.entity.Distortion">
         SELECT
         id,
         distortion_name,
@@ -18,7 +18,7 @@
     </select>
 
     <!-- 全ての思考の歪みリストを取得する -->
-    <select id="findAll" resultType="com.mentalapp.common.entity.DistortionList">
+    <select id="findAll" resultType="com.mentalapp.common.entity.Distortion">
         SELECT
         id,
         distortion_name,
@@ -32,7 +32,7 @@
     </select>
 
     <!-- 思考の歪みリストを新規登録する -->
-    <insert id="insert" parameterType="com.mentalapp.common.entity.DistortionList" useGeneratedKeys="true"
+    <insert id="insert" parameterType="com.mentalapp.common.entity.Distortion" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO distortion_lists (
         distortion_name,
@@ -48,7 +48,7 @@
     </insert>
 
     <!-- 思考の歪みリストを更新する -->
-    <update id="updateByPrimaryKey" parameterType="com.mentalapp.common.entity.DistortionList">
+    <update id="updateByPrimaryKey" parameterType="com.mentalapp.common.entity.Distortion">
         UPDATE
         distortion_lists
         SET

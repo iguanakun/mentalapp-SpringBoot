@@ -1,6 +1,6 @@
 package com.mentalapp.common.dao;
 
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,14 +14,14 @@ public interface DistortionListMapper {
    * @param id 思考の歪みリストID
    * @return 思考の歪みリストエンティティ
    */
-  DistortionList selectByPrimaryKey(Long id);
+  Distortion selectByPrimaryKey(Long id);
 
   /**
    * 全ての思考の歪みリストを取得する
    *
    * @return 思考の歪みリストエンティティのリスト
    */
-  List<DistortionList> findAll();
+  List<Distortion> findAll();
 
   /**
    * 思考の歪みリストを新規登録する
@@ -29,7 +29,7 @@ public interface DistortionListMapper {
    * @param record 思考の歪みリストエンティティ
    * @return 登録件数
    */
-  int insert(DistortionList record);
+  int insert(Distortion record);
 
   /**
    * 思考の歪みリストを更新する
@@ -37,7 +37,7 @@ public interface DistortionListMapper {
    * @param record 思考の歪みリストエンティティ
    * @return 更新件数
    */
-  int updateByPrimaryKey(DistortionList record);
+  int updateByPrimaryKey(Distortion record);
 
   /**
    * 思考の歪みリストを削除する

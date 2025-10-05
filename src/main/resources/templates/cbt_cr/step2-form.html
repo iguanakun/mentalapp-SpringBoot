@@ -13,7 +13,7 @@
                 もう一人の自分が観察するように、自分に語りかけてみてください。
             </div>
             <div class="monitor-info__dist">
-                <div th:each="dist : ${viewData.distortionLists}">
+                <div th:each="dist : ${viewData.distortions}">
                     <label>
                         <div class="checkbox" id="distortion">
                             <input type="checkbox" th:field="*{distortionIds}" th:value="${dist.id}"/>
