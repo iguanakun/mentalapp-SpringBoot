@@ -102,3 +102,6 @@ application-*.yml.bak
 
 # キャッシュディレクトリ
 .cache/
+
+# AWS
+.amazonq
