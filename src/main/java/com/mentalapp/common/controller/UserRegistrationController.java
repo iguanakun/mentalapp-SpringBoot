@@ -44,12 +44,12 @@ public class UserRegistrationController {
    * @param theModel モデル
    * @return 登録フォームのビュー名
    */
-  @GetMapping("/showRegistrationForm02")
-  public String showMyLoginPage(Model theModel) {
+  @GetMapping("/showRegistrationForm")
+  public String showRegistrationForm(Model theModel) {
 
     theModel.addAttribute("webUser", new WebUser());
 
-    return "register/registration-form02";
+    return "register/registration-form";
   }
 
   /**
@@ -61,7 +61,7 @@ public class UserRegistrationController {
    * @param theModel モデル
    * @return 登録確認ページまたは登録フォームのビュー名
    */
-  @PostMapping("/processRegistrationForm02")
+  @PostMapping("/processRegistrationForm")
   public String processRegistrationForm(
       @Valid @ModelAttribute("webUser") WebUser theWebUser,
       BindingResult theBindingResult,
@@ -73,7 +73,7 @@ public class UserRegistrationController {
 
     // form validation
     if (theBindingResult.hasErrors()) {
-      return "register/registration-form02";
+      return "register/registration-form";
     }
 
     // check the database if user already exists
@@ -83,7 +83,7 @@ public class UserRegistrationController {
       theModel.addAttribute("registrationError", "User name already exists.");
 
       logger.warning("User name already exists.");
-      return "register/registration-form02";
+      return "register/registration-form";
     }
 
     // create user account and store in the databse
