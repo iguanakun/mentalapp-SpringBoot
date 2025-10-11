@@ -86,7 +86,8 @@ $RECYCLE.BIN/
 
 # CLAUDE
 CLAUDE.md
-.claude
+.claude/
+*.review.md
 
 # JUNIEツール関連
 .junie/
@@ -105,3 +106,10 @@ application-*.yml.bak
 
 # AWS
 .amazonq
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+*.tfvars
+!terraform.tfvars.example
