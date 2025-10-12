@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_header.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_fotter.css}">
     <link rel="stylesheet" th:href="@{/css/user/registration.css}">
     <link rel="stylesheet" th:href="@{/css/user/login.css}">
 </head>
@@ -19,18 +22,21 @@
             </h1>
         </div>
         <div class="login-flash-message">
-            <div th:if="${param.error}" class="alert alert-danger">
+            <div th:if="${param.error}">
                 ユーザー名またはパスワードが正しくありません。
             </div>
-            <div th:if="${param.logout}" class="alert alert-success">
+            <div th:if="${param.logout}">
                 ログアウトしました。
+            </div>
+            <div th:if="${param.registered}">
+                アカウント登録が完了しました。ログインしてください。
             </div>
         </div>
         <div class="form-group">
             <div class="form-text-wrap">
-                <label class="form-text">メールアドレス</label>
+                <label class="form-text">ユーザー名</label>
             </div>
-            <input type="text" name="username" class="input-default" id="email" placeholder="PC・携帯どちらでも可"
+            <input type="text" name="username" class="input-default" id="email" placeholder=""
                    autofocus>
         </div>
         <div class="form-group">

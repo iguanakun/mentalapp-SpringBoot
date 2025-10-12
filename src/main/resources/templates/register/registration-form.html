@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アカウント作成</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_header.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_fotter.css}">
     <link rel="stylesheet" th:href="@{/css/user/registration.css}">
 </head>
 <body>
@@ -27,10 +30,49 @@
 
         <div class="form-group">
             <div class="form-text-wrap">
+                <label class="form-text">姓</label>
+            </div>
+            <input type="text" th:field="*{lastName}" class="input-default" id="lastName"
+                   placeholder="山田" autofocus>
+            <div th:if="${#fields.hasErrors('lastName')}" class="field_with_errors">
+                <ul style="color: rgb(182, 48, 0); margin-top: 5px; padding-left: 20px;">
+                    <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-text-wrap">
+                <label class="form-text">名</label>
+            </div>
+            <input type="text" th:field="*{firstName}" class="input-default" id="firstName"
+                   placeholder="太郎">
+            <div th:if="${#fields.hasErrors('firstName')}" class="field_with_errors">
+                <ul style="color: rgb(182, 48, 0); margin-top: 5px; padding-left: 20px;">
+                    <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-text-wrap">
                 <label class="form-text">メールアドレス</label>
             </div>
-            <input type="email" th:field="*{userName}" class="input-default" id="email"
-                   placeholder="PC・携帯どちらでも可" autofocus>
+            <input type="email" th:field="*{email}" class="input-default" id="email"
+                   placeholder="PC・携帯どちらでも可">
+            <div th:if="${#fields.hasErrors('email')}" class="field_with_errors">
+                <ul style="color: rgb(182, 48, 0); margin-top: 5px; padding-left: 20px;">
+                    <li th:each="err : ${#fields.errors('email')}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-text-wrap">
+                <label class="form-text">ユーザー名</label>
+            </div>
+            <input type="text" th:field="*{userName}" class="input-default" id="userName"
+                   placeholder="半角英数字">
             <div th:if="${#fields.hasErrors('userName')}" class="field_with_errors">
                 <ul style="color: rgb(182, 48, 0); margin-top: 5px; padding-left: 20px;">
                     <li th:each="err : ${#fields.errors('userName')}" th:text="${err}"></li>
@@ -43,8 +85,7 @@
                 <label class="form-text">パスワード</label>
             </div>
             <input type="password" th:field="*{password}" class="input-default" id="password"
-                   placeholder="6文字以上の半角英数字">
-            <p class="info-text">※英字と数字の両方を含めて設定してください</p>
+                   placeholder="半角英数字">
             <div th:if="${#fields.hasErrors('password')}" class="field_with_errors">
                 <ul style="color: rgb(182, 48, 0); margin-top: 5px; padding-left: 20px;">
                     <li th:each="err : ${#fields.errors('password')}" th:text="${err}"></li>

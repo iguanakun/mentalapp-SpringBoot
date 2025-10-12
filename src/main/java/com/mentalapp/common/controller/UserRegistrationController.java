@@ -59,7 +59,7 @@ public class UserRegistrationController {
    * @param theBindingResult バリデーション結果
    * @param session HTTPセッション
    * @param theModel モデル
-   * @return 登録確認ページまたは登録フォームのビュー名
+   * @return ログインページへのリダイレクトまたは登録フォームのビュー名
    */
   @PostMapping("/processRegistrationForm")
   public String processRegistrationForm(
@@ -80,7 +80,7 @@ public class UserRegistrationController {
     User existing = userService.findByUserName(userName);
     if (Objects.nonNull(existing)) {
       theModel.addAttribute("webUser", new WebUser());
-      theModel.addAttribute("registrationError", "User name already exists.");
+      theModel.addAttribute("registrationError", "このユーザー名は既に使用されています。");
 
       logger.warning("User name already exists.");
       return "register/registration-form";
@@ -91,9 +91,7 @@ public class UserRegistrationController {
 
     logger.info("Successfully created user: " + userName);
 
-    // place user in the web http session for later use
-    session.setAttribute("user", theWebUser);
-
+    // 登録成功後は登録完了ページを表示
     return "register/registration-confirmation";
   }
 }

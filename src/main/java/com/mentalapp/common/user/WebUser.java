@@ -12,24 +12,24 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WebUser {
 
-  @NotNull(message = "is required")
-  @Size(min = 1, message = "is required")
+  @NotNull
+  @Size(min = 1)
   private String userName;
 
-  @NotNull(message = "is required")
-  @Size(min = 1, message = "is required")
+  @NotNull
+  @Size(min = 1)
   private String password;
 
-  @NotNull(message = "is required")
-  @Size(min = 1, message = "is required")
+  @NotNull
+  @Size(min = 1)
   private String firstName;
 
-  @NotNull(message = "is required")
-  @Size(min = 1, message = "is required")
+  @NotNull
+  @Size(min = 1)
   private String lastName;
 
-  @NotNull(message = "is required")
-  @Size(min = 1, message = "is required")
+  @NotNull
+  @Size(min = 1)
   @Pattern(
       regexp =
           "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
