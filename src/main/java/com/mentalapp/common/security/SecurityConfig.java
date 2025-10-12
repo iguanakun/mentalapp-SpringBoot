@@ -44,9 +44,7 @@ public class SecurityConfig {
                 configurer
                     // TODO ROLEの実装
                     // .requestMatchers("/").hasRole("EMPLOYEE")
-                    //
                     // .requestMatchers("/leaders/**").hasRole("MANAGER")
-                    //
                     // .requestMatchers("/systems/**").hasRole("ADMIN")
                     .requestMatchers("/register/**")
                     .permitAll()
