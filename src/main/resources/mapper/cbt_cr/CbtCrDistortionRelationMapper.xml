@@ -4,14 +4,20 @@
 
     <!-- 認知再構成法IDによる取得 -->
     <select id="selectByCbtCrId" resultType="com.mentalapp.cbt_cr.entity.CbtCrDistortionRelation">
-        SELECT * FROM cbt_cr_distortion_relations
+        SELECT
+        cbt_cr_id,
+        distortion_list_id
+        FROM cbt_cr_distortion_relations
         WHERE cbt_cr_id = #{cbtCrId}
     </select>
 
     <!-- 登録 -->
     <insert id="insert" parameterType="com.mentalapp.cbt_cr.entity.CbtCrDistortionRelation">
-        INSERT INTO cbt_cr_distortion_relations(cbt_cr_id, distortion_list_id)
-        VALUES(#{cbtCrId}, #{distortionListId})
+        INSERT INTO cbt_cr_distortion_relations (
+        cbt_cr_id, distortion_list_id
+        ) VALUES (
+        #{cbtCrId}, #{distortionListId}
+        )
     </insert>
 
     <!-- 認知再構成法IDによる削除 -->

@@ -24,6 +24,5 @@ public interface CbtCrTagRelationMapper extends TagRelationMapper {
    * @param cbtCrId 認知再構成法のID
    * @return 削除件数
    */
-  @Override
-  int deleteByMonitoringId(@Param("cbtCrId") Long cbtCrId);
+  int deleteByCbtCrId(@Param("cbtCrId") Long cbtCrId);
 }

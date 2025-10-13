@@ -4,39 +4,57 @@
 
     <!-- 全件取得 -->
     <select id="selectAll" resultType="NegativeFeel">
-        select * from negative_feels
+        SELECT
+        id,
+        negative_feel_name,
+        created_at,
+        updated_at
+        FROM negative_feels
     </select>
 
     <!-- １件取得 -->
     <select id="selectByPrimaryKey" resultType="NegativeFeel">
-        select * from negative_feels
-        where id = #{id}
+        SELECT
+        id,
+        negative_feel_name,
+        created_at,
+        updated_at
+        FROM negative_feels
+        WHERE id = #{id}
     </select>
-    
+
     <!-- 名前による取得 -->
     <select id="selectByName" resultType="NegativeFeel">
-        select * from negative_feels
-        where negative_feel_name = #{negativeFeelName}
+        SELECT
+        id,
+        negative_feel_name,
+        created_at,
+        updated_at
+        FROM negative_feels
+        WHERE negative_feel_name = #{negativeFeelName}
     </select>
 
     <!-- 登録 -->
     <insert id="insert">
-        insert into negative_feels(negative_feel_name, created_at, updated_at)
-        values(#{negativeFeelName}, #{createdAt}, #{updatedAt})
+        INSERT INTO negative_feels (
+        negative_feel_name, created_at, updated_at
+        ) VALUES (
+        #{negativeFeelName}, #{createdAt}, #{updatedAt}
+        )
     </insert>
 
     <!-- 更新 -->
     <update id="updateByPrimaryKey">
-        update negative_feels
-        set negative_feel_name = #{negativeFeelName},
-            updated_at = #{updatedAt}
-        where id = #{id}
+        UPDATE negative_feels
+        SET negative_feel_name = #{negativeFeelName},
+        updated_at = #{updatedAt}
+        WHERE id = #{id}
     </update>
 
     <!-- 削除 -->
     <delete id="deleteByPrimaryKey">
-        delete from negative_feels
-        where id = #{id}
+        DELETE FROM negative_feels
+        WHERE id = #{id}
     </delete>
 
 </mapper>

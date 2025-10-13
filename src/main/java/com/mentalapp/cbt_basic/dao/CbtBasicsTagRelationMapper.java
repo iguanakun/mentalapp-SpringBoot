@@ -24,6 +24,5 @@ public interface CbtBasicsTagRelationMapper extends TagRelationMapper {
    * @param cbtBasicId CBT BasicsのID
    * @return 削除件数
    */
-  @Override
-  int deleteByMonitoringId(@Param("cbtBasicId") Long cbtBasicId);
+  int deleteByCbtBasicId(@Param("cbtBasicId") Long cbtBasicId);
 }

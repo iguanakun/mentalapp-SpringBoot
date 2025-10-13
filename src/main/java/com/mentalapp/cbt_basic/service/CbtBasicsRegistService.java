@@ -256,7 +256,7 @@ public class CbtBasicsRegistService {
     // ポジティブ感情の中間テーブルを削除
     cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasicsId);
     // タグの中間テーブルを削除
-    cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasicsId);
+    cbtBasicsTagRelationMapper.deleteByCbtBasicId(cbtBasicsId);
   }
 
   /**

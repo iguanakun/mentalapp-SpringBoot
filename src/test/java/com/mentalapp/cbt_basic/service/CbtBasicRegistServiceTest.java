@@ -171,7 +171,7 @@ class CbtBasicRegistServiceTest {
     when(cbtBasicsMapper.selectByPrimaryKey(anyLong())).thenReturn(cbtBasics);
     when(cbtBasicCommonUtils.checkAccessPermission(any(CbtBasics.class))).thenReturn(true);
     when(cbtBasicsMapper.deleteByPrimaryKey(anyLong())).thenReturn(1);
-    when(cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasics.getId())).thenReturn(1);
+    when(cbtBasicsTagRelationMapper.deleteByCbtBasicId(cbtBasics.getId())).thenReturn(1);
 
     String result = cbtBasicsRegistService.processDelete(1L);
     assertEquals(MemoListConst.REDIRECT_MEMOS, result);

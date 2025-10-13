@@ -407,6 +407,6 @@ public class CbtCrRegistService {
     cbtCrNegativeFeelMapper.deleteByCbtCrId(id);
     cbtCrPositiveFeelMapper.deleteByCbtCrId(id);
     cbtCrDistortionRelationMapper.deleteByCbtCrId(id);
-    cbtCrTagRelationMapper.deleteByMonitoringId(id);
+    cbtCrTagRelationMapper.deleteByCbtCrId(id);
   }
 }

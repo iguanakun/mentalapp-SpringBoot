@@ -167,7 +167,7 @@ public class CbtCrRegistServiceTest {
     when(cbtCrNegativeFeelMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
     when(cbtCrPositiveFeelMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
     when(cbtCrDistortionRelationMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
-    when(cbtCrTagRelationMapper.deleteByMonitoringId(cbtCr.getId())).thenReturn(1);
+    when(cbtCrTagRelationMapper.deleteByCbtCrId(cbtCr.getId())).thenReturn(1);
 
     when(cbtCrMapper.updateByPrimaryKey(any(CbtCr.class))).thenReturn(1);
     when(cbtCrNegativeFeelMapper.insert(any(CbtCrNegativeFeel.class))).thenReturn(1);

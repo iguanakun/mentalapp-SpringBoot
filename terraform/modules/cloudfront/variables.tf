@@ -97,8 +97,8 @@ variable "origin_protocol_policy" {
 
 variable "origin_ssl_protocols" {
   description = "Origin SSL protocols"
-  type = list(string)
-  default = ["TLSv1.2"]
+  type        = list(string)
+  default     = ["TLSv1.2"]
 }
 
 variable "enabled" {
@@ -109,14 +109,14 @@ variable "enabled" {
 
 variable "allowed_methods" {
   description = "Allowed HTTP methods"
-  type = list(string)
-  default = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+  type        = list(string)
+  default     = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
 }
 
 variable "cached_methods" {
   description = "Cached HTTP methods"
-  type = list(string)
-  default = ["GET", "HEAD"]
+  type        = list(string)
+  default     = ["GET", "HEAD"]
 }
 
 variable "compress" {

@@ -10,12 +10,4 @@ public interface TagRelationMapper {
    * @return 登録された行数
    */
   int insert(Long monitoringId, Long tagId);
-
-  /**
-   * 指定されたモニタリングIDに関連するタグの関連をすべて削除する
-   *
-   * @param monitoringId モニタリングID
-   * @return 削除された行数
-   */
-  int deleteByMonitoringId(Long monitoringId);
 }
