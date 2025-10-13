@@ -58,4 +58,5 @@ module "ecs" {
   efs_file_system_arn = module.efs.efs_arn
   efs_mount_target_id = module.efs.mount_target_id
   database_path       = var.database_path
+  spring_active = "ecs"
 }

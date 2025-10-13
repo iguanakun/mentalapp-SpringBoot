@@ -120,7 +120,7 @@ resource "aws_ecs_task_definition" "app" {
       environment = [
         {
           name  = "SPRING_PROFILES_ACTIVE"
-          value = "lambda"
+          value = var.spring_active
         },
         {
           name  = "DATABASE_PATH"

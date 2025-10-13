@@ -19,7 +19,7 @@ variable "vpc_cidr" {
 variable "ecs_image_tag" {
   description = "ECS task image tag"
   type        = string
-  default     = "v20251011-185244"
+  default = "latest"
 }
 
 variable "ecs_task_cpu" {

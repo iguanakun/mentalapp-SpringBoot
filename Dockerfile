@@ -1,9 +1,6 @@
 # ビルドステージ
 FROM maven:3.9-eclipse-temurin-22 AS build
 
-# lmabda Web Adapterを設定
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
-
 # 作業ディレクトリの設定
 WORKDIR /build
 

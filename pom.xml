@@ -41,7 +41,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- SQLiteデータベースドライバー（Lambda用） -->
+        <!-- SQLiteデータベースドライバー -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>

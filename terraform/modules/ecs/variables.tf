@@ -78,3 +78,7 @@ variable "database_path" {
   type        = string
   default     = "/mnt/efs/mentalapp.db"
 }
+
+variable "spring_active" {
+  type = string
+}
