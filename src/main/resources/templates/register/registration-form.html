@@ -11,8 +11,6 @@
 </head>
 <body>
 
-<div th:replace="~{views/shared/_second-header :: second-header}"></div>
-
 <form th:action="@{/register/processRegistrationForm}" th:object="${webUser}" method="POST" class="registration-main">
     <div class="form-wrap">
         <div class="form-header">
@@ -106,8 +104,6 @@
         </div>
     </div>
 </form>
-
-<div th:replace="~{views/shared/_second-footer :: second-footer}"></div>
 
 </body>
 </html>
