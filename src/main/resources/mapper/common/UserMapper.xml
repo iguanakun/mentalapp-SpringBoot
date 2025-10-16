@@ -5,6 +5,7 @@
     <!-- １件取得 -->
     <select id="selectByPrimaryKey" resultType="User">
         SELECT
+        id,
         username,
         password,
         enabled,

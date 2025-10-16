@@ -57,10 +57,12 @@
 
         <div class="monitor-contents">
             <div class="monitor-wrapper">
-                <div class="monitor-item"><span style="font-size: 18px;">タグ</span></div>
+                <div class="item-circle"></div>
+                <div class="monitor-item">タグ</div>
             </div>
-            <input type="text" th:field="*{tagNames}" class="tag-field"
-                   placeholder="タグをつける(スペース区切りで複数追加)" maxlength="50"/>
+            <div class="monitor-info">タグを入力してください（スペース区切りで複数入力可能）</div>
+            <input type="text" th:field="*{tagNames}" class="tag-field" maxlength="255"
+                   placeholder="例: 仕事 家族 健康"/>
         </div>
 
         <div class="monitor-btn-contents">

@@ -60,3 +60,14 @@ module "ecs" {
   database_path       = var.database_path
   spring_active = "ecs"
 }
+
+# ECS Schedulerモジュール（平日 08:30-20:00 JST に稼働）
+module "ecs_scheduler" {
+  source = "./modules/ecs_scheduler"
+
+  project_name  = var.project_name
+  cluster_arn   = module.ecs.cluster_arn
+  service_name  = module.ecs.service_name
+  start_schedule = "cron(30 23 ? * SUN-THU *)" # 08:30 JST (Mon-Fri)
+  stop_schedule = "cron(0 11 ? * MON-FRI *)"  # 20:00 JST (Mon-Fri)
+}

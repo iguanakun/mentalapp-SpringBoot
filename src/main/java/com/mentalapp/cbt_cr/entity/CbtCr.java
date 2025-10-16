@@ -34,8 +34,12 @@ public class CbtCr {
   private String whyCorrect;
   private String whyDoubt;
   private String newThought;
+
   // スネークケースはデータベースのカラム名と一致させるために使用
+  @Getter(lombok.AccessLevel.NONE)
+  @Setter(lombok.AccessLevel.NONE)
   private Long user_id;
+
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
