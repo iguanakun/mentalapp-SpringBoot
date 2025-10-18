@@ -45,3 +45,9 @@ variable "database_path" {
   type        = string
   default     = "/mnt/efs/mentalapp.db"
 }
+
+variable "ec2_instance_type" {
+  description = "EC2 instance type for Spot instance"
+  type        = string
+  default     = "t3.micro"
+}
