@@ -16,16 +16,8 @@
     <!-- プロジェクトのプロパティ設定 -->
     <properties>
         <java.version>21</java.version>
-        <mybatis.version>3.5.19</mybatis.version>
     </properties>
     <dependencies>
-
-        <!-- JPAライブラリ -->
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
 
         <!-- MyBatis -->
         <dependency>
@@ -99,20 +91,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- JUnit-->
-        <dependency>
-            <groupId>org.junit</groupId>
-            <artifactId>junit-bom</artifactId>
-            <version>5.13.4</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
