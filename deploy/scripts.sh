@@ -16,9 +16,6 @@ rpm --import https://yum.corretto.aws/corretto.key
 curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
 yum install -y java-21-amazon-corretto-devel
 
-# Javaバージョン確認
-java -version
-
 # EFSマウントポイント作成
 echo "Creating EFS mount point..."
 mkdir -p /mnt/efs
@@ -72,5 +69,3 @@ chown -R ec2-user:ec2-user /opt/mentalapp
 
 # systemdリロード
 systemctl daemon-reload
-
-echo "User data script completed successfully!"
