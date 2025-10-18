@@ -1,8 +1,6 @@
-# MentalApp - 認知行動療法セルフケアアプリ
-
 ## 概要
 
-本アプリは、認知行動療法(Cognitive Behavioral Therapy)の技法を用いたメンタルヘルスのためのセルフケアアプリ。  
+本アプリは、認知行動療法の技法を用いたメンタルヘルスのためのセルフケアアプリ。  
 ユーザはストレス体験について上手に付き合うための心理療法を、アプリを通じて実践することができる。
 
 ## アクセス情報
@@ -27,7 +25,7 @@
 答えを出すために一歩立ち止まって、悩み続けて、問題に対処する力を身に着ける方法を広めたい。  
 自分でできる心理療法を世の中に提供したい、という思いからアプリを開発した。
 
-## 主な機能と利用方法
+## 利用方法
 
 トップページのヘッダーからユーザー新規登録を行う。  
 登録後に「エクササイズをする」ボタンを押すと、それぞれの心理療法を実施できる。
@@ -36,11 +34,11 @@
 
 ### フロントエンド
 
-- **HTML/CSS**, JavaScript
+- **HTML/CSS**, **JavaScript**
 
 ### バックエンド
 
-- **Java 21** (Amazon Corretto)
+- **Java 21**
 - **Spring Boot 3.4.3**
 - **MyBatis 3.0.5**
 - **JUnit 5**
@@ -129,34 +127,34 @@ mentalapp-SpringBoot/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/mentalapp/
-│   │   │   ├── cbt_basic/         # CBT基本モニタリング
-│   │   │   ├── cbt_cr/            # 認知再構成
-│   │   │   ├── common/            # 共通機能
-│   │   │   ├── user_memo_list/    # 記録一覧
-│   │   │   └── top/               # トップページ
+│   │   │   ├── cbt_basic/         
+│   │   │   ├── cbt_cr/           
+│   │   │   ├── common/            
+│   │   │   ├── user_memo_list/    
+│   │   │   └── top/               
 │   │   └── resources/
 │   │       ├── mapper/            # MyBatis XMLマッパー
-│   │       ├── templates/         # Thymeleafテンプレート
-│   │       ├── static/            # CSS, JS, 画像
+│   │       ├── templates/         
+│   │       ├── static/            
 │   │       ├── init-sqlite.sql    # SQLite初期化スクリプト
 │   │       ├── application.properties
-│   │       └── application-ecs.properties
-│   └── test/                      # テストコード
-├── terraform/                     # Terraformインフラコード
+│   │       └── application-prd.properties
+│   └── test/                      
+├── terraform/                     
 │   ├── modules/
-│   │   ├── ec2_spot/              # EC2 Spot Instance
-│   │   ├── ec2_scheduler/         # EventBridge Scheduler
-│   │   ├── efs/                   # Amazon EFS
-│   │   ├── security_group/        # Security Groups
-│   │   └── vpc/                   # VPC
+│   │   ├── ec2_spot/             
+│   │   ├── ec2_scheduler/         
+│   │   ├── efs/                   
+│   │   ├── security_group/        
+│   │   └── vpc/                   
 │   └── main.tf
-├── deploy/                        # デプロイスクリプト
+├── deploy/                        # デプロイ用
 │   └── scripts.sh                 # EC2初期化スクリプト
-├── doc/                           # ドキュメント
-│   ├── er-diagram.drawio          # ER図
-│   └── aws-architecture.drawio    # AWS構成図
-├── docker-compose.yml             # ローカル開発環境
-├── Dockerfile                     # Dockerイメージ定義
+├── doc/                           
+│   ├── er-diagram.drawio          
+│   └── aws-architecture.drawio    
+├── docker-compose.yml             
+├── Dockerfile                     
 ├── .env.sample                    # 環境変数テンプレート
-└── pom.xml                        # Maven設定
+└── pom.xml                        
 ```

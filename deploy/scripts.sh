@@ -51,7 +51,7 @@ After=network.target
 Type=simple
 User=ec2-user
 WorkingDirectory=/opt/mentalapp
-Environment="SPRING_PROFILES_ACTIVE=ecs"
+Environment="SPRING_PROFILES_ACTIVE=prd"
 ExecStart=/usr/bin/java -jar /opt/mentalapp/mentalapp-0.0.1-SNAPSHOT.jar
 Restart=always
 RestartSec=10
