@@ -113,3 +113,19 @@ resource "aws_ec2_tag" "spot_instance_project" {
   key         = "Project"
   value       = var.project_name
 }
+
+# Elastic IP の作成
+resource "aws_eip" "mentalapp" {
+  domain = "vpc"
+
+  tags = {
+    Name    = "${var.project_name}-eip"
+    Project = var.project_name
+  }
+}
+
+# Elastic IP を EC2 インスタンスに関連付け
+resource "aws_eip_association" "mentalapp" {
+  instance_id   = aws_spot_instance_request.mentalapp.spot_instance_id
+  allocation_id = aws_eip.mentalapp.id
+}

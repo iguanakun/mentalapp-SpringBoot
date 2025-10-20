@@ -13,6 +13,16 @@ output "public_ip" {
   value       = aws_spot_instance_request.mentalapp.public_ip
 }
 
+output "elastic_ip" {
+  description = "Elastic IP address of the instance"
+  value       = aws_eip.mentalapp.public_ip
+}
+
+output "elastic_ip_allocation_id" {
+  description = "Elastic IP allocation ID"
+  value       = aws_eip.mentalapp.id
+}
+
 output "instance_profile_arn" {
   description = "IAM instance profile ARN"
   value       = aws_iam_instance_profile.ec2_profile.arn
@@ -24,6 +34,6 @@ output "private_key_path" {
 }
 
 output "ssh_command" {
-  description = "SSH command to connect to the instance"
-  value       = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_spot_instance_request.mentalapp.public_ip}"
+  description = "SSH command to connect to the instance (using Elastic IP)"
+  value       = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_eip.mentalapp.public_ip}"
 }

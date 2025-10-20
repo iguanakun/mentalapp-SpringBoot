@@ -83,12 +83,12 @@ module "ec2_spot" {
   efs_id        = module.efs.efs_id
 }
 
-# EC2 Schedulerモジュール（平日 08:30-20:00 JST に稼働）
+# EC2 Schedulerモジュール（毎日 08:30-20:00 JST に稼働）
 module "ec2_scheduler" {
   source = "./modules/ec2_scheduler"
 
   project_name  = var.project_name
   instance_id   = module.ec2_spot.spot_instance_id
-  start_schedule = "cron(30 23 ? * SUN-THU *)" # 08:30 JST (Mon-Fri)
-  stop_schedule = "cron(0 11 ? * MON-FRI *)"  # 20:00 JST (Mon-Fri)
+  start_schedule = "cron(30 23 ? * * *)" # 08:30 JST (毎日)
+  stop_schedule = "cron(0 11 ? * * *)"  # 20:00 JST (毎日)
 }

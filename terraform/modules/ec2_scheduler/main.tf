@@ -73,10 +73,10 @@ resource "aws_scheduler_schedule" "start_instance" {
     })
   }
 
-  description = "Start EC2 instance on weekdays at 08:30 JST (23:30 UTC previous day)"
+  description = "Start EC2 instance daily at 08:30 JST (23:30 UTC previous day)"
 }
 
-# EventBridge Schedule - Stop EC2 Instance (Weekdays 20:00 JST)
+# EventBridge Schedule - Stop EC2 Instance (Daily 20:00 JST)
 resource "aws_scheduler_schedule" "stop_instance" {
   name       = "${var.project_name}-ec2-stop-schedule"
   group_name = aws_scheduler_schedule_group.ec2_scheduler_group.name
@@ -97,5 +97,5 @@ resource "aws_scheduler_schedule" "stop_instance" {
     })
   }
 
-  description = "Stop EC2 instance on weekdays at 20:00 JST (11:00 UTC)"
+  description = "Stop EC2 instance daily at 20:00 JST (11:00 UTC)"
 }
