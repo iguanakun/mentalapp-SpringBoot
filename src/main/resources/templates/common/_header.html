@@ -47,13 +47,18 @@
     </div>
     <div class="header-user">
         <div sec:authorize="isAuthenticated()" class="user-logout">
-            <a th:href="@{/logout}">ログアウト</a>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit"
+                        style="background: none; border: none; color: inherit; cursor: pointer; padding: 0; font: inherit;">
+                    ログアウト
+                </button>
+            </form>
         </div>
         <div sec:authorize="isAnonymous()" class="user-login">
             <a th:href="@{/login}">ログイン</a>
         </div>
         <div sec:authorize="isAnonymous()" class="user-reg">
-            <a th:href="@{/register/showRegistrationForm02}">新規登録</a>
+            <a th:href="@{/register/showRegistrationForm}">新規登録</a>
         </div>
     </div>
 </div>

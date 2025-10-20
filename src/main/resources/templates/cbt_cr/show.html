@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" lang="">
 <head>
     <title>認知再構成法 - 詳細</title>
 </head>
@@ -22,8 +22,7 @@
                         <form th:action="@{/cbt_cr/{id}(id=${cbtCr.id})}" method="post" style="display: inline;">
                             <input type="hidden" name="_method" value="delete"/>
                             <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                <button type="submit" class="delete-button"
-                                        onclick="return confirm('本当に削除しますか？');">
+                                <button type="button" class="delete-button">
                                     削除
                                 </button>
                             </li>
@@ -50,7 +49,7 @@
             <div class="monitor-list-content">
                 <div class="monitor-list-item">思考のゆがみ</div>
                 <div class="monitor-list-text">
-                    <span th:each="distortion : ${cbtCr.distortionLists}"
+                    <span th:each="distortion : ${cbtCr.distortions}"
                           th:text="${distortion.distortionName + '　'}"></span>
                 </div>
             </div>
@@ -66,17 +65,20 @@
                 <div class="monitor-list-item">新しい考え方</div>
                 <div class="monitor-list-text" th:text="${cbtCr.newThought}"></div>
             </div>
-            <div class="monitor-list-content" th:if="${not #strings.isEmpty(tagNames)}">
+            <div class="monitor-list-content"
+                 th:if="${cbtCr.tags != null and not #lists.isEmpty(cbtCr.tags) and not #strings.isEmpty(cbtCr.tags[0].tagName)}">
                 <div class="monitor-list-item" id="tag">タグ</div>
                 <div class="monitor-list-tags">
-                    <div class="monitor-list-tag" th:each="tag : ${#strings.arraySplit(tagNames, ' ')}"
-                         th:text="${tag}"></div>
+                    <div class="monitor-list-tag" th:each="tag : ${cbtCr.tags}" th:text="${tag.tagName}"></div>
                 </div>
             </div>
         </div>
 
         <a th:href="@{/memos}" class="monitor-show__btn">一覧にもどる</a>
     </div>
+
+    <!-- 削除確認モーダル -->
+    <div th:replace="~{common/_delete-modal :: delete-modal}"></div>
 </div>
 </body>
 </html>

@@ -7,8 +7,8 @@ import com.mentalapp.cbt_cr.form.CbtCrInputForm;
 import com.mentalapp.cbt_cr.util.CbtCrCommonUtils;
 import com.mentalapp.cbt_cr.viewdata.CbtCrViewData;
 import com.mentalapp.common.dao.DistortionListMapper;
-import com.mentalapp.common.entity.DistortionList;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.entity.Distortion;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -56,7 +56,7 @@ public class CbtCrIndexService {
 
   /** もどる押下判定 */
   private Boolean isPushedBackButton() {
-    // step1のいずれかの項目が入力されている場合、もどる判定
+    // step1のいずれかの項目がセッション格納されている場合、もどる判定
     return Objects.nonNull(session.getAttribute("fact"))
         || Objects.nonNull(session.getAttribute("mind"))
         || Objects.nonNull(session.getAttribute("negativeFeelIds"))
@@ -112,13 +112,13 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processStep2(Model model) throws DatabaseException {
+  public String processStep2(Model model) throws MentalSystemException {
     // 思考の歪みを取得
-    List<DistortionList> distortionLists = distortionListMapper.findAll();
+    List<Distortion> distortions = distortionListMapper.findAll();
 
     // ビューデータを作成
     CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionLists);
+    viewData.setDistortions(distortions);
 
     // モデルに追加
     model.addAttribute("viewData", viewData);
@@ -135,7 +135,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processShow(Long id, Model model) throws DatabaseException {
+  public String processShow(Long id, Model model) throws MentalSystemException {
     // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
@@ -144,12 +144,8 @@ public class CbtCrIndexService {
       return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
     }
 
-    // タグ情報を取得
-    String tagNames = cbtCrCommonUtils.extractTagNamesToString(cbtCr);
-
     // モデルに追加
     model.addAttribute("cbtCr", cbtCr);
-    model.addAttribute("tagNames", tagNames);
 
     return CbtCrConst.SHOW_PATH;
   }
@@ -162,7 +158,7 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processEdit(Long id, Model model) throws DatabaseException {
+  public String processEdit(Long id, Model model) throws MentalSystemException {
     // 認知再構成法を取得
     CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
@@ -192,7 +188,7 @@ public class CbtCrIndexService {
     return CbtCrConst.EDIT_PATH;
   }
 
-  private void setStep2Session(CbtCr cbtCr) {
+  private void setStep2Session(CbtCr cbtCr) throws MentalSystemException {
     // step2の入力値をセッションに設定
     session.setAttribute("distortionIds", cbtCrCommonUtils.extractDistortionIds(cbtCr));
     session.setAttribute("whyCorrect", cbtCr.getWhyCorrect());
@@ -249,13 +245,19 @@ public class CbtCrIndexService {
    * @return ビュー名
    */
   @Transactional
-  public String processEditStep2FromSession(Long id, Model model) throws DatabaseException {
+  public String processEditStep2FromSession(Long id, Model model) throws MentalSystemException {
+    // 認知再構成法を取得し、アクセス権限をチェック
+    CbtCr cbtCr = cbtCrCommonUtils.validateAccessPermission(id);
+    if (Objects.isNull(cbtCr)) {
+      return MentalCommonUtils.REDIRECT_MEMOS_PAGE;
+    }
+
     // 思考の歪みを取得
-    List<DistortionList> distortionLists = distortionListMapper.findAll();
+    List<Distortion> distortions = distortionListMapper.findAll();
 
     // ビューデータを作成
     CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionLists);
+    viewData.setDistortions(distortions);
 
     // フォームに既存の値をセット
     CbtCrInputForm form = new CbtCrInputForm();

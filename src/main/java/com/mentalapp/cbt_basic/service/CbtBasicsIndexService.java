@@ -6,8 +6,8 @@ import com.mentalapp.cbt_basic.entity.CbtBasics;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -27,16 +27,6 @@ public class CbtBasicsIndexService {
    */
   public CbtBasicsViewData processNew() {
     return cbtBasicCommonUtils.createAllFeelsViewData();
-  }
-
-  /**
-   * ユーザーIDによる取得
-   *
-   * @param userId 取得するユーザーのID
-   * @return 指定されたユーザーIDに関連するCBT Basicsのリスト
-   */
-  public List<CbtBasics> findByUserId(Long userId) {
-    return cbtBasicsMapper.selectByUserId(userId);
   }
 
   /**
@@ -77,13 +67,14 @@ public class CbtBasicsIndexService {
    * @param model モデル
    * @return 遷移先のパス、またはnull（正常時）
    */
-  public String processEdit(Long id, Model model) {
+  public String processEdit(Long id, Model model) throws MentalSystemException {
     // 編集対象のモニタリング情報を取得（タグ情報も含める）
     CbtBasics cbtBasics = selectByPrimaryKeyWithFeelsAndTags(id);
 
     // アクセス権チェック
-    if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics))
+    if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
+    }
 
     // ビューデータを作成
     CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();

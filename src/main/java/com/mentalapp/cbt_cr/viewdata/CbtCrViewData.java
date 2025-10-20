@@ -1,6 +1,6 @@
 package com.mentalapp.cbt_cr.viewdata;
 
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import java.util.List;
@@ -17,5 +17,5 @@ public class CbtCrViewData {
   private List<PositiveFeel> positiveFeels;
 
   /** 思考の歪みのリスト */
-  private List<DistortionList> distortionLists;
+  private List<Distortion> distortions;
 }

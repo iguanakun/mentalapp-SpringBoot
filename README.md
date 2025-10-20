@@ -1,54 +1,160 @@
-# MentalApp - Spring Boot アプリケーション
+## 概要
 
-## データベース初期化について
+本アプリは、認知行動療法を用いたメンタルヘルスのためのセルフケアアプリ。  
+ユーザはストレス体験について上手に付き合うための心理療法を、アプリを通じて実践することができる。
 
-このアプリケーションでは、Docker起動時に自動的にデータベーステーブルが作成されるように設定されています。
+## アクセス情報
 
-### 実装内容
+### URL
 
-1. **SQLスクリプトの作成**
-   - `sql-scripts/03-create-mentalapp-tables.sql` ファイルを作成
-   - entityパッケージのクラス（User.javaとRole.java）に基づいたテーブル定義
-   - サンプルデータの挿入（管理者ユーザーと一般ユーザー）
+後日記載
 
-2. **Docker設定の変更**
-   - `docker-compose.yml` ファイルを修正
-   - SQLスクリプトをMySQLコンテナの初期化ディレクトリ（`/docker-entrypoint-initdb.d/`）にマウント
-   - コンテナ起動時に自動的にSQLスクリプトが実行される設定
+### テスト用アカウント
 
-### 作成されるテーブル
+- ユーザー名: `mentalapp`
+- パスワード: `mentalapp`
 
-1. **user テーブル**
-   - ユーザー情報を格納
-   - フィールド: id, username, password, enabled, first_name, last_name, email
+## 開発背景
 
-2. **role テーブル**
-   - ロール（権限）情報を格納
-   - フィールド: id, name
+近年「ネガティブ・ケイパビリティ」と呼ばれる「モヤモヤする力」が注目されている。  
+ビジネスシーンでは、問題に対して素早く効率的に結論を出すことが求められる。  
+この延長線上で、日常生活の様々な問題についてもすぐに答えを出すことが求められる、そんな傾向があるように感じる。  
+しかし人間関係、恋愛などの悩みは答えが出ない問題である。  
+特に人生の転機――受験、就職、出産、育児といった出来事ではどんな人でも不安を感じ、時には心の不調となってしまう場合もあるだろう。  
+このような答えが出ない問題は「悩むのは当たり前」で、答えを出すことを保留にしてもいい。  
+答えを出すために一歩立ち止まって、悩み続けて、問題に対処する力を身に着ける方法を、心理療法を通じて世の中に提供したい、という思いからアプリを開発した。
 
-3. **users_roles テーブル**
-   - ユーザーとロールの関連付けを格納する中間テーブル
-   - フィールド: user_id, role_id
+## 利用方法
 
-### サンプルデータ
+トップページのヘッダーからユーザー新規登録を行う。  
+登録後に「エクササイズをする」ボタンを押すと、それぞれの心理療法を実施できる。
 
-初期データとして以下のユーザーが作成されます：
+## 技術スタック
 
-1. **管理者ユーザー**
-   - ユーザー名: admin
-   - パスワード: password
-   - ロール: ROLE_EMPLOYEE, ROLE_MANAGER, ROLE_ADMIN
+### フロントエンド
 
-2. **一般ユーザー**
-   - ユーザー名: user
-   - パスワード: password
-   - ロール: ROLE_EMPLOYEE
+- **HTML/CSS**, **JavaScript**
 
-## アプリケーションの起動方法
+### バックエンド
+
+- **Java 21**
+- **Spring Boot 3.4.3**
+- **MyBatis 3.0.5**
+- **JUnit 5**
+
+### データベース
+
+- **MySQL 8.4.5** (ローカル開発環境)
+- **SQLite** (本番環境 - EFS上)
+
+### インフラ
+
+AWS環境に構築:
+
+- **EC2** - Spot Instanceによる費用最適化
+- **EFS** - SQLiteデータベース用
+- **EventBridge Scheduler** - EC2の自動起動・停止
+
+### 開発ツール
+
+- **Terraform**
+- **Docker**
+
+## アーキテクチャ
+
+### AWS構成図
+
+![AWS Architecture](doc/aws-architecture.drawio)
+
+### データベース設計
+
+![ER Diagram](doc/er-diagram.drawio)
+
+## セットアップ手順
+
+### ローカル開発環境
+
+#### 1. リポジトリのクローン
 
 ```bash
-# Dockerコンテナを起動
+git clone https://github.com/iguanakun/mental-app.git
+cd mentalapp-SpringBoot
+```
+
+#### 2. 環境変数設定
+
+```bash
+cp .env.sample .env
+# .env ファイルを編集してデータベース設定を変更(必要に応じて)
+```
+
+#### 3. Docker Composeでアプリ起動
+
+```bash
 docker-compose up -d
 ```
 
-初回起動時にデータベースが自動的に初期化されます。
+- MySQL: `localhost:13306`
+- アプリケーション: `http://localhost:8080`
+
+#### 4. ビルドとテスト
+
+```bash
+mvn clean package
+```
+
+### 本番環境デプロイ
+
+#### Terraformによるインフラ構築
+
+```bash
+cd terraform
+
+# インフラ構築
+terraform init
+terraform plan
+terraform apply
+
+# インフラ削除
+terraform destroy
+```
+
+## ディレクトリ構造
+
+```
+mentalapp-SpringBoot/
+├── src/
+│   ├── main/
+│   │   ├── java/com/mentalapp/
+│   │   │   ├── cbt_basic/         
+│   │   │   ├── cbt_cr/           
+│   │   │   ├── common/            
+│   │   │   ├── user_memo_list/    
+│   │   │   ├── top/    
+│   │   │   └── work_care/               
+│   │   └── resources/
+│   │       ├── mapper/            
+│   │       ├── templates/         
+│   │       ├── static/            
+│   │       ├── init-sqlite.sql    # SQLite初期化スクリプト
+│   │       ├── application.properties
+│   │       └── application-prd.properties
+│   └── test/                      
+├── terraform/                     
+│   ├── modules/
+│   │   ├── ec2_spot/             
+│   │   ├── ec2_scheduler/         
+│   │   ├── efs/                   
+│   │   ├── security_group/        
+│   │   └── vpc/                   
+│   └── main.tf
+├── deploy/                        
+│   └── scripts.sh                 # EC2ユーザデータ用スクリプト
+├── doc/                           
+│   ├── er-diagram.drawio          
+│   └── aws-architecture.drawio    
+├── docker-compose.yml             
+├── Dockerfile                     
+├── .env.sample                    # 環境変数テンプレート
+└── pom.xml                        
+```

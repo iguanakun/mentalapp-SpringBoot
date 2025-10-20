@@ -9,14 +9,8 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface CbtBasicsMapper {
-  // 全件取得
-  List<CbtBasics> selectAll();
-
   // １件取得
   CbtBasics selectByPrimaryKey(Long id);
-
-  // ユーザーIDによる取得
-  List<CbtBasics> selectByUserId(Long userId);
 
   // 登録
   int insert(CbtBasics cbtBasics);

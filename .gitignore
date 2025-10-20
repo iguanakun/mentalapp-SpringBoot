@@ -84,6 +84,11 @@ $RECYCLE.BIN/
 .env.*
 !.env.example
 
+# CLAUDE
+CLAUDE.md
+.claude/
+*.review.md
+
 # JUNIEツール関連
 .junie/
 
@@ -98,3 +103,13 @@ application-*.yml.bak
 
 # キャッシュディレクトリ
 .cache/
+
+# AWS
+.amazonq
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+*.tfvars
+!terraform.tfvars.example

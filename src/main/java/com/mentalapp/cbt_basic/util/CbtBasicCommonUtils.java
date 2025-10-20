@@ -8,7 +8,7 @@ import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
-import com.mentalapp.common.entity.Tag;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class CbtBasicCommonUtils {
    * @param cbtBasics 変換元のCBT Basicsエンティティ
    * @return 変換後のフォーム
    */
-  public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) {
+  public CbtBasicsInputForm convertToForm(CbtBasics cbtBasics) throws MentalSystemException {
     // ネガティブ感情IDリストの抽出
     List<Long> negativeFeelIds = extractedNegativeFeelsIdList(cbtBasics);
 
@@ -112,23 +112,6 @@ public class CbtBasicCommonUtils {
     CbtBasicsViewData viewData = new CbtBasicsViewData();
     viewData.setNegativeFeels(negativeFeels);
     viewData.setPositiveFeels(positiveFeels);
-
-    return viewData;
-  }
-
-  /**
-   * 全ての感情とユーザータグを含むビューデータを作成
-   *
-   * @return 感情とタグを含むビューデータ
-   */
-  public CbtBasicsViewData createAllFeelsAndTagsViewData() {
-    // 基本の感情データを取得
-    CbtBasicsViewData viewData = createAllFeelsViewData();
-
-    // ログインユーザーのタグを取得
-    Long userId = mentalCommonUtils.getUser().getId();
-    List<Tag> userTags = tagMapper.findByUserId(userId);
-    viewData.setUserTags(userTags);
 
     return viewData;
   }

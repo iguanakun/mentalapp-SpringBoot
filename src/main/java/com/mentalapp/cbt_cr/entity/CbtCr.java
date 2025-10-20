@@ -1,6 +1,6 @@
 package com.mentalapp.cbt_cr.entity;
 
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
 import com.mentalapp.common.entity.NegativeFeel;
 import com.mentalapp.common.entity.PositiveFeel;
 import com.mentalapp.common.entity.Tag;
@@ -23,7 +23,7 @@ import lombok.ToString;
       "cbtCrTagRelations",
       "negativeFeels",
       "positiveFeels",
-      "distortionLists",
+      "distortions",
       "tags"
     })
 public class CbtCr {
@@ -34,8 +34,12 @@ public class CbtCr {
   private String whyCorrect;
   private String whyDoubt;
   private String newThought;
+
   // スネークケースはデータベースのカラム名と一致させるために使用
+  @Getter(lombok.AccessLevel.NONE)
+  @Setter(lombok.AccessLevel.NONE)
   private Long user_id;
+
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
@@ -45,7 +49,7 @@ public class CbtCr {
   private List<CbtCrTagRelation> cbtCrTagRelations;
   private List<NegativeFeel> negativeFeels;
   private List<PositiveFeel> positiveFeels;
-  private List<DistortionList> distortionLists;
+  private List<Distortion> distortions;
   private List<Tag> tags;
 
   /**

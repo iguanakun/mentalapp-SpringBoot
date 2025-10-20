@@ -4,14 +4,20 @@
 
     <!-- 認知再構成法IDによる取得 -->
     <select id="selectByCbtCrId" resultType="com.mentalapp.cbt_cr.entity.CbtCrNegativeFeel">
-        SELECT * FROM cbt_cr_negative_feels
+        SELECT
+        cbt_cr_id,
+        negative_feel_id
+        FROM cbt_cr_negative_feels
         WHERE cbt_cr_id = #{cbtCrId}
     </select>
 
     <!-- 登録 -->
     <insert id="insert" parameterType="com.mentalapp.cbt_cr.entity.CbtCrNegativeFeel">
-        INSERT INTO cbt_cr_negative_feels(cbt_cr_id, negative_feel_id)
-        VALUES(#{cbtCrId}, #{negativeFeelId})
+        INSERT INTO cbt_cr_negative_feels (
+        cbt_cr_id, negative_feel_id
+        ) VALUES (
+        #{cbtCrId}, #{negativeFeelId}
+        )
     </insert>
 
     <!-- 認知再構成法IDによる削除 -->

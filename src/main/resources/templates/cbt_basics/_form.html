@@ -1,6 +1,7 @@
 <div class="monitor-main" th:fragment="form(url, method)" xmlns:th="http://www.w3.org/1999/xhtml">
     <form th:action="${url}" th:method="${method}" th:object="${cbtBasicsForm}">
         <div class="monitor-contents">
+            <div th:replace="~{shared/_error-message :: error}"></div>
             <div class="monitor-wrapper">
                 <div class="item-circle"></div>
                 <div class="monitor-item">出来事</div>
@@ -82,6 +83,6 @@
         </div>
 
         <!-- ユーザIDを設定-->
-        <input type="hidden" th:field="*{cbtBasics.userId}">
+        <input type="hidden" th:field="*{cbtBasics.user_id}">
     </form>
 </div>

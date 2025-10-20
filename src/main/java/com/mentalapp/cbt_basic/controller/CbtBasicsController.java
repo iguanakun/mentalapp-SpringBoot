@@ -4,14 +4,19 @@ import com.mentalapp.cbt_basic.data.CbtBasicsConst;
 import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.service.CbtBasicsIndexService;
 import com.mentalapp.cbt_basic.service.CbtBasicsRegistService;
-import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
+import com.mentalapp.common.exception.MentalSystemException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /** CBT Basicsのコントローラークラス */
 @Controller
@@ -21,7 +26,6 @@ public class CbtBasicsController {
 
   private final CbtBasicsIndexService cbtBasicsIndexService;
   private final CbtBasicsRegistService cbtBasicsRegistService;
-  private final CbtBasicCommonUtils cbtBasicCommonUtils;
 
   /**
    * 新規作成フォーム表示
@@ -51,7 +55,8 @@ public class CbtBasicsController {
   public String create(
       @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsInputForm form,
       BindingResult bindingResult,
-      Model model) {
+      Model model)
+      throws MentalSystemException {
     return cbtBasicsRegistService.processRegist(form, bindingResult, model);
   }
 
@@ -75,7 +80,7 @@ public class CbtBasicsController {
    * @return 編集フォームのビュー名
    */
   @GetMapping("/{id}/edit")
-  public String edit(@PathVariable Long id, Model model) {
+  public String edit(@PathVariable Long id, Model model) throws MentalSystemException {
     return cbtBasicsIndexService.processEdit(id, model);
   }
 
@@ -93,7 +98,8 @@ public class CbtBasicsController {
       @PathVariable Long id,
       @Valid @ModelAttribute("cbtBasicsForm") CbtBasicsInputForm form,
       BindingResult bindingResult,
-      Model model) {
+      Model model)
+      throws MentalSystemException {
     return cbtBasicsRegistService.processUpdate(form, bindingResult, model, id);
   }
 
@@ -104,7 +110,7 @@ public class CbtBasicsController {
    * @return 遷移先のビュー名
    */
   @DeleteMapping("/{id}")
-  public String delete(@PathVariable Long id) {
+  public String delete(@PathVariable Long id) throws MentalSystemException {
     return cbtBasicsRegistService.processDelete(id);
   }
 }

@@ -3,6 +3,7 @@
 <body>
 <div class="monitor-main" th:fragment="step2-form(url, method, buttonText)">
     <form th:action="${url}" th:method="${method}" th:object="${cbtCrForm}">
+        <div th:replace="~{shared/_error-message :: error}"></div>
         <div class="monitor-contents">
             <div class="monitor-wrapper">
                 <div class="item-circle"></div>
@@ -12,7 +13,7 @@
                 もう一人の自分が観察するように、自分に語りかけてみてください。
             </div>
             <div class="monitor-info__dist">
-                <div th:each="dist : ${viewData.distortionLists}">
+                <div th:each="dist : ${viewData.distortions}">
                     <label>
                         <div class="checkbox" id="distortion">
                             <input type="checkbox" th:field="*{distortionIds}" th:value="${dist.id}"/>
@@ -56,10 +57,12 @@
 
         <div class="monitor-contents">
             <div class="monitor-wrapper">
-                <div class="monitor-item"><span style="font-size: 18px;">タグ</span></div>
+                <div class="item-circle"></div>
+                <div class="monitor-item">タグ</div>
             </div>
-            <input type="text" th:field="*{tagNames}" class="tag-field"
-                   placeholder="タグをつける(スペース区切りで複数追加)" maxlength="50"/>
+            <div class="monitor-info">タグを入力してください（スペース区切りで複数入力可能）</div>
+            <input type="text" th:field="*{tagNames}" class="tag-field" maxlength="255"
+                   placeholder="例: 仕事 家族 健康"/>
         </div>
 
         <div class="monitor-btn-contents">

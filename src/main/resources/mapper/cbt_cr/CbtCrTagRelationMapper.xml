@@ -2,13 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mentalapp.cbt_cr.dao.CbtCrTagRelationMapper">
 
+    <!-- 登録 -->
     <insert id="insert">
-        INSERT INTO cbt_cr_tag_relations (cbt_cr_id, tag_id, created_at, updated_at)
-        VALUES (#{cbtCrId}, #{tagId}, current_timestamp, current_timestamp)
+        INSERT INTO cbt_cr_tag_relations (
+        cbt_cr_id, tag_id, created_at, updated_at
+        ) VALUES (
+        #{cbtCrId}, #{tagId}, current_timestamp, current_timestamp
+        )
     </insert>
 
-    <delete id="deleteByMonitoringId">
+    <!-- CBT CR IDによる削除 -->
+    <delete id="deleteByCbtCrId">
         DELETE FROM cbt_cr_tag_relations
         WHERE cbt_cr_id = #{cbtCrId}
     </delete>
+
 </mapper>

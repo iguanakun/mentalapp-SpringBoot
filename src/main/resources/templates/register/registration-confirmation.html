@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<title>Registration Confirmation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アカウント登録完了</title>
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_header.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/second_fotter.css}">
+    <link rel="stylesheet" th:href="@{/css/user/registration.css}">
 </head>
-
 <body>
 
-	<h2>User registered successfully!</h2>
+<div th:replace="~{common/_second-header :: second-header}"></div>
 
-	<!-- display first name, last name and email -->
-	<ul>
-		<li th:text="'User name: ' + ${webUser.userName}"></li>
-		<li th:text="'First name: ' + ${webUser.firstName}"></li>
-		<li th:text="'Last name: ' + ${webUser.lastName}"></li>
-		<li th:text="'Email name: ' + ${webUser.email}"></li>
-	</ul>
+<div class="registration-main">
+    <div class="form-wrap">
+        <div class="form-header">
+            <h1 class="form-header-text">
+                アカウント登録完了
+            </h1>
+        </div>
 
-	<hr>
-	
-	<a th:href="@{/showMyLoginPage}">Login with new user name</a>
-	
+        <div class="confirmation-message">
+            <p>アカウント登録が完了しました。</p>
+            <p>ログインしてご利用ください。</p>
+        </div>
+
+        <div class="confirmation-btn-wrap">
+            <a th:href="@{/login}" class="confirmation-btn">ログインページへ</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{common/_second-footer :: second-footer}"></div>
+
 </body>
-
 </html>

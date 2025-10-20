@@ -4,26 +4,26 @@
 
     <!-- CbtBasicsIDによる取得 -->
     <select id="selectByCbtBasicId" resultType="CbtBasicsNegativeFeel">
-        select * from cbt_basics_negative_feels
-        where cbt_basic_id = #{cbtBasicId}
-    </select>
-
-    <!-- CbtBasicsIDによる取得 -->
-    <select id="selectByUserId" resultType="CbtBasicsNegativeFeel">
-        select * from cbt_basics_negative_feels
-        where cbt_basic_id = #{cbtBasicId}
+        SELECT
+        cbt_basic_id,
+        negative_feel_id
+        FROM cbt_basics_negative_feels
+        WHERE cbt_basic_id = #{cbtBasicId}
     </select>
 
     <!-- 登録 -->
     <insert id="insert">
-        insert into cbt_basics_negative_feels(cbt_basic_id, negative_feel_id)
-        values(#{cbtBasicId}, #{negativeFeelingId})
+        INSERT INTO cbt_basics_negative_feels (
+        cbt_basic_id, negative_feel_id
+        ) VALUES (
+        #{cbtBasicId}, #{negativeFeelingId}
+        )
     </insert>
-    
+
     <!-- CbtBasicsIDによる削除 -->
     <delete id="deleteByCbtBasicId">
-        delete from cbt_basics_negative_feels
-        where cbt_basic_id = #{cbtBasicId}
+        DELETE FROM cbt_basics_negative_feels
+        WHERE cbt_basic_id = #{cbtBasicId}
     </delete>
-    
+
 </mapper>

@@ -7,7 +7,8 @@ import com.mentalapp.common.dao.DistortionListMapper;
 import com.mentalapp.common.dao.NegativeFeelMapper;
 import com.mentalapp.common.dao.PositiveFeelMapper;
 import com.mentalapp.common.dao.TagMapper;
-import com.mentalapp.common.entity.DistortionList;
+import com.mentalapp.common.entity.Distortion;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import java.util.List;
@@ -45,6 +46,11 @@ public class CbtCrCommonUtils {
    * @return アクセス権限がある場合はtrue
    */
   public Boolean checkAccessPermission(CbtCr cbtCr) {
+    // NULLチェック
+    if (Objects.isNull(cbtCr)) {
+      return false;
+    }
+
     return mentalCommonUtils.isAuthorized(cbtCr.getUserId());
   }
 
@@ -57,7 +63,7 @@ public class CbtCrCommonUtils {
     CbtCrViewData viewData = new CbtCrViewData();
     viewData.setNegativeFeels(negativeFeelMapper.selectAll());
     viewData.setPositiveFeels(positiveFeelMapper.selectAll());
-    viewData.setDistortionLists(distortionListMapper.findAll());
+    viewData.setDistortions(distortionListMapper.findAll());
     return viewData;
   }
 
@@ -74,17 +80,6 @@ public class CbtCrCommonUtils {
   }
 
   /**
-   * 全ての思考の歪みを含むビューデータを作成する
-   *
-   * @return ビューデータ
-   */
-  public CbtCrViewData createAllDistortionsViewData() {
-    CbtCrViewData viewData = new CbtCrViewData();
-    viewData.setDistortionLists(distortionListMapper.findAll());
-    return viewData;
-  }
-
-  /**
    * CbtCrオブジェクトの存在確認とアクセス権限チェックを行う（関連する感情情報を含む）
    *
    * @param id 認知再構成法のID
@@ -92,7 +87,7 @@ public class CbtCrCommonUtils {
    */
   public CbtCr validateAccessPermission(Long id) {
     // モニタリング情報を取得
-    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeels(id);
+    CbtCr cbtCr = cbtCrMapper.selectByPrimaryKeyWithFeelsAndTags(id);
 
     // 存在チェック
     if (Objects.isNull(cbtCr)) {
@@ -124,11 +119,11 @@ public class CbtCrCommonUtils {
    * @return 思考の歪みIDのリスト、または歪みがない場合はnull
    */
   public List<Long> extractDistortionIds(CbtCr cbtCr) {
-    if (Objects.isNull(cbtCr.getDistortionLists())) {
+    if (Objects.isNull(cbtCr.getDistortions())) {
       return null;
     }
 
-    return cbtCr.getDistortionLists().stream().map(DistortionList::getId).toList();
+    return cbtCr.getDistortions().stream().map(Distortion::getId).toList();
   }
 
   /**
@@ -137,7 +132,7 @@ public class CbtCrCommonUtils {
    * @param cbtCr 認知再構成法エンティティ
    * @return タグ名の文字列、またはタグがない場合はnull
    */
-  public String extractTagNamesToString(CbtCr cbtCr) {
+  public String extractTagNamesToString(CbtCr cbtCr) throws MentalSystemException {
     if (Objects.isNull(cbtCr.getTags())) {
       return null;
     }

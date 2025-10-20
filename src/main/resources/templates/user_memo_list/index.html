@@ -30,17 +30,18 @@
             </div>
         </div>
 
-        <form th:action="@{/memos}" method="get" id="detailed-search-form">
-          <div class="tag-search-field">
-            <div class="icon">
-              <i class="fa-solid fa-magnifying-glass" style="color:#b9b9b9;"></i>
-            </div>
-            <input type="text" name="q[tags_tag_name]" th:value="${param.q != null ? param.q[0] : ''}" placeholder="タグで絞り込み" class="search-field" />
-            <div class="btn">
-              <button type="submit">検索</button>
-            </div>
-          </div>
-        </form>
+        <!--        TODO： タグ検索機能-->
+        <!--        <form th:action="@{/memos}" method="get" id="detailed-search-form">-->
+        <!--          <div class="tag-search-field">-->
+        <!--            <div class="icon">-->
+        <!--              <i class="fa-solid fa-magnifying-glass" style="color:#b9b9b9;"></i>-->
+        <!--            </div>-->
+        <!--            <input type="text" name="q[tags_tag_name]" th:value="${param.q != null ? param.q[0] : ''}" placeholder="タグで絞り込み" class="search-field" />-->
+        <!--            <div class="btn">-->
+        <!--              <button type="submit">検索</button>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </form>-->
 
         <!-- 一覧表示 - 全てのメモを更新日時の降順で表示 -->
         <div th:each="memo : ${allMemos}" th:remove="tag">
@@ -57,7 +58,7 @@
                             </a>
                             <form th:action="@{/cbt_basics/{id}(id=${memo.id})}" th:method="delete">
                                 <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                    <button type="submit" class="delete-button">削除</button>
+                                    <button type="button" class="delete-button">削除</button>
                                 </li>
                             </form>
                         </ul>
@@ -75,12 +76,13 @@
                                   th:text="${feel.negativeFeelName + '　'}"></span>
                         </div>
                     </div>
-                    <div class="monitor-list-content" th:if="${memo.tags != null and not #lists.isEmpty(memo.tags)}">
-                        <div class="monitor-list-item">タグ</div>
-                        <div class="monitor-list-tags">
-                            <div class="monitor-list-tag" th:each="tag : ${memo.tags}" th:text="${tag.tagName}"></div>
-                        </div>
-                    </div>
+                    <!--                    TODO： タグ表示検討-->
+                    <!--                    <div class="monitor-list-content" th:if="${memo.tags != null and not #lists.isEmpty(memo.tags)}">-->
+                    <!--                        <div class="monitor-list-item">タグ</div>-->
+                    <!--                        <div class="monitor-list-tags">-->
+                    <!--                            <div class="monitor-list-tag" th:each="tag : ${memo.tags}" th:text="${tag.tagName}"></div>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                 </a>
             </div>
 
@@ -97,7 +99,7 @@
                             </a>
                             <form th:action="@{/cbt_cr/{id}(id=${memo.id})}" th:method="delete">
                                 <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                    <button type="submit" class="delete-button">削除</button>
+                                    <button type="button" class="delete-button">削除</button>
                                 </li>
                             </form>
                         </ul>
@@ -118,7 +120,7 @@
                     <div class="monitor-list-content">
                         <div class="monitor-list-item">思考のゆがみ</div>
                         <div class="monitor-list-text">
-                  <span th:each="distortion : ${memo.distortionLists}"
+                  <span th:each="distortion : ${memo.distortions}"
                         th:text="${distortion.distortionName + '　'}"></span>
                         </div>
                     </div>
@@ -126,6 +128,9 @@
             </div>
         </div>
     </div>
+
+    <!-- 削除確認モーダル -->
+    <div th:replace="~{common/_delete-modal :: delete-modal}"></div>
 </div>
 </body>
 </html>

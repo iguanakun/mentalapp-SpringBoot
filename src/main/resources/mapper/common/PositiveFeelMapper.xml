@@ -4,39 +4,57 @@
 
     <!-- 全件取得 -->
     <select id="selectAll" resultType="PositiveFeel">
-        select * from positive_feels
+        SELECT
+        id,
+        positive_feel_name,
+        created_at,
+        updated_at
+        FROM positive_feels
     </select>
 
     <!-- １件取得 -->
     <select id="selectByPrimaryKey" resultType="PositiveFeel">
-        select * from positive_feels
-        where id = #{id}
+        SELECT
+        id,
+        positive_feel_name,
+        created_at,
+        updated_at
+        FROM positive_feels
+        WHERE id = #{id}
     </select>
-    
+
     <!-- 名前による取得 -->
     <select id="selectByName" resultType="PositiveFeel">
-        select * from positive_feels
-        where positive_feel_name = #{positiveFeelName}
+        SELECT
+        id,
+        positive_feel_name,
+        created_at,
+        updated_at
+        FROM positive_feels
+        WHERE positive_feel_name = #{positiveFeelName}
     </select>
 
     <!-- 登録 -->
     <insert id="insert">
-        insert into positive_feels(positive_feel_name, created_at, updated_at)
-        values(#{positiveFeelName}, #{createdAt}, #{updatedAt})
+        INSERT INTO positive_feels (
+        positive_feel_name, created_at, updated_at
+        ) VALUES (
+        #{positiveFeelName}, #{createdAt}, #{updatedAt}
+        )
     </insert>
 
     <!-- 更新 -->
     <update id="updateByPrimaryKey">
-        update positive_feels
-        set positive_feel_name = #{positiveFeelName},
-            updated_at = #{updatedAt}
-        where id = #{id}
+        UPDATE positive_feels
+        SET positive_feel_name = #{positiveFeelName},
+        updated_at = #{updatedAt}
+        WHERE id = #{id}
     </update>
 
     <!-- 削除 -->
     <delete id="deleteByPrimaryKey">
-        delete from positive_feels
-        where id = #{id}
+        DELETE FROM positive_feels
+        WHERE id = #{id}
     </delete>
 
 </mapper>

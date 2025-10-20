@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" lang="">
 <head>
     <title>モニタリング詳細</title>
 </head>
@@ -22,8 +22,7 @@
                         <form th:action="@{/cbt_basics/{id}(id=${cbtBasic.id})}" method="post" style="display: inline;">
                             <input type="hidden" name="_method" value="delete"/>
                             <li><i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                                <button type="submit" class="delete-button"
-                                        onclick="return confirm('本当に削除しますか？');">
+                                <button type="button" class="delete-button">
                                     削除
                                 </button>
                             </li>
@@ -55,16 +54,20 @@
                 <div class="monitor-list-item">行動</div>
                 <div class="monitor-list-text" th:text="${cbtBasic.behavior}"></div>
             </div>
-            <div class="monitor-list-content" th:if="${cbtBasic.tags != null and not #lists.isEmpty(cbtBasic.tags)}">
-              <div class="monitor-list-item" id="tag">タグ</div>
-              <div class="monitor-list-tags">
-                <div class="monitor-list-tag" th:each="tag : ${cbtBasic.tags}" th:text="${tag.tagName}"></div>
-              </div>
+            <div class="monitor-list-content"
+                 th:if="${cbtBasic.tags != null and not #lists.isEmpty(cbtBasic.tags) and not #strings.isEmpty(cbtBasic.tags[0].tagName)}">
+                <div class="monitor-list-item" id="tag">タグ</div>
+                <div class="monitor-list-tags">
+                    <div class="monitor-list-tag" th:each="tag : ${cbtBasic.tags}" th:text="${tag.tagName}"></div>
+                </div>
             </div>
         </div>
 
         <a th:href="@{/memos}" class="monitor-show__btn">一覧にもどる</a>
     </div>
+
+    <!-- 削除確認モーダル -->
+    <div th:replace="~{common/_delete-modal :: delete-modal}"></div>
 </div>
 </body>
 </html>

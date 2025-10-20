@@ -1,5 +1,6 @@
 <div class="monitor-main" th:fragment="monitor-form(url, method)" xmlns:th="http://www.w3.org/1999/xhtml">
     <form th:action="${url}" th:method="${method != null ? method : 'get'}" th:object="${cbtCrForm}">
+        <div th:replace="~{shared/_error-message :: error}"></div>
         <div class="monitor-contents">
             <div class="monitor-wrapper">
                 <div class="item-circle"></div>

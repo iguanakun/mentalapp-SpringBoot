@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="">
+<head>
+    <title>認知行動療法とは</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="main">
+        <div class="main-menu">
+            <div class="main-menu__square"></div>
+            <div class="main-menu__title">認知再構成法</div>
+        </div>
+        <div class="main-contents">
+            <div class="main-contents-wrapper">
+                <div class="main-item__circle"></div>
+                <div class="main-contents__title">概要</div>
+            </div>
+            <div class="main-contents-info">
+                <div class="main-contents__text">
+                    認知再構成法とは、非機能的な思考（＝自分を苦しめる思考）を同定し、より機能的な思考（＝つらくさせない思考）を自ら考えだすための技法です。<br>
+                    自分を苦しめる思考を取り出し、さまざまな角度から分析することで、新たな考え方を作って自分に取り入れるための練習をすることができます。<br><br>
+                    ここでは認知行動療法でよく用いられる、コラム法の「7つのコラム」を紹介します。<br><br>
+                    <ul class="main-contents__lists-sub">
+                        <li>起こった出来事、浮かんだ自動思考、その時の気分・感情を記入します。</li>
+                        <li>根拠：自動思考を裏付ける事実や根拠を書きます。</li>
+                        <li>反証：自動思考が正しくない可能性、反対の事実や根拠を書きます。</li>
+                        <li>最後に根拠と反証をふまえて、新しい建設的な考え方を作ってみます。</li>
+                    </ul>
+                    <br>
+                    アプリのエクササイズでは上記に加えて、自動思考がどの認知のゆがみに該当すると考えられるか、選択肢を追加しています。<br>
+                </div>
+            </div>
+
+            <div class="main-contents-wrapper">
+                <div class="main-item__circle"></div>
+                <div class="main-contents__title">エクササイズ</div>
+            </div>
+            <div class="main-contents-info">
+                <div class="main-contents__text">
+                    認知再構成法は慣れるまで時間のかかる技法です。<br>
+                    はじめのうちは、ストレス場面や自動思考、気分や感情を書き出すことが難しいかもしれません。<br>
+                    しかし、繰り返し練習しているうちに誰でもできるようになります。<br>
+                    それではターゲットとするストレス場面をひとつ選んで、エクササイズをはじめてみてください。<br><br>
+
+                    <a th:href="@{/cbt_cr/new}" class="main-contents__btn">エクササイズをする</a>
+
+                </div>
+            </div>
+            <div class="main-contents__nav-link-single">
+                <a th:href="@{/work_care/page3}" class="nav-link_btn">＜ 前のページ</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+</html>

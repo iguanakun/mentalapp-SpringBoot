@@ -12,9 +12,9 @@ public class LoginController {
    *
    * @return ログインページのビュー名
    */
-  @GetMapping("/showMyLoginPage")
-  public String showMyLoginPage() {
-    return "fancy-login";
+  @GetMapping("/login")
+  public String showLoginPage() {
+    return "login";
   }
 
   /**

@@ -2,7 +2,7 @@ package com.mentalapp.common.util;
 
 import com.mentalapp.common.dao.TagMapper;
 import com.mentalapp.common.entity.Tag;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.exception.MentalSystemException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +61,7 @@ public class TagList {
     }
 
     // タグを半角スペース、全角スペース区切りで分割
-    String[] splitTagList = tagNames.trim().split("[\\\\s\u3000]+");
+    String[] splitTagList = tagNames.trim().split("[\\s\u3000]+");
 
     // 重複を排除
     return Arrays.stream(splitTagList).distinct().toArray(String[]::new);
@@ -85,9 +85,9 @@ public class TagList {
   /**
    * タグリストをデータベースに登録する 既に存在するタグは登録しない
    *
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  public void insertTagList() throws DatabaseException {
+  public void insertTagList() throws MentalSystemException {
     // タグリストを登録。作成済みのタグは除く
     tagList.forEach(
         tag -> {
@@ -103,10 +103,10 @@ public class TagList {
    *
    * @param tagRelationMapper タグ関連マッパー
    * @param monitoringId モニタリングID
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   public void insertMonitoringTagRelation(TagRelationMapper tagRelationMapper, Long monitoringId)
-      throws DatabaseException {
+      throws MentalSystemException {
     // タグIDリストを抽出
     List<Long> tagIdList = extractTagIdList();
     // タグの中間テーブルへの関連付け
@@ -114,25 +114,12 @@ public class TagList {
   }
 
   /**
-   * モニタリングに関連するタグ中間テーブルの削除
-   *
-   * @param tagRelationMapper タグ関連マッパー
-   * @param monitoringId モニタリングID
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
-   */
-  public void deleteMonitoringTagRelation(TagRelationMapper tagRelationMapper, Long monitoringId)
-      throws DatabaseException {
-    // モニタリングIDに該当するタグの関連を削除
-    tagRelationMapper.deleteByMonitoringId(monitoringId);
-  }
-
-  /**
    * データベースからタグリストを取得する
    *
    * @return タグエンティティのリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  public List<Tag> selectTagList() throws DatabaseException {
+  public List<Tag> selectTagList() throws MentalSystemException {
     // tagListフィールドの全タグリストを取得
     return tagList.stream()
         .map(tag -> tagMapper.findByTagNameAndUserId(tag.getTagName(), tag.getUserId()))
@@ -144,9 +131,9 @@ public class TagList {
    * タグIDのリストを抽出する
    *
    * @return タグIDのリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  private List<Long> extractTagIdList() throws DatabaseException {
+  private List<Long> extractTagIdList() throws MentalSystemException {
     // タグIDのみ抽出。主に中間テーブルへの書き込みに使用
     return selectTagList().stream()
         .filter(Objects::nonNull)
@@ -158,9 +145,9 @@ public class TagList {
    * タグ名のリストを抽出する
    *
    * @return タグ名のリスト
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  private List<String> extractTagNameList() throws DatabaseException {
+  private List<String> extractTagNameList() throws MentalSystemException {
     // タグ名のみ抽出
     return selectTagList().stream()
         .filter(Objects::nonNull)
@@ -172,9 +159,9 @@ public class TagList {
    * タグ名のリストをスペース区切りの文字列に変換する
    *
    * @return スペース区切りのタグ名文字列
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
-  public String tagNamesToString() throws DatabaseException {
+  public String tagNamesToString() throws MentalSystemException {
     List<String> tagNames = extractTagNameList();
     return String.join(" ", tagNames);
   }

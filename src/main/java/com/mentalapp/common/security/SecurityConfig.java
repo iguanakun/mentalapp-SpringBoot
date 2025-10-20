@@ -44,9 +44,7 @@ public class SecurityConfig {
                 configurer
                     // TODO ROLEの実装
                     // .requestMatchers("/").hasRole("EMPLOYEE")
-                    //
                     // .requestMatchers("/leaders/**").hasRole("MANAGER")
-                    //
                     // .requestMatchers("/systems/**").hasRole("ADMIN")
                     .requestMatchers("/register/**")
                     .permitAll()
@@ -59,11 +57,11 @@ public class SecurityConfig {
             )
         .formLogin(
             form ->
-                form.loginPage("/showMyLoginPage")
+                form.loginPage("/login")
                     .loginProcessingUrl("/authenticateTheUser")
                     .successHandler(customAuthenticationSuccessHandler)
                     .permitAll())
-        .logout(logout -> logout.permitAll())
+        .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
         .exceptionHandling(configurer -> configurer.accessDeniedPage("/access-denied"));
 
     return http.build();

@@ -10,7 +10,7 @@ import com.mentalapp.cbt_basic.form.CbtBasicsInputForm;
 import com.mentalapp.cbt_basic.util.CbtBasicCommonUtils;
 import com.mentalapp.cbt_basic.viewdata.CbtBasicsViewData;
 import com.mentalapp.common.dao.TagMapper;
-import com.mentalapp.common.exception.DatabaseException;
+import com.mentalapp.common.exception.MentalSystemException;
 import com.mentalapp.common.util.MentalCommonUtils;
 import com.mentalapp.common.util.TagList;
 import com.mentalapp.user_memo_list.data.MemoListConst;
@@ -45,7 +45,8 @@ public class CbtBasicsRegistService {
    * @param model モデル
    * @return 遷移先のパス
    */
-  public String processRegist(CbtBasicsInputForm form, BindingResult bindingResult, Model model) {
+  public String processRegist(CbtBasicsInputForm form, BindingResult bindingResult, Model model)
+      throws MentalSystemException {
     // バリデーションエラーがある場合
     if (hasValidationError(form, bindingResult, model)) {
       return CbtBasicsConst.NEW_PATH;
@@ -73,36 +74,29 @@ public class CbtBasicsRegistService {
    * @return 保存されたCBT Basics
    */
   @Transactional
-  public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId) {
-    try {
-      // フォームからデータを取得
-      // ネガティブ感情IDリスト
-      List<Long> negativeFeelIds = form.getNegativeFeelIds();
-      // ポジティブ感情IDリスト
-      List<Long> positiveFeelIds = form.getPositiveFeelIds();
-      // タグ名一覧
-      String tagNames = form.getTagNames();
+  public CbtBasics save(CbtBasics cbtBasics, CbtBasicsInputForm form, Long userId)
+      throws MentalSystemException {
+    // フォームからデータを取得
+    // ネガティブ感情IDリスト
+    List<Long> negativeFeelIds = form.getNegativeFeelIds();
+    // ポジティブ感情IDリスト
+    List<Long> positiveFeelIds = form.getPositiveFeelIds();
 
-      // モニタリングの保存
-      cbtBasicsMapper.insert(cbtBasics);
+    // モニタリングの保存
+    cbtBasicsMapper.insert(cbtBasics);
 
-      // ネガティブ感情の中間テーブルへの関連付け
-      insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
+    // ネガティブ感情の中間テーブルへの関連付け
+    insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
 
-      // ポジティブ感情の中間テーブルへの関連付け
-      insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
+    // ポジティブ感情の中間テーブルへの関連付け
+    insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
 
-      // タグの保存
-      saveTags(cbtBasics, userId, tagNames);
+    // タグ名一覧
+    String tagNames = form.getTagNames();
+    // タグの保存
+    saveTags(cbtBasics, userId, tagNames);
 
-      return cbtBasics;
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("CBT Basics保存中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics保存中にデータベースエラーが発生しました", e);
-    }
+    return cbtBasics;
   }
 
   /**
@@ -111,27 +105,26 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param userId ユーザーID
    * @param tagNames スペース区切りのタグ名
-   * @throws DatabaseException データベース操作中にエラーが発生した場合
+   * @throws MentalSystemException データベース操作中にエラーが発生した場合
    */
   private void saveTags(CbtBasics cbtBasics, Long userId, String tagNames)
-      throws DatabaseException {
+      throws MentalSystemException {
     // タグが付与されていない場合、処理を終了
     if (Objects.isNull(tagNames)) {
       return;
     }
 
-    try {
-      // タグ処理の実行
-      // 1. タグエンティティリストを作成
-      TagList tagList = new TagList(tagNames, userId, tagMapper);
-      // 2. タグを新規登録（未作成のタグのみ）
-      tagList.insertTagList();
-      // 3. タグの中間テーブルへの関連付け
-      tagList.insertMonitoringTagRelation(cbtBasicsTagRelationMapper, cbtBasics.getId());
-    } catch (Exception e) {
-      log.error("タグ処理中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("タグ処理中にデータベースエラーが発生しました", e);
-    }
+    // タグ処理の実行
+    // 1. タグエンティティリストを作成
+    TagList tagList = getTagList(userId, tagNames);
+    // 2. タグを新規登録（未作成のタグのみ）
+    tagList.insertTagList();
+    // 3. タグの中間テーブルへの関連付け
+    tagList.insertMonitoringTagRelation(cbtBasicsTagRelationMapper, cbtBasics.getId());
+  }
+
+  private TagList getTagList(Long userId, String tagNames) {
+    return new TagList(tagNames, userId, tagMapper);
   }
 
   /**
@@ -140,17 +133,12 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param negativeFeelIds 関連付けるネガティブ感情のIDリスト
    */
-  private void insertNegativeFeelJoinTable(CbtBasics cbtBasics, List<Long> negativeFeelIds) {
-    try {
-      // ネガティブ感情が入力されているときのみ、処理を実施
-      if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
-        negativeFeelIds.forEach(
-            negativeFeelId ->
-                cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId));
-      }
-    } catch (Exception e) {
-      log.error("ネガティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ネガティブ感情関連付け中にデータベースエラーが発生しました", e);
+  private void insertNegativeFeelJoinTable(CbtBasics cbtBasics, List<Long> negativeFeelIds)
+      throws MentalSystemException {
+    // ネガティブ感情が入力されているときのみ、処理を実施
+    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
+      negativeFeelIds.forEach(
+          negativeFeelId -> cbtBasicsNegativeFeelMapper.insert(cbtBasics.getId(), negativeFeelId));
     }
   }
 
@@ -160,17 +148,12 @@ public class CbtBasicsRegistService {
    * @param cbtBasics 関連付け対象のCBT Basicsエンティティ
    * @param positiveFeelIds 関連付けるポジティブ感情のIDリスト
    */
-  private void insertPositiveFeelsJoinTable(CbtBasics cbtBasics, List<Long> positiveFeelIds) {
-    try {
-      // ポジティブ感情が入力されているときのみ、処理を実施
-      if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
-        positiveFeelIds.forEach(
-            positiveFeelId ->
-                cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId));
-      }
-    } catch (Exception e) {
-      log.error("ポジティブ感情関連付け中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("ポジティブ感情関連付け中にデータベースエラーが発生しました", e);
+  private void insertPositiveFeelsJoinTable(CbtBasics cbtBasics, List<Long> positiveFeelIds)
+      throws MentalSystemException {
+    // ポジティブ感情が入力されているときのみ、処理を実施
+    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
+      positiveFeelIds.forEach(
+          positiveFeelId -> cbtBasicsPositiveFeelMapper.insert(cbtBasics.getId(), positiveFeelId));
     }
   }
 
@@ -184,14 +167,15 @@ public class CbtBasicsRegistService {
    * @return 遷移先のパス
    */
   public String processUpdate(
-      CbtBasicsInputForm form, BindingResult bindingResult, Model model, Long id) {
+      CbtBasicsInputForm form, BindingResult bindingResult, Model model, Long id)
+      throws MentalSystemException {
     // バリデーションエラーがある場合
     if (hasValidationError(form, bindingResult, model)) {
       return CbtBasicsConst.EDIT_PATH;
     }
 
     // アクセス権チェック
-    if (!mentalCommonUtils.isAuthorized(form.getUserId())) {
+    if (!mentalCommonUtils.isAuthorized(form.getCbtBasics().getUserId())) {
       return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
 
@@ -221,6 +205,9 @@ public class CbtBasicsRegistService {
       // ビューデータを作成して追加
       CbtBasicsViewData viewData = cbtBasicCommonUtils.createAllFeelsViewData();
       model.addAttribute("viewData", viewData);
+
+      // エラーメッセージ追加
+      mentalCommonUtils.addValidationErrorMessage(model);
       return true;
     }
     return false;
@@ -237,54 +224,39 @@ public class CbtBasicsRegistService {
    */
   @Transactional
   public CbtBasics update(
-      CbtBasics cbtBasics,
-      List<Long> negativeFeelIds,
-      List<Long> positiveFeelIds,
-      String tagNames) {
-    try {
-      // 中間テーブルの関連を削除
-      deleteCbtBasicsRelation(cbtBasics.getId());
+      CbtBasics cbtBasics, List<Long> negativeFeelIds, List<Long> positiveFeelIds, String tagNames)
+      throws MentalSystemException {
+    // 中間テーブルの関連を削除
+    deleteCbtBasicsRelation(cbtBasics.getId());
 
-      // 更新
-      cbtBasicsMapper.updateByPrimaryKey(cbtBasics);
+    // 更新
+    cbtBasicsMapper.updateByPrimaryKey(cbtBasics);
 
-      // ネガティブ感情の関連付け
-      insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
+    // ネガティブ感情の関連付け
+    insertNegativeFeelJoinTable(cbtBasics, negativeFeelIds);
 
-      // ポジティブ感情の関連付け
-      insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
+    // ポジティブ感情の関連付け
+    insertPositiveFeelsJoinTable(cbtBasics, positiveFeelIds);
 
-      // タグの保存
-      saveTags(cbtBasics, cbtBasics.getUserId(), tagNames);
+    // タグの保存
+    saveTags(cbtBasics, cbtBasics.getUserId(), tagNames);
 
-      return cbtBasics;
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("CBT Basics更新中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics更新中にデータベースエラーが発生しました", e);
-    }
+    return cbtBasics;
   }
 
   /**
    * CBT Basicsに関連する中間テーブルのデータを削除する
    *
-   * @param cbtBasics CBT BasicsのID
+   * @param cbtBasicsId CBT BasicsのID
    */
-  private void deleteCbtBasicsRelation(Long cbtBasics) {
-    try {
-      // 関連する中間テーブルのデータをすべて削除
-      // ネガティブ感情の中間テーブルを削除
-      cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(cbtBasics);
-      // ポジティブ感情の中間テーブルを削除
-      cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasics);
-      // タグの中間テーブルを削除
-      cbtBasicsTagRelationMapper.deleteByMonitoringId(cbtBasics);
-    } catch (Exception e) {
-      log.error("CBT Basics関連削除中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics関連削除中にデータベースエラーが発生しました", e);
-    }
+  private void deleteCbtBasicsRelation(Long cbtBasicsId) throws MentalSystemException {
+    // 関連する中間テーブルのデータをすべて削除
+    // ネガティブ感情の中間テーブルを削除
+    cbtBasicsNegativeFeelMapper.deleteByCbtBasicId(cbtBasicsId);
+    // ポジティブ感情の中間テーブルを削除
+    cbtBasicsPositiveFeelMapper.deleteByCbtBasicId(cbtBasicsId);
+    // タグの中間テーブルを削除
+    cbtBasicsTagRelationMapper.deleteByCbtBasicId(cbtBasicsId);
   }
 
   /**
@@ -293,25 +265,17 @@ public class CbtBasicsRegistService {
    * @param id CBT BasicsのID
    * @return 遷移先のパス
    */
-  public String processDelete(Long id) {
-    try {
-      // 削除対象の取得
-      CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKey(id);
-      // アクセス権チェック
-      if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
-        return MentalCommonUtils.REDIRECT_TOP_PAGE;
-      }
-
-      // 削除
-      deleteCbtBasics(id);
-      return MemoListConst.REDIRECT_MEMOS;
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("CBT Basics削除処理中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics削除処理中にデータベースエラーが発生しました", e);
+  public String processDelete(Long id) throws MentalSystemException {
+    // 削除対象の取得
+    CbtBasics cbtBasics = cbtBasicsMapper.selectByPrimaryKey(id);
+    // アクセス権チェック
+    if (!cbtBasicCommonUtils.checkAccessPermission(cbtBasics)) {
+      return MentalCommonUtils.REDIRECT_TOP_PAGE;
     }
+
+    // 削除
+    deleteCbtBasics(id);
+    return MemoListConst.REDIRECT_MEMOS;
   }
 
   /**
@@ -320,19 +284,11 @@ public class CbtBasicsRegistService {
    * @param id 削除するCBT BasicsのID
    */
   @Transactional
-  public void deleteCbtBasics(Long id) {
-    try {
-      // 関連するネガティブ感情、ポジティブ感情、タグの関連を削除
-      deleteCbtBasicsRelation(id);
+  public void deleteCbtBasics(Long id) throws MentalSystemException {
+    // 関連するネガティブ感情、ポジティブ感情、タグの関連を削除
+    deleteCbtBasicsRelation(id);
 
-      // CBT Basicsを削除
-      cbtBasicsMapper.deleteByPrimaryKey(id);
-    } catch (DatabaseException e) {
-      // 既存のDatabaseExceptionを再スロー
-      throw e;
-    } catch (Exception e) {
-      log.error("CBT Basics削除中にデータベースエラーが発生しました: {}", e.getMessage(), e);
-      throw new DatabaseException("CBT Basics削除中にデータベースエラーが発生しました", e);
-    }
+    // CBT Basicsを削除
+    cbtBasicsMapper.deleteByPrimaryKey(id);
   }
 }
