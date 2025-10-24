@@ -1,4 +1,3 @@
-# Lambda関数
 resource "aws_lambda_function" "this" {
   function_name = var.project_name
   role          = var.lambda_role_arn
@@ -27,7 +26,6 @@ resource "aws_lambda_function" "this" {
   ]
 }
 
-# Lambda関数URL
 resource "aws_lambda_function_url" "this" {
   function_name      = aws_lambda_function.this.function_name
   authorization_type = var.function_url_auth_type

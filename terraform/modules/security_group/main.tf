@@ -82,15 +82,6 @@ resource "aws_security_group" "ec2" {
     description = "Allow HTTP access to Spring Boot application"
   }
 
-  # SSM接続用（セッションマネージャー経由での接続）
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS for SSM Session Manager"
-  }
-
   egress {
     from_port = 0
     to_port   = 0
