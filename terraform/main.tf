@@ -1,7 +1,6 @@
-# データソース
 data "aws_caller_identity" "current" {}
 
-# ECRモジュール
+# ECR（コンテナレジストリ）
 # module "ecr" {
 #   source = "./modules/ecr"
 #
@@ -14,7 +13,7 @@ data "aws_caller_identity" "current" {}
 #   max_image_count         = 10
 # }
 
-# VPCモジュール
+# VPC（仮想ネットワーク）
 module "vpc" {
   source = "./modules/vpc"
 
@@ -24,7 +23,7 @@ module "vpc" {
   public_subnet_cidr = "10.0.0.0/24"
 }
 
-# セキュリティグループモジュール
+# セキュリティグループ
 module "security_group" {
   source = "./modules/security_group"
 
@@ -32,7 +31,7 @@ module "security_group" {
   vpc_id       = module.vpc.vpc_id
 }
 
-# EFSモジュール
+# EFS（ファイルシステム）
 module "efs" {
   source = "./modules/efs"
 
@@ -41,7 +40,7 @@ module "efs" {
   security_group_id = module.security_group.efs_security_group_id
 }
 
-# ECSモジュール
+# ECS（コンテナサービス）
 # module "ecs" {
 #   source = "./modules/ecs"
 #
@@ -61,18 +60,18 @@ module "efs" {
 #   spring_active       = "ecs"
 # }
 #
-# # ECS Schedulerモジュール（平日 08:30-20:00 JST に稼働）
+# # ECS Scheduler（平日 08:30-20:00 JST に稼働）
 # module "ecs_scheduler" {
 #   source = "./modules/ecs_scheduler"
 #
 #   project_name   = var.project_name
 #   cluster_arn    = module.ecs.cluster_arn
 #   service_name   = module.ecs.service_name
-#   start_schedule = "cron(30 23 ? * SUN-THU *)" # 08:30 JST (Mon-Fri)
-#   stop_schedule  = "cron(0 11 ? * MON-FRI *)"  # 20:00 JST (Mon-Fri)
+#   start_schedule = "cron(30 23 ? * SUN-THU *)"
+#   stop_schedule  = "cron(0 11 ? * MON-FRI *)"
 # }
 
-# EC2 Spot Instanceモジュール
+# EC2スポットインスタンス
 module "ec2_spot" {
   source = "./modules/ec2_spot"
 
@@ -83,12 +82,12 @@ module "ec2_spot" {
   efs_id        = module.efs.efs_id
 }
 
-# EC2 Schedulerモジュール（毎日 08:30-20:00 JST に稼働）
+# EC2 Scheduler（毎日 08:30-20:00 JST に稼働）
 module "ec2_scheduler" {
   source = "./modules/ec2_scheduler"
 
   project_name  = var.project_name
   instance_id   = module.ec2_spot.spot_instance_id
-  start_schedule = "cron(30 23 ? * * *)" # 08:30 JST (毎日)
-  stop_schedule = "cron(0 11 ? * * *)"  # 20:00 JST (毎日)
+  start_schedule = "cron(30 23 ? * SUN-THU *)" # 08:30 JST (平日)
+  stop_schedule = "cron(0 11 ? * * *)"        # 20:00 JST (毎日)
 }

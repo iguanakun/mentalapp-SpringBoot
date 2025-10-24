@@ -40,7 +40,7 @@ public class CbtBasics {
   private List<PositiveFeel> positiveFeels;
   private List<Tag> tags;
 
-  // getUserId() method is kept to maintain naming convention compatibility
+  // getUserId()メソッドは命名規則の互換性を維持するために保持
   public Long getUserId() {
     return user_id;
   }

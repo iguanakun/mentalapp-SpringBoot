@@ -47,12 +47,12 @@ public class CbtCrInputForm {
    * @return いずれかの項目が入力されている場合はtrue
    */
   public boolean hasAnyContent() {
-    // Check for tagNames
+    // タグ名のチェック
     if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
       return true;
     }
 
-    // Check for negativeFeelIds, positiveFeelIds, and distortionIds
+    // ネガティブ感情、ポジティブ感情、認知の歪みのチェック
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
     }
@@ -63,7 +63,7 @@ public class CbtCrInputForm {
       return true;
     }
 
-    // Then check other fields
+    // その他チェック
     return (Objects.nonNull(fact) && !fact.trim().isEmpty())
         || (Objects.nonNull(mind) && !mind.trim().isEmpty())
         || (Objects.nonNull(whyCorrect) && !whyCorrect.trim().isEmpty())

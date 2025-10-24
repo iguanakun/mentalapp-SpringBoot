@@ -1,10 +1,10 @@
-# SSH キーペア用のTLSプライベートキー生成
+# SSHキーペア用のTLSプライベートキー生成
 resource "tls_private_key" "ec2_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-# AWS EC2キーペア
+# EC2キーペア
 resource "aws_key_pair" "ec2_key_pair" {
   key_name   = "${var.project_name}-ec2-key"
   public_key = tls_private_key.ec2_key.public_key_openssh

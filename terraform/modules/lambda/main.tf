@@ -27,7 +27,7 @@ resource "aws_lambda_function" "this" {
   ]
 }
 
-# Lambda Function URL
+# Lambda関数URL
 resource "aws_lambda_function_url" "this" {
   function_name      = aws_lambda_function.this.function_name
   authorization_type = var.function_url_auth_type

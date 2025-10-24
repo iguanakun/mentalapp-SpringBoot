@@ -1,4 +1,4 @@
-# IAM Role for EventBridge Scheduler
+# EventBridgeスケジューラ用IAMロール
 resource "aws_iam_role" "ec2_scheduler_role" {
   name = "${var.project_name}-ec2-scheduler-role"
 
@@ -21,7 +21,7 @@ resource "aws_iam_role" "ec2_scheduler_role" {
   }
 }
 
-# IAM Policy for EC2 Start/Stop
+# EC2起動停止用IAMポリシー
 resource "aws_iam_role_policy" "ec2_scheduler_policy" {
   name = "${var.project_name}-ec2-scheduler-policy"
   role = aws_iam_role.ec2_scheduler_role.id
@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "ec2_scheduler_policy" {
   })
 }
 
-# EventBridge Scheduler Group
+# EventBridgeスケジューラグループ
 resource "aws_scheduler_schedule_group" "ec2_scheduler_group" {
   name = "${var.project_name}-ec2-scheduler-group"
 
@@ -52,7 +52,7 @@ resource "aws_scheduler_schedule_group" "ec2_scheduler_group" {
   }
 }
 
-# EventBridge Schedule - Start EC2 Instance (Weekdays 08:30 JST)
+# EventBridgeスケジュール - EC2インスタンス起動
 resource "aws_scheduler_schedule" "start_instance" {
   name       = "${var.project_name}-ec2-start-schedule"
   group_name = aws_scheduler_schedule_group.ec2_scheduler_group.name
@@ -72,11 +72,9 @@ resource "aws_scheduler_schedule" "start_instance" {
       InstanceIds = [var.instance_id]
     })
   }
-
-  description = "Start EC2 instance daily at 08:30 JST (23:30 UTC previous day)"
 }
 
-# EventBridge Schedule - Stop EC2 Instance (Daily 20:00 JST)
+# EventBridgeスケジュール - EC2インスタンス停止
 resource "aws_scheduler_schedule" "stop_instance" {
   name       = "${var.project_name}-ec2-stop-schedule"
   group_name = aws_scheduler_schedule_group.ec2_scheduler_group.name
@@ -97,5 +95,4 @@ resource "aws_scheduler_schedule" "stop_instance" {
     })
   }
 
-  description = "Stop EC2 instance daily at 20:00 JST (11:00 UTC)"
 }

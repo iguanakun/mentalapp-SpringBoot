@@ -1,4 +1,4 @@
-# IAM Role for EventBridge Scheduler
+# EventBridgeスケジューラ用IAMロール
 resource "aws_iam_role" "scheduler_role" {
   name = "${var.project_name}-ecs-scheduler-role"
 
@@ -21,7 +21,7 @@ resource "aws_iam_role" "scheduler_role" {
   }
 }
 
-# IAM Policy for ECS UpdateService
+# ECSサービス更新用IAMポリシー
 resource "aws_iam_role_policy" "scheduler_policy" {
   name = "${var.project_name}-ecs-scheduler-policy"
   role = aws_iam_role.scheduler_role.id
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy" "scheduler_policy" {
   })
 }
 
-# EventBridge Scheduler Group
+# EventBridgeスケジューラグループ
 resource "aws_scheduler_schedule_group" "ecs_scheduler_group" {
   name = "${var.project_name}-ecs-scheduler-group"
 
@@ -51,7 +51,7 @@ resource "aws_scheduler_schedule_group" "ecs_scheduler_group" {
   }
 }
 
-# EventBridge Schedule - Start ECS Service (Weekdays 08:30 JST)
+# EventBridgeスケジュール - ECSサービス起動（平日08:30 JST）
 resource "aws_scheduler_schedule" "start_service" {
   name       = "${var.project_name}-ecs-start-schedule"
   group_name = aws_scheduler_schedule_group.ecs_scheduler_group.name
@@ -77,7 +77,7 @@ resource "aws_scheduler_schedule" "start_service" {
   description = "Start ECS service on weekdays at 08:30 JST (23:30 UTC previous day)"
 }
 
-# EventBridge Schedule - Stop ECS Service (Weekdays 20:00 JST)
+# EventBridgeスケジュール - ECSサービス停止（平日20:00 JST）
 resource "aws_scheduler_schedule" "stop_service" {
   name       = "${var.project_name}-ecs-stop-schedule"
   group_name = aws_scheduler_schedule_group.ecs_scheduler_group.name

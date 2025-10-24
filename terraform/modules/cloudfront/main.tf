@@ -1,4 +1,3 @@
-# CloudFront Cache Policy
 resource "aws_cloudfront_cache_policy" "this" {
   name        = "${var.project_name}-cache-policy"
   comment     = "Cache policy for ${var.project_name}"
@@ -24,7 +23,6 @@ resource "aws_cloudfront_cache_policy" "this" {
   }
 }
 
-# CloudFront Origin Request Policy
 resource "aws_cloudfront_origin_request_policy" "this" {
   name    = "${var.project_name}-origin-policy"
   comment = "Origin request policy for ${var.project_name}"
@@ -42,7 +40,6 @@ resource "aws_cloudfront_origin_request_policy" "this" {
   }
 }
 
-# CloudFront Distribution
 resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = var.origin_domain_name
