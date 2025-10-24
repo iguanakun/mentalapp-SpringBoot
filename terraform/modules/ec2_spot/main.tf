@@ -37,12 +37,6 @@ resource "aws_iam_role" "ec2_role" {
   }
 }
 
-# SSM管理用ポリシーをアタッチ
-resource "aws_iam_role_policy_attachment" "ssm_policy" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
 # インスタンスプロファイル
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "${var.project_name}-ec2-profile"
@@ -54,14 +48,14 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   }
 }
 
-# User Data スクリプト
+# ユーザーデータスクリプト
 locals {
   user_data = templatefile("${path.root}/../deploy/scripts.sh", {
     EFS_ID = var.efs_id
   })
 }
 
-# EC2 Spot Instance リクエスト
+# EC2スポットインスタンス
 resource "aws_spot_instance_request" "mentalapp" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
@@ -71,15 +65,12 @@ resource "aws_spot_instance_request" "mentalapp" {
   user_data              = local.user_data
   key_name = aws_key_pair.ec2_key_pair.key_name
 
-  # Spot設定
   spot_type                      = "persistent"
   instance_interruption_behavior = "stop"
   wait_for_fulfillment = true
 
-  # パブリックIP割り当て
   associate_public_ip_address = true
 
-  # ルートボリューム設定 (最小構成)
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 8
@@ -91,7 +82,7 @@ resource "aws_spot_instance_request" "mentalapp" {
     Project = var.project_name
   }
 
-  # Spot Instanceの再作成を防ぐ
+  # スポットインスタンスの再作成を防ぐ
   lifecycle {
     ignore_changes = [
       spot_instance_id,
@@ -101,7 +92,7 @@ resource "aws_spot_instance_request" "mentalapp" {
   }
 }
 
-# Spot Instanceにタグを付与
+# スポットインスタンスにタグを付与
 resource "aws_ec2_tag" "spot_instance_name" {
   resource_id = aws_spot_instance_request.mentalapp.spot_instance_id
   key         = "Name"
@@ -114,7 +105,7 @@ resource "aws_ec2_tag" "spot_instance_project" {
   value       = var.project_name
 }
 
-# Elastic IP の作成
+# Elastic IPの作成
 resource "aws_eip" "mentalapp" {
   domain = "vpc"
 
@@ -124,7 +115,7 @@ resource "aws_eip" "mentalapp" {
   }
 }
 
-# Elastic IP を EC2 インスタンスに関連付け
+# Elastic IPをEC2インスタンスに関連付け
 resource "aws_eip_association" "mentalapp" {
   instance_id   = aws_spot_instance_request.mentalapp.spot_instance_id
   allocation_id = aws_eip.mentalapp.id

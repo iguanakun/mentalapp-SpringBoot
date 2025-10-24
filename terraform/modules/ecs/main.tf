@@ -1,4 +1,4 @@
-# ECS Cluster
+# ECSクラスタ
 resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-cluster"
 
@@ -9,7 +9,7 @@ resource "aws_ecs_cluster" "main" {
   }
 }
 
-# CloudWatch Log Group for ECS
+# ECS用CloudWatchロググループ
 resource "aws_cloudwatch_log_group" "ecs" {
   name              = "/ecs/${var.project_name}"
   retention_in_days = 7
@@ -20,7 +20,7 @@ resource "aws_cloudwatch_log_group" "ecs" {
   }
 }
 
-# ECS Task Execution Role
+# ECSタスク実行ロール
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.project_name}-ecs-task-execution-role"
 
@@ -43,13 +43,13 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   }
 }
 
-# Attach AWS managed policy for ECS task execution
+# ECSタスク実行用AWS管理ポリシーをアタッチ
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# ECS Task Role (for application permissions)
+# ECSタスクロール（アプリケーション権限用）
 resource "aws_iam_role" "ecs_task_role" {
   name = "${var.project_name}-ecs-task-role"
 
@@ -72,7 +72,7 @@ resource "aws_iam_role" "ecs_task_role" {
   }
 }
 
-# ECS Task Role Policy for EFS access
+# EFSアクセス用ECSタスクロールポリシー
 resource "aws_iam_role_policy" "ecs_task_efs_policy" {
   name = "${var.project_name}-ecs-task-efs-policy"
   role = aws_iam_role.ecs_task_role.id
@@ -93,7 +93,7 @@ resource "aws_iam_role_policy" "ecs_task_efs_policy" {
   })
 }
 
-# ECS Task Definition
+# ECSタスク定義
 resource "aws_ecs_task_definition" "app" {
   family             = "${var.project_name}-task"
   network_mode       = "awsvpc"
@@ -165,7 +165,7 @@ resource "aws_ecs_task_definition" "app" {
   }
 }
 
-# ECS Service
+# ECSサービス
 resource "aws_ecs_service" "app" {
   name            = "${var.project_name}-service"
   cluster         = aws_ecs_cluster.main.id
@@ -179,7 +179,7 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 
-  # Wait for EFS mount target to be available
+  # EFSマウントターゲットが利用可能になるまで待機
   depends_on = [var.efs_mount_target_id]
 
   tags = {

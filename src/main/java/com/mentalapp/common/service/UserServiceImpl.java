@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public User findByUserName(String userName) {
-    // check the database if the user already exists
+    // データベースでユーザーが既に存在するかチェック
     return userMapper.selectByPrimaryKey(userName);
   }
 
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
   public void save(WebUser webUser) {
     User user = new User();
 
-    // assign user details to the user object
+    // ユーザーオブジェクトに詳細情報を設定
     user.setUserName(webUser.getUserName());
     user.setPassword(passwordEncoder.encode(webUser.getPassword()));
     user.setFirstName(webUser.getFirstName());
@@ -55,10 +55,10 @@ public class UserServiceImpl implements UserService {
     user.setEmail(webUser.getEmail());
     user.setEnabled(true);
 
-    // give user default role of "employee"
+    // ユーザーにデフォルトロール "employee" を付与
     // user.setRoles(Arrays.asList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
 
-    // save user in the database
+    // ユーザーをデータベースに保存
     userMapper.insert(user);
   }
 

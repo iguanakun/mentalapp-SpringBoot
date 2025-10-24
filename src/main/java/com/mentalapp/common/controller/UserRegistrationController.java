@@ -71,12 +71,12 @@ public class UserRegistrationController {
     String userName = theWebUser.getUserName();
     logger.info("Processing registration form for: " + userName);
 
-    // form validation
+    // フォームバリデーション
     if (theBindingResult.hasErrors()) {
       return "register/registration-form";
     }
 
-    // check the database if user already exists
+    // データベースでユーザーが既に存在するかチェック
     User existing = userService.findByUserName(userName);
     if (Objects.nonNull(existing)) {
       theModel.addAttribute("webUser", new WebUser());
@@ -86,7 +86,7 @@ public class UserRegistrationController {
       return "register/registration-form";
     }
 
-    // create user account and store in the databse
+    // ユーザーアカウントを作成してデータベースに保存
     userService.save(theWebUser);
 
     logger.info("Successfully created user: " + userName);

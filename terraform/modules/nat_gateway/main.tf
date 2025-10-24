@@ -1,4 +1,4 @@
-# Elastic IP for NAT Gateway
+# NATゲートウェイ用Elastic IP
 resource "aws_eip" "this" {
   domain = "vpc"
   depends_on = [var.internet_gateway_id]
@@ -8,7 +8,7 @@ resource "aws_eip" "this" {
   }
 }
 
-# NAT Gateway
+# NATゲートウェイ
 resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.this.id
   subnet_id     = var.public_subnet_id

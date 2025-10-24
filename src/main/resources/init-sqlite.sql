@@ -1,10 +1,10 @@
--- SQLite Table Creation Script
+-- SQLiteテーブル作成スクリプト
 
 -- =====================================================
--- User and Role Related Tables
+-- ユーザーとロール関連テーブル
 -- =====================================================
 
--- user table
+-- userテーブル
 CREATE TABLE IF NOT EXISTS user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -15,13 +15,13 @@ CREATE TABLE IF NOT EXISTS user (
     email VARCHAR(64) NOT NULL
 );
 
--- role table
+-- roleテーブル
 CREATE TABLE IF NOT EXISTS role (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(50) NOT NULL
 );
 
--- users_roles table
+-- users_rolesテーブル
 CREATE TABLE IF NOT EXISTS users_roles (
     user_id INTEGER NOT NULL,
     role_id INTEGER NOT NULL,
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS users_roles (
 );
 
 -- =====================================================
--- Emotion Master Tables
+-- 感情マスタテーブル
 -- =====================================================
 
--- negative_feels table
+-- negative_feelsテーブル
 CREATE TABLE IF NOT EXISTS negative_feels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     negative_feel_name TEXT NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS negative_feels (
     updated_at TEXT NOT NULL
 );
 
--- positive_feels table
+-- positive_feelsテーブル
 CREATE TABLE IF NOT EXISTS positive_feels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     positive_feel_name TEXT NOT NULL,
@@ -51,10 +51,10 @@ CREATE TABLE IF NOT EXISTS positive_feels (
 );
 
 -- =====================================================
--- Cognitive Distortion Master Table
+-- 認知の歪みマスタテーブル
 -- =====================================================
 
--- distortion_lists table
+-- distortion_listsテーブル
 CREATE TABLE IF NOT EXISTS distortion_lists (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     distortion_name TEXT NOT NULL,
@@ -64,10 +64,10 @@ CREATE TABLE IF NOT EXISTS distortion_lists (
 );
 
 -- =====================================================
--- Tag Table
+-- タグテーブル
 -- =====================================================
 
--- tags table
+-- tagsテーブル
 CREATE TABLE IF NOT EXISTS tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tag_name TEXT NOT NULL,
@@ -78,10 +78,10 @@ CREATE TABLE IF NOT EXISTS tags (
 );
 
 -- =====================================================
--- CBT Basic Monitoring Related Tables
+-- CBT基本モニタリング関連テーブル
 -- =====================================================
 
--- cbt_basics table
+-- cbt_basicsテーブル
 CREATE TABLE IF NOT EXISTS cbt_basics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fact TEXT,
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS cbt_basics (
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
--- cbt_basics_negative_feels table (junction table)
+-- cbt_basics_negative_feelsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_basics_negative_feels (
     cbt_basic_id INTEGER NOT NULL,
     negative_feel_id INTEGER NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS cbt_basics_negative_feels (
     FOREIGN KEY (negative_feel_id) REFERENCES negative_feels(id) ON DELETE CASCADE
 );
 
--- cbt_basics_positive_feels table (junction table)
+-- cbt_basics_positive_feelsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_basics_positive_feels (
     cbt_basic_id INTEGER NOT NULL,
     positive_feel_id INTEGER NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS cbt_basics_positive_feels (
     FOREIGN KEY (positive_feel_id) REFERENCES positive_feels(id) ON DELETE CASCADE
 );
 
--- cbt_basics_tag_relations table (junction table)
+-- cbt_basics_tag_relationsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_basics_tag_relations (
     cbt_basic_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
@@ -124,10 +124,10 @@ CREATE TABLE IF NOT EXISTS cbt_basics_tag_relations (
 );
 
 -- =====================================================
--- CBT Cognitive Restructuring Related Tables
+-- CBT認知再構成法関連テーブル
 -- =====================================================
 
--- cbt_cr table
+-- cbt_crテーブル
 CREATE TABLE IF NOT EXISTS cbt_cr (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fact TEXT,
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS cbt_cr (
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
--- cbt_cr_negative_feels table (junction table)
+-- cbt_cr_negative_feelsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_cr_negative_feels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cbt_cr_id INTEGER NOT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS cbt_cr_negative_feels (
     FOREIGN KEY (negative_feel_id) REFERENCES negative_feels(id)
 );
 
--- cbt_cr_positive_feels table (junction table)
+-- cbt_cr_positive_feelsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_cr_positive_feels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cbt_cr_id INTEGER NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS cbt_cr_positive_feels (
     FOREIGN KEY (positive_feel_id) REFERENCES positive_feels(id)
 );
 
--- cbt_cr_distortion_relations table (junction table)
+-- cbt_cr_distortion_relationsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_cr_distortion_relations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cbt_cr_id INTEGER NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS cbt_cr_distortion_relations (
     FOREIGN KEY (distortion_list_id) REFERENCES distortion_lists(id)
 );
 
--- cbt_cr_tag_relations table (junction table)
+-- cbt_cr_tag_relationsテーブル（中間テーブル）
 CREATE TABLE IF NOT EXISTS cbt_cr_tag_relations (
     cbt_cr_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
@@ -180,14 +180,14 @@ CREATE TABLE IF NOT EXISTS cbt_cr_tag_relations (
 );
 
 -- =====================================================
--- Initial Data Insertion
+-- 初期データ投入
 -- =====================================================
 
--- Initial data for user table (password: mentalapp)
+-- userテーブルの初期データ（パスワード: mentalapp）
 INSERT OR IGNORE INTO user (username, password, enabled, first_name, last_name, email)
-VALUES ('mentalapp', '$2a$10$7eGHQqZ1JXzMZvF8xLqJNO7fZjRXKxYZH8qCL8F5JVF7vH4jXQYXa', 1, 'Mental', 'App', 'mentalapp@example.com');
+VALUES ('mentalapp', '$2a$10$PTHVAU3ZDQLx3xIpmEcdA.N0T3VhZL9mjvonYjj67Rd9qrWDkev7q', 1, 'Mental', 'App', 'mentalapp@example.com');
 
--- Initial data for negative_feels table
+-- negative_feelsテーブルの初期データ
 INSERT OR IGNORE INTO negative_feels (negative_feel_name, created_at, updated_at)
 VALUES
 ('不安', datetime('now', 'localtime'), datetime('now', 'localtime')),
@@ -205,7 +205,7 @@ VALUES
 ('疲れ', datetime('now', 'localtime'), datetime('now', 'localtime')),
 ('罪悪感', datetime('now', 'localtime'), datetime('now', 'localtime'));
 
--- Initial data for positive_feels table
+-- positive_feelsテーブルの初期データ
 INSERT OR IGNORE INTO positive_feels (positive_feel_name, created_at, updated_at)
 VALUES
 ('愛情', datetime('now', 'localtime'), datetime('now', 'localtime')),
@@ -223,7 +223,7 @@ VALUES
 ('思いやり', datetime('now', 'localtime'), datetime('now', 'localtime')),
 ('感動', datetime('now', 'localtime'), datetime('now', 'localtime'));
 
--- Initial data for distortion_lists table
+-- distortion_listsテーブルの初期データ
 INSERT OR IGNORE INTO distortion_lists (distortion_name, info, created_at, updated_at)
 VALUES
 ('白黒思考', '「完璧にやろうとしていない？」', datetime('now', 'localtime'), datetime('now', 'localtime')),

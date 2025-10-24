@@ -31,11 +31,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     User theUser = userService.findByUserName(userName);
 
-    // now place in the session
+    // セッションに保存
     HttpSession session = request.getSession();
     session.setAttribute("user", theUser);
 
-    // forward to home page
+    // ホームページにリダイレクト
     response.sendRedirect(request.getContextPath() + "/");
   }
 }
