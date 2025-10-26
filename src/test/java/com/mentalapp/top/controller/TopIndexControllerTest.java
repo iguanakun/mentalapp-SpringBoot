@@ -11,11 +11,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 public class TopIndexControllerTest {
   private MockMvc mockMvc;
-  private TopIndexController topIndexController;
 
   @BeforeEach
   public void setUp() {
-    topIndexController = new TopIndexController();
+    TopIndexController topIndexController = new TopIndexController();
     mockMvc = MockMvcBuilders.standaloneSetup(topIndexController).build();
   }
 
