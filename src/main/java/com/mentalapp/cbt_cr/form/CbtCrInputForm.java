@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class CbtCrInputForm {
 
-  /** 認知再構成法エンティティ */
+  /** 認知再構成法 */
   private CbtCr cbtCr;
 
   /** タグ名（スペース区切り） */
@@ -46,7 +46,7 @@ public class CbtCrInputForm {
       return true;
     }
 
-    // エンティティのフィールドチェック
+    // フィールドチェック
     return Objects.nonNull(cbtCr)
         && (Objects.nonNull(cbtCr.getFact()) && !cbtCr.getFact().trim().isEmpty()
             || Objects.nonNull(cbtCr.getMind()) && !cbtCr.getMind().trim().isEmpty()
