@@ -65,11 +65,7 @@ AWS環境に構築:
 
 ### AWS構成図
 
-![AWS Architecture](doc/aws-architecture.drawio)
-
-### データベース設計
-
-![ER Diagram](doc/er-diagram.drawio)
+![AWS Architecture](./doc/aws-architecture.drawio.svg)
 
 ## セットアップ手順
 

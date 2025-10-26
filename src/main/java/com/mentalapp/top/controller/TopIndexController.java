@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /** トップページ表示のコントローラークラス */
 @Controller
-public class topIndexController {
+public class TopIndexController {
 
   /**
    * トップページを表示
