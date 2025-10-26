@@ -142,63 +142,52 @@ public class CbtCrRegistService {
   }
 
   /**
-   * バリデーション用のメソッド - 入力フォームに有効なデータが含まれているかチェックする
+   * セッションデータとフォームデータの両方をチェックして、入力があるか確認する
    *
    * @param form 入力フォーム
-   * @return いずれかの項目が有効な値で入力されている場合はtrue、すべての項目が空または無効な場合はfalse
+   * @return 何か入力がある場合はtrue
    */
-  public boolean hasAnyContent(CbtCrInputForm form) {
-    // セッションからデータを取得
+  private boolean hasAnyContent(CbtCrInputForm form) {
+    // セッションからstep1のデータを取得
     List<Long> negativeFeelIds = (List<Long>) session.getAttribute("negativeFeelIds");
     List<Long> positiveFeelIds = (List<Long>) session.getAttribute("positiveFeelIds");
     String fact = (String) session.getAttribute("fact");
     String mind = (String) session.getAttribute("mind");
 
-    // フォームからデータを取得
-    List<Long> distortionIds = form.getDistortionIds();
-    String whyCorrect = form.getWhyCorrect();
-    String whyDoubt = form.getWhyDoubt();
-    String newThought = form.getNewThought();
-    String tagNames = form.getTagNames();
-
+    // step1
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
     }
     if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
       return true;
     }
-    if (Objects.nonNull(distortionIds) && !distortionIds.isEmpty()) {
+    if (Objects.nonNull(fact) && !fact.trim().isEmpty()) {
       return true;
     }
-    if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
+    if (Objects.nonNull(mind) && !mind.trim().isEmpty()) {
       return true;
     }
 
-    return (Objects.nonNull(fact) && !fact.trim().isEmpty())
-        || (Objects.nonNull(mind) && !mind.trim().isEmpty())
-        || (Objects.nonNull(whyCorrect) && !whyCorrect.trim().isEmpty())
-        || (Objects.nonNull(whyDoubt) && !whyDoubt.trim().isEmpty())
-        || (Objects.nonNull(newThought) && !newThought.trim().isEmpty());
+    // step2
+    return form.hasAnyContent();
   }
 
   /**
-   * セッションデータとフォームデータをマージした新しいフォームを作成
+   * セッションデータとフォームデータをマージしたエンティティを作成
    *
    * @param form 元のフォーム
-   * @return マージされた新しいフォーム
+   * @return マージされたエンティティ
    */
   private CbtCr createCbtCr(CbtCrInputForm form) {
     // セッションからデータを取得
     String fact = (String) session.getAttribute("fact");
     String mind = (String) session.getAttribute("mind");
 
-    // エンティティの作成
-    CbtCr cbtCr = new CbtCr();
+    // フォームからエンティティを取得
+    CbtCr cbtCr = form.getCbtCr();
+    // セッションのデータをセット
     cbtCr.setFact(fact);
     cbtCr.setMind(mind);
-    cbtCr.setWhyCorrect(form.getWhyCorrect());
-    cbtCr.setWhyDoubt(form.getWhyDoubt());
-    cbtCr.setNewThought(form.getNewThought());
     cbtCr.setUserId(mentalCommonUtils.getUser().getId());
 
     return cbtCr;

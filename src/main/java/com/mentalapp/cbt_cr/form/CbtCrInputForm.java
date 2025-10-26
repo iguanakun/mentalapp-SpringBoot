@@ -1,5 +1,6 @@
 package com.mentalapp.cbt_cr.form;
 
+import com.mentalapp.cbt_cr.entity.CbtCr;
 import java.util.List;
 import java.util.Objects;
 import lombok.Data;
@@ -8,23 +9,11 @@ import lombok.Data;
 @Data
 public class CbtCrInputForm {
 
-  /** ID */
-  private Long id;
+  /** 認知再構成法 */
+  private CbtCr cbtCr;
 
-  /** 状況 */
-  private String fact;
-
-  /** 思考 */
-  private String mind;
-
-  /** 思考が正しいと思う事実・根拠 */
-  private String whyCorrect;
-
-  /** 思考が間違っていると思う事実・根拠 */
-  private String whyDoubt;
-
-  /** 新しい考え方 */
-  private String newThought;
+  /** タグ名（スペース区切り） */
+  private String tagNames;
 
   /** ネガティブ感情のID */
   private List<Long> negativeFeelIds;
@@ -35,23 +24,12 @@ public class CbtCrInputForm {
   /** 思考の歪みのID */
   private List<Long> distortionIds;
 
-  /** ユーザーID */
-  private Long userId;
-
-  /** タグ名（スペース区切り） */
-  private String tagNames;
-
   /**
    * バリデーション用のメソッド - いずれかの項目が入力されているか
    *
    * @return いずれかの項目が入力されている場合はtrue
    */
   public boolean hasAnyContent() {
-    // タグ名のチェック
-    if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
-      return true;
-    }
-
     // ネガティブ感情、ポジティブ感情、認知の歪みのチェック
     if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
       return true;
@@ -63,11 +41,17 @@ public class CbtCrInputForm {
       return true;
     }
 
-    // その他チェック
-    return (Objects.nonNull(fact) && !fact.trim().isEmpty())
-        || (Objects.nonNull(mind) && !mind.trim().isEmpty())
-        || (Objects.nonNull(whyCorrect) && !whyCorrect.trim().isEmpty())
-        || (Objects.nonNull(whyDoubt) && !whyDoubt.trim().isEmpty())
-        || (Objects.nonNull(newThought) && !newThought.trim().isEmpty());
+    // タグ名のチェック
+    if (Objects.nonNull(tagNames) && !tagNames.trim().isEmpty()) {
+      return true;
+    }
+
+    // フィールドチェック
+    return Objects.nonNull(cbtCr)
+        && (Objects.nonNull(cbtCr.getFact()) && !cbtCr.getFact().trim().isEmpty()
+            || Objects.nonNull(cbtCr.getMind()) && !cbtCr.getMind().trim().isEmpty()
+            || Objects.nonNull(cbtCr.getWhyCorrect()) && !cbtCr.getWhyCorrect().trim().isEmpty()
+            || Objects.nonNull(cbtCr.getWhyDoubt()) && !cbtCr.getWhyDoubt().trim().isEmpty()
+            || Objects.nonNull(cbtCr.getNewThought()) && !cbtCr.getNewThought().trim().isEmpty());
   }
 }

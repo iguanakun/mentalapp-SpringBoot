@@ -66,10 +66,12 @@ public class CbtCrIndexService {
   /** もどる時のstep1の入力値を復元 */
   private CbtCrInputForm recoveryStep1Form() {
     CbtCrInputForm recoveryForm = new CbtCrInputForm();
+    CbtCr cbtCr = new CbtCr();
 
     // セッションの値を復元
-    recoveryForm.setFact((String) session.getAttribute("fact"));
-    recoveryForm.setMind((String) session.getAttribute("mind"));
+    cbtCr.setFact((String) session.getAttribute("fact"));
+    cbtCr.setMind((String) session.getAttribute("mind"));
+    recoveryForm.setCbtCr(cbtCr);
     recoveryForm.setNegativeFeelIds((List<Long>) session.getAttribute("negativeFeelIds"));
     recoveryForm.setPositiveFeelIds((List<Long>) session.getAttribute("positiveFeelIds"));
 
@@ -101,8 +103,10 @@ public class CbtCrIndexService {
     // step1の入力値を保存
     session.setAttribute("negativeFeelIds", form.getNegativeFeelIds());
     session.setAttribute("positiveFeelIds", form.getPositiveFeelIds());
-    session.setAttribute("fact", form.getFact());
-    session.setAttribute("mind", form.getMind());
+    if (Objects.nonNull(form.getCbtCr())) {
+      session.setAttribute("fact", form.getCbtCr().getFact());
+      session.setAttribute("mind", form.getCbtCr().getMind());
+    }
   }
 
   /**
@@ -174,7 +178,9 @@ public class CbtCrIndexService {
       form = recoveryStep1Form();
     }
     // edit_step2.htmlでIDをURLに含め渡すため、IDをフォームにセット
-    form.setId(id);
+    if (Objects.nonNull(form.getCbtCr())) {
+      form.getCbtCr().setId(id);
+    }
     model.addAttribute("cbtCrForm", form);
 
     // step2の入力値をセッションに設定
@@ -200,15 +206,14 @@ public class CbtCrIndexService {
   /**
    * CbtCrエンティティからCbtCrInputFormを作成する
    *
+   * @param cbtCr 認知再構成法エンティティ
    * @return 作成されたフォーム
    */
   private CbtCrInputForm createStep1Form(CbtCr cbtCr) {
     CbtCrInputForm form = new CbtCrInputForm();
 
-    // 事実
-    form.setFact(cbtCr.getFact());
-    // 思考
-    form.setMind(cbtCr.getMind());
+    // 認知再構成法
+    form.setCbtCr(cbtCr);
 
     // ネガティブ感情
     form.setNegativeFeelIds(
@@ -261,10 +266,12 @@ public class CbtCrIndexService {
 
     // フォームに既存の値をセット
     CbtCrInputForm form = new CbtCrInputForm();
-    form.setId(id);
-    form.setWhyCorrect((String) session.getAttribute("whyCorrect"));
-    form.setWhyDoubt((String) session.getAttribute("whyDoubt"));
-    form.setNewThought((String) session.getAttribute("newThought"));
+    CbtCr cbtCrEdit = new CbtCr();
+    cbtCrEdit.setId(id);
+    cbtCrEdit.setWhyCorrect((String) session.getAttribute("whyCorrect"));
+    cbtCrEdit.setWhyDoubt((String) session.getAttribute("whyDoubt"));
+    cbtCrEdit.setNewThought((String) session.getAttribute("newThought"));
+    form.setCbtCr(cbtCrEdit);
     form.setDistortionIds((List<Long>) session.getAttribute("distortionIds"));
     form.setTagNames((String) session.getAttribute("tagNames"));
 

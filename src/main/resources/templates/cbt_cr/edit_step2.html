@@ -9,12 +9,12 @@
 <div layout:fragment="content">
     <div th:replace="~{common/_header-margin :: header-margin}"></div>
 
-    <div th:replace="~{cbt_cr/step2-form :: step2-form(url=@{/cbt_cr/{id}(id=${cbtCrForm.id})}, method='post', buttonText='更新する')}"></div>
+    <div th:replace="~{cbt_cr/step2-form :: step2-form(url=@{/cbt_cr/{id}(id=${cbtCrForm.cbtCr.id})}, method='post', buttonText='更新する')}"></div>
 
     <div class="monitor-lists">
-        <!--        <a th:href="@{/cbt_cr/{id}/edit(id=${cbtCrForm.id})}" class="monitor-show__btn">もどる</a>-->
+        <!--        <a th:href="@{/cbt_cr/{id}/edit(id=${cbtCrForm.cbtCr.id})}" class="monitor-show__btn">もどる</a>-->
         <!--        <a th:href="@{/cbt_cr/back}" class="monitor-show__btn">もどる</a>-->
-        <a th:href="@{/cbt_cr/{id}/back(id=${cbtCrForm.id})}" class="monitor-show__btn">もどる</a>
+        <a th:href="@{/cbt_cr/{id}/back(id=${cbtCrForm.cbtCr.id})}" class="monitor-show__btn">もどる</a>
 
     </div>
 </div>

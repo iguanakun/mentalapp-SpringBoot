@@ -106,9 +106,15 @@ public class CbtCrRegistServiceTest {
   }
 
   private void setupValidationErrorForm() {
-    form.setWhyCorrect(null);
-    form.setWhyDoubt(null);
-    form.setNewThought(null);
+    if (form.getCbtCr() != null) {
+      form.getCbtCr().setFact(null);
+      form.getCbtCr().setMind(null);
+      form.getCbtCr().setWhyCorrect(null);
+      form.getCbtCr().setWhyDoubt(null);
+      form.getCbtCr().setNewThought(null);
+    }
+    form.setNegativeFeelIds(null);
+    form.setPositiveFeelIds(null);
     form.setDistortionIds(null);
     form.setTagNames(null);
   }
@@ -232,71 +238,69 @@ public class CbtCrRegistServiceTest {
   @Test
   void testHasAnyContent_negativeFeelIds() {
     setupValidationErrorForm();
-    mockSession.setAttribute("negativeFeelIds", TestUtils.createNegativeFeelIds());
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.setNegativeFeelIds(TestUtils.createNegativeFeelIds());
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_positiveFeelIds() {
     setupValidationErrorForm();
-    mockSession.setAttribute("positiveFeelIds", TestUtils.createPositiveFeelIds());
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.setPositiveFeelIds(TestUtils.createPositiveFeelIds());
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_fact() {
     setupValidationErrorForm();
-    mockSession.setAttribute("fact", "テスト状況");
-
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.getCbtCr().setFact("テスト状況");
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_mind() {
     setupValidationErrorForm();
-    mockSession.setAttribute("mind", "テスト思考");
-
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.getCbtCr().setMind("テスト思考");
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_distortionIds() {
     setupValidationErrorForm();
     form.setDistortionIds(TestUtils.createDistortionIds());
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_tagNames() {
     setupValidationErrorForm();
     form.setTagNames(TestUtils.createTagNames());
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_whyCorrect() {
     setupValidationErrorForm();
-    form.setWhyCorrect("テスト正しい証拠");
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.getCbtCr().setWhyCorrect("テスト正しい証拠");
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_whyDoubt() {
     setupValidationErrorForm();
-    form.setWhyDoubt("テスト間違いの証拠");
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.getCbtCr().setWhyDoubt("テスト間違いの証拠");
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_newThought() {
     setupValidationErrorForm();
-    form.setNewThought("テスト新しい考え方");
-    assertTrue(cbtCrRegistService.hasAnyContent(form));
+    form.getCbtCr().setNewThought("テスト新しい考え方");
+    assertTrue(form.hasAnyContent());
   }
 
   @Test
   void testHasAnyContent_emptyAll() {
     setupValidationErrorForm();
-    assertFalse(cbtCrRegistService.hasAnyContent(form));
+    assertFalse(form.hasAnyContent());
   }
 }

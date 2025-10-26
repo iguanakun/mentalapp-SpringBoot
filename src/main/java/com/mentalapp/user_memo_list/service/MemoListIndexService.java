@@ -64,11 +64,11 @@ public class MemoListIndexService {
   }
 
   /**
-   * 感情名とカウントからレスポンス用マップを作成
+   * 感情名とカウントからマップを作成
    *
    * @param feelName 感情名
    * @param count 出現回数
-   * @return レスポンス用マップ
+   * @return マップ
    */
   private Map<String, Object> createFeelResultMap(String feelName, Integer count) {
     Map<String, Object> resultMap = new HashMap<>();

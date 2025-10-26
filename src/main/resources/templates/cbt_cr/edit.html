@@ -8,7 +8,7 @@
 <body>
 <div layout:fragment="content">
     <div th:replace="~{common/_header-margin :: header-margin}"></div>
-    <div th:replace="~{cbt_cr/_monitor-form :: monitor-form(url=@{/cbt_cr/{id}/edit_step2(id=${cbtCrForm.id})}, method='get')}"></div>
+    <div th:replace="~{cbt_cr/_monitor-form :: monitor-form(url=@{/cbt_cr/{id}/edit_step2(id=${cbtCrForm.cbtCr.id})}, method='get')}"></div>
 </div>
 </body>
 </html>
