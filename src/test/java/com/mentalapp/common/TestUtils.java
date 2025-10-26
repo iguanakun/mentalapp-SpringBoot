@@ -183,12 +183,7 @@ public class TestUtils {
     CbtCrInputForm form = new CbtCrInputForm();
     CbtCr cbtCr = createCbtCrWithForm();
 
-    form.setId(cbtCr.getId());
-    form.setFact(cbtCr.getFact());
-    form.setMind(cbtCr.getMind());
-    form.setWhyCorrect(cbtCr.getWhyCorrect());
-    form.setWhyDoubt(cbtCr.getWhyDoubt());
-    form.setNewThought(cbtCr.getNewThought());
+    form.setCbtCr(cbtCr);
     form.setTagNames(createTagNames());
     form.setPositiveFeelIds(createPositiveFeelIds());
     form.setNegativeFeelIds(createNegativeFeelIds());

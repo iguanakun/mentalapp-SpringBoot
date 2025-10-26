@@ -90,7 +90,7 @@ public class CbtCrIndexServiceTest {
     verify(model).addAttribute(eq("cbtCrForm"), formCaptor.capture());
 
     CbtCrInputForm recoveryForm = formCaptor.getValue();
-    assertEquals(testFact, recoveryForm.getFact());
+    assertEquals(testFact, recoveryForm.getCbtCr().getFact());
   }
 
   /** ステップ2画面の処理のテスト */
@@ -202,7 +202,7 @@ public class CbtCrIndexServiceTest {
     verify(model).addAttribute(eq("cbtCrForm"), formCaptor.capture());
 
     CbtCrInputForm recoveryForm = formCaptor.getValue();
-    assertEquals(testFact, recoveryForm.getFact());
+    assertEquals(testFact, recoveryForm.getCbtCr().getFact());
   }
 
   /** 編集画面の処理のテスト - 存在しない場合 */
@@ -290,8 +290,10 @@ public class CbtCrIndexServiceTest {
 
   private static CbtCrInputForm getCbtCrInputFormStep1() {
     CbtCrInputForm form = new CbtCrInputForm();
-    form.setFact("テスト状況");
-    form.setMind("テスト思考");
+    CbtCr cbtCr = new CbtCr();
+    cbtCr.setFact("テスト状況");
+    cbtCr.setMind("テスト思考");
+    form.setCbtCr(cbtCr);
     form.setNegativeFeelIds(TestUtils.createNegativeFeelIds());
     form.setPositiveFeelIds(TestUtils.createPositiveFeelIds());
     return form;
