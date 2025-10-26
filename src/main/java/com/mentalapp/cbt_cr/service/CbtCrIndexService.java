@@ -212,7 +212,7 @@ public class CbtCrIndexService {
   private CbtCrInputForm createStep1Form(CbtCr cbtCr) {
     CbtCrInputForm form = new CbtCrInputForm();
 
-    // エンティティをセット
+    // 認知再構成法
     form.setCbtCr(cbtCr);
 
     // ネガティブ感情
@@ -266,12 +266,12 @@ public class CbtCrIndexService {
 
     // フォームに既存の値をセット
     CbtCrInputForm form = new CbtCrInputForm();
-    CbtCr cbtCrForEdit = new CbtCr();
-    cbtCrForEdit.setId(id);
-    cbtCrForEdit.setWhyCorrect((String) session.getAttribute("whyCorrect"));
-    cbtCrForEdit.setWhyDoubt((String) session.getAttribute("whyDoubt"));
-    cbtCrForEdit.setNewThought((String) session.getAttribute("newThought"));
-    form.setCbtCr(cbtCrForEdit);
+    CbtCr cbtCrEdit = new CbtCr();
+    cbtCrEdit.setId(id);
+    cbtCrEdit.setWhyCorrect((String) session.getAttribute("whyCorrect"));
+    cbtCrEdit.setWhyDoubt((String) session.getAttribute("whyDoubt"));
+    cbtCrEdit.setNewThought((String) session.getAttribute("newThought"));
+    form.setCbtCr(cbtCrEdit);
     form.setDistortionIds((List<Long>) session.getAttribute("distortionIds"));
     form.setTagNames((String) session.getAttribute("tagNames"));
 
