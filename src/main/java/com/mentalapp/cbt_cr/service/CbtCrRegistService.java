@@ -155,10 +155,18 @@ public class CbtCrRegistService {
     String mind = (String) session.getAttribute("mind");
 
     // step1
-    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) return true;
-    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) return true;
-    if (Objects.nonNull(fact) && !fact.trim().isEmpty()) return true;
-    if (Objects.nonNull(mind) && !mind.trim().isEmpty()) return true;
+    if (Objects.nonNull(negativeFeelIds) && !negativeFeelIds.isEmpty()) {
+      return true;
+    }
+    if (Objects.nonNull(positiveFeelIds) && !positiveFeelIds.isEmpty()) {
+      return true;
+    }
+    if (Objects.nonNull(fact) && !fact.trim().isEmpty()) {
+      return true;
+    }
+    if (Objects.nonNull(mind) && !mind.trim().isEmpty()) {
+      return true;
+    }
 
     // step2
     return form.hasAnyContent();
