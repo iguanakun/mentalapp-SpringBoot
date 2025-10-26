@@ -65,7 +65,7 @@ AWS環境に構築:
 
 ### AWS構成図
 
-![AWS Architecture](doc/aws-architecture.drawio.svg)
+![AWS Architecture](./doc/aws-architecture.drawio.svg)
 
 ## セットアップ手順
 
