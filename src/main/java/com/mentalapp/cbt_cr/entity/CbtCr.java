@@ -23,12 +23,7 @@ public class CbtCr {
   private String whyCorrect;
   private String whyDoubt;
   private String newThought;
-
-  // スネークケースはデータベースのカラム名と一致させるために使用
-  @Getter(lombok.AccessLevel.NONE)
-  @Setter(lombok.AccessLevel.NONE)
   private Long user_id;
-
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
@@ -41,20 +36,11 @@ public class CbtCr {
   private List<Distortion> distortions;
   private List<Tag> tags;
 
-  /**
-   * ユーザーIDを取得する（命名規則の互換性のため）
-   *
-   * @return ユーザーID
-   */
+  // getUserId()メソッドは命名規則の互換性を維持するために保持
   public Long getUserId() {
     return user_id;
   }
 
-  /**
-   * ユーザーIDを設定する
-   *
-   * @param userId ユーザーID
-   */
   public void setUserId(Long userId) {
     this.user_id = userId;
   }
