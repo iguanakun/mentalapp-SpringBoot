@@ -14,15 +14,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(
-    exclude = {
-      "cbtBasicsNegativeFeels",
-      "cbtBasicsPositiveFeels",
-      "cbtBasicsTagRelations",
-      "negativeFeels",
-      "positiveFeels",
-      "tags"
-    })
 public class CbtBasics {
 
   private Long id;
