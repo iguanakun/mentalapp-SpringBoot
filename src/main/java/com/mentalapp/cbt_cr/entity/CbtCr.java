@@ -23,7 +23,7 @@ public class CbtCr {
   private String whyCorrect;
   private String whyDoubt;
   private String newThought;
-  private Long user_id;
+  private Long userId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
@@ -35,13 +35,4 @@ public class CbtCr {
   private List<PositiveFeel> positiveFeels;
   private List<Distortion> distortions;
   private List<Tag> tags;
-
-  // getUserId()メソッドは命名規則の互換性を維持するために保持
-  public Long getUserId() {
-    return user_id;
-  }
-
-  public void setUserId(Long userId) {
-    this.user_id = userId;
-  }
 }

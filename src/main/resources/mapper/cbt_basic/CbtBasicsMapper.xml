@@ -11,7 +11,7 @@
         <result column="mind" property="mind"/>
         <result column="body" property="body"/>
         <result column="behavior" property="behavior"/>
-        <result column="user_id" property="user_id"/>
+        <result column="user_id" property="userId"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
