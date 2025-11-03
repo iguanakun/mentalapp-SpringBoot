@@ -1,9 +1,9 @@
 package com.mentalapp.common.controller;
 
 import com.mentalapp.common.entity.User;
+import com.mentalapp.common.exception.UserAlreadyRegisteredException;
 import com.mentalapp.common.service.UserServiceImpl;
 import com.mentalapp.common.user.WebUser;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -13,7 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /** ユーザー登録処理を行うコントローラークラス */
 @Controller
@@ -57,7 +61,6 @@ public class UserRegistrationController {
    *
    * @param theWebUser ユーザー情報
    * @param theBindingResult バリデーション結果
-   * @param session HTTPセッション
    * @param theModel モデル
    * @return ログインページへのリダイレクトまたは登録フォームのビュー名
    */
@@ -65,8 +68,8 @@ public class UserRegistrationController {
   public String processRegistrationForm(
       @Valid @ModelAttribute("webUser") WebUser theWebUser,
       BindingResult theBindingResult,
-      HttpSession session,
-      Model theModel) {
+      Model theModel)
+      throws Exception {
 
     String userName = theWebUser.getUserName();
     logger.info("Processing registration form for: " + userName);
@@ -79,11 +82,12 @@ public class UserRegistrationController {
     // データベースでユーザーが既に存在するかチェック
     User existing = userService.findByUserName(userName);
     if (Objects.nonNull(existing)) {
-      theModel.addAttribute("webUser", new WebUser());
-      theModel.addAttribute("registrationError", "このユーザー名は既に使用されています。");
-
-      logger.warning("User name already exists.");
-      return "register/registration-form";
+      //      theModel.addAttribute("webUser", new WebUser());
+      //      theModel.addAttribute("registrationError", "このユーザー名は既に使用されています。");
+      //
+      //      logger.warning("User name already exists.");
+      //      return "register/registration-form";
+      throw new UserAlreadyRegisteredException();
     }
 
     // ユーザーアカウントを作成してデータベースに保存

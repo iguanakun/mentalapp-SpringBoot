@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
     return userMapper.selectByPrimaryKey(userName);
   }
 
+  @Override
+  public void register(WebUser webUser) {}
+
   /**
    * 新規ユーザーの保存
    *

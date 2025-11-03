@@ -9,4 +9,6 @@ public interface UserService extends UserDetailsService {
   public User findByUserName(String userName);
 
   void save(WebUser webUser);
+
+  void register(WebUser webUser);
 }
