@@ -10,5 +10,5 @@ public interface UserService extends UserDetailsService {
 
   void save(WebUser webUser);
 
-  void register(WebUser webUser);
+  void register(WebUser webUser) throws Exception;
 }

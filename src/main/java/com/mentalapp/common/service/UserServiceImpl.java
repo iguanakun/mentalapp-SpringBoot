@@ -4,9 +4,11 @@ package com.mentalapp.common.service;
 import com.mentalapp.common.dao.UserMapper;
 import com.mentalapp.common.entity.Role;
 import com.mentalapp.common.entity.User;
+import com.mentalapp.common.exception.UserAlreadyRegisteredException;
 import com.mentalapp.common.user.WebUser;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +41,16 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void register(WebUser webUser) {}
+  public void register(WebUser webUser) throws UserAlreadyRegisteredException {
+    // データベースでユーザーが既に存在するかチェック
+    User existing = findByUserName(webUser.getUserName());
+    if (Objects.nonNull(existing)) {
+      throw new UserAlreadyRegisteredException();
+    }
+
+    // ユーザーアカウントを作成してデータベースに保存
+    save(webUser);
+  }
 
   /**
    * 新規ユーザーの保存

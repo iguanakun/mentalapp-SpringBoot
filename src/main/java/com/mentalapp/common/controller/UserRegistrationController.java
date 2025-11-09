@@ -1,11 +1,8 @@
 package com.mentalapp.common.controller;
 
-import com.mentalapp.common.entity.User;
-import com.mentalapp.common.exception.UserAlreadyRegisteredException;
 import com.mentalapp.common.service.UserServiceImpl;
 import com.mentalapp.common.user.WebUser;
 import jakarta.validation.Valid;
-import java.util.Objects;
 import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -79,19 +76,7 @@ public class UserRegistrationController {
       return "register/registration-form";
     }
 
-    // データベースでユーザーが既に存在するかチェック
-    User existing = userService.findByUserName(userName);
-    if (Objects.nonNull(existing)) {
-      //      theModel.addAttribute("webUser", new WebUser());
-      //      theModel.addAttribute("registrationError", "このユーザー名は既に使用されています。");
-      //
-      //      logger.warning("User name already exists.");
-      //      return "register/registration-form";
-      throw new UserAlreadyRegisteredException();
-    }
-
-    // ユーザーアカウントを作成してデータベースに保存
-    userService.save(theWebUser);
+    userService.register(theWebUser);
 
     logger.info("Successfully created user: " + userName);
 
