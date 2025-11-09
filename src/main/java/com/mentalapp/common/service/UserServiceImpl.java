@@ -1,32 +1,37 @@
 package com.mentalapp.common.service;
 
 // import com.demosecurity.common.dao.RoleDao;
+
 import com.mentalapp.common.dao.UserMapper;
 import com.mentalapp.common.entity.Role;
 import com.mentalapp.common.entity.User;
 import com.mentalapp.common.exception.UserAlreadyRegisteredException;
 import com.mentalapp.common.user.WebUser;
+import com.mentalapp.common.util.PasswordEncoder;
+import com.mentalapp.common.util.PasswordEncoderImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /** ユーザーサービスの実装クラス ユーザーの認証、登録、検索などの機能を提供します */
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserMapper userMapper;
-  private final BCryptPasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   // private RoleDao roleDao;
+
+  public UserServiceImpl(UserMapper userMapper) {
+    this.userMapper = userMapper;
+    this.passwordEncoder = new PasswordEncoderImpl();
+  }
 
   /**
    * ユーザー名によるユーザー検索
@@ -43,8 +48,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public void register(WebUser webUser) throws UserAlreadyRegisteredException {
     // データベースでユーザーが既に存在するかチェック
-    User existing = findByUserName(webUser.getUserName());
-    if (Objects.nonNull(existing)) {
+    String userName = webUser.getUserName();
+    if (Objects.nonNull(findByUserName(userName))) {
       throw new UserAlreadyRegisteredException();
     }
 
